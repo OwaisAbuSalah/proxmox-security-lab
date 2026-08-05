@@ -1,0 +1,227 @@
+<title>افهم مشروعك — ورقة قراءة</title>
+<style>
+:root{--navy:#0B2A4A;--teal:#0E7C86;--ink:#16202b;--grey:#5b6472;--bg:#eef2f7;--card:#fff;--line:#dbe3ec;
+--hl:#fff6e0;--hlb:#c98a00;--ok:#0d5c47;--okbg:#e9f4ef}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:2}
+.wrap{max-width:880px;margin:0 auto;padding:26px 16px 70px}
+header{background:linear-gradient(150deg,#0B2A4A,#12405f 60%,#0E7C86);color:#fff;border-radius:18px;padding:32px 28px;margin-bottom:20px}
+header h1{font-size:1.75rem;margin-bottom:8px;line-height:1.4}
+header p{opacity:.92;font-size:.98rem;line-height:1.8}
+h2{color:var(--navy);font-size:1.3rem;margin:30px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--teal)}
+h3{color:var(--teal);font-size:1.06rem;margin:18px 0 7px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin-bottom:15px;
+box-shadow:0 4px 14px rgba(11,42,74,.05)}
+p{margin-bottom:11px}
+.en{font-family:Consolas,monospace;font-size:.88em;background:#eef1f5;padding:1px 7px;border-radius:5px;
+direction:ltr;display:inline-block;color:#0a3d52}
+.pitch{background:linear-gradient(150deg,#0B2A4A,#0E7C86);color:#fff;border-radius:16px;padding:26px 28px;
+font-size:1.12rem;line-height:2.1;margin-bottom:18px}
+.pitch b{color:#9fe4ea}
+.hl{background:var(--hl);border-inline-start:4px solid var(--hlb);padding:14px 18px;border-radius:10px;margin:14px 0}
+.ok{background:var(--okbg);border-inline-start:4px solid var(--ok);padding:14px 18px;border-radius:10px;margin:14px 0}
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:12px;overflow:hidden;margin:14px 0;font-size:.94rem}
+th{background:var(--navy);color:#fff;text-align:right;padding:11px 14px;font-size:.9rem}
+td{padding:10px 14px;border-bottom:1px solid var(--line);line-height:1.75}
+tr:nth-child(even) td{background:#f7fafc}
+td:first-child{font-weight:700;color:var(--navy);white-space:nowrap}
+.flow{background:#0f1c28;color:#d8e6f2;border-radius:12px;padding:18px;font-family:Consolas,monospace;
+direction:ltr;text-align:center;font-size:.92rem;line-height:2;margin:14px 0;overflow-x:auto}
+.flow b{color:#63d9e4}
+.say{background:#f4f8fb;border:1px dashed var(--teal);border-radius:10px;padding:13px 17px;margin:10px 0;font-style:italic}
+.say::before{content:"🗣 ";font-style:normal}
+ol,ul{padding-inline-start:24px}li{margin-bottom:8px}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}}
+@media (prefers-color-scheme:dark){:root{--bg:#0c141d;--card:#141f2b;--ink:#e8eef5;--line:#26374a;--hl:#241f10;--okbg:#0f2019}
+tr:nth-child(even) td{background:#0f1a25}.en{background:#1d2a38;color:#8fd7de}.say{background:#131f2b}}
+</style>
+<div class="wrap" dir="rtl">
+
+<header>
+  <h1>افهم مشروعك قبل ما تحكي عنه</h1>
+  <p>ورقة تُقرأ لا تُحفَظ. الهدف أن تفهم لماذا بُني المشروع بهذا الشكل، فتستطيع الإجابة على أي سؤال حتى لو جاء بصيغة لم تتوقعها.</p>
+</header>
+
+<div class="pitch">
+  بنيت <b>مختبراً أمنياً افتراضياً</b>، ونفّذت عليه <b>عشر مهارات دفاعية</b> من مكتبة فيها 817 مهارة،
+  والتنفيذ تم عبر <b>وكيل ذكاء اصطناعي</b> لأن المكتبة مصمّمة لذلك أصلاً.
+  وكل مهارة مربوطة بأطر معيارية، فصار بإمكاني <b>قياس</b> التغطية الدفاعية لا مجرد وصفها.
+</div>
+
+<h2>1. الفكرة الأساسية: ليش مختبر أصلاً؟</h2>
+<div class="card">
+  <p>الأمن السيبراني لا يُدرَس بالقراءة وحدها. لو أردت أن تعرف هل ضابط أمني معيّن يعمل أم لا، تحتاج بيئة
+  تُشغّله فيها وتُهاجمها وترى ماذا يحدث. لكن لا يمكنك التجريب على شبكة حقيقية.</p>
+
+  <p>الحل هو <b>مختبر افتراضي</b>: أجهزة وشبكات موجودة كبرمجيات فقط، معزولة تماماً، تستطيع أن تكسرها
+  وتعيد بناءها دون أن يتأثر شيء. وهذا بالضبط ما بنيته.</p>
+
+  <div class="hl">
+    <b>النقطة التي تميّز مشروعك:</b> معظم المشاريع تتوقف عند «ثبّتُ الأداة وهي تعمل».
+    مشروعك ذهب أبعد: ولّد هجوماً، والتقطه، وحلّله، وأثبت أن الكشف صحيح بالأدلة.
+  </div>
+</div>
+
+<h2>2. المفاهيم التي يجب أن تفهمها فعلاً</h2>
+
+<div class="card">
+  <h3>الـ <span class="en">Hypervisor</span> — المُشرِف على الأجهزة الافتراضية</h3>
+  <p>برنامج يقسّم جهازاً فيزيائياً واحداً إلى عدة أجهزة افتراضية <span class="en">Virtual Machines</span>،
+  لكل منها نظام تشغيل ومعالج وذاكرة وشبكة خاصة. <b>Proxmox VE</b> هو الـ hypervisor الذي استخدمته،
+  وهو نظام تشغيل كامل مبني على Debian Linux، لا برنامج يعمل فوق ويندوز.</p>
+
+  <h3>الـ <span class="en">Nested Virtualization</span> — الافتراضية المتداخلة</h3>
+  <p>هنا الجزء الذكي في مشروعك. Proxmox هو hypervisor، وأنت شغّلته <b>داخل</b> VMware وهو أيضاً hypervisor.
+  أي hypervisor داخل hypervisor.</p>
+  <p>هذا لا يعمل تلقائياً: يجب تمرير إمكانيات المعالج الافتراضية <span class="en">VT-x</span> من الطبقة الخارجية
+  إلى الداخلية، عبر الخيار <span class="en">vhv.enable = TRUE</span>. والدليل على نجاحه أن الملف
+  <span class="en">/dev/kvm</span> ظهر داخل Proxmox، ووجوده يعني أن العقدة قادرة على تشغيل أجهزة افتراضية بداخلها.</p>
+  <div class="say">«شغّلت Proxmox داخل VMware عبر nested virtualization، ودليل نجاحها ظهور /dev/kvm داخل العقدة.»</div>
+
+  <h3>الـ <span class="en">VLAN</span> — تقسيم الشبكة منطقياً</h3>
+  <p>تخيّل مبنى فيه طابق واحد كبير. الـ VLAN يشبه بناء جدران داخلية تفصل الأقسام، دون أن تحتاج مبنى جديداً.
+  تقنياً: تقسيم شبكة فيزيائية واحدة إلى عدة شبكات منطقية منفصلة، بمعيار <span class="en">802.1Q</span>
+  الذي يضع «وسماً» <span class="en">tag</span> على كل حزمة يحدّد المنطقة التي تنتمي إليها.</p>
+  <p>الفائدة الأمنية أن الجهاز في منطقة لا يستطيع الوصول لمنطقة أخرى، فإذا اختُرق جهاز واحد لا ينتشر
+  المهاجم في الشبكة كلها. وهذا ما يُسمى منع <span class="en">Lateral Movement</span>.</p>
+  <p>في مشروعك ثلاث مناطق: <span class="en">vmbr10</span> للخوادم، <span class="en">vmbr20</span> للأنظمة الهدف،
+  <span class="en">vmbr30</span> للمراقبة.</p>
+
+  <h3>الـ <span class="en">Firewall</span> وسياسة <span class="en">Default Deny</span></h3>
+  <p>الـ VLAN يفصل، والجدار الناري يقرّر مَن يعبر بين الفواصل. المبدأ الذي طبّقته هو
+  <b>المنع الافتراضي</b>: كل شيء ممنوع ما لم يُسمح به صراحة. هذا عكس المنطق الشائع «اسمح بالكل وامنع الضار»،
+  وهو أأمن لأن ما تنساه يبقى ممنوعاً لا مسموحاً.</p>
+
+  <h3>الـ <span class="en">IDS</span> مقابل الـ <span class="en">IPS</span></h3>
+  <p>الـ IDS يراقب المرور ويُنبّه عند رؤية شيء مشبوه، لكنه لا يمنع. الـ IPS يمنع فعلياً، ولذلك يجب أن يكون
+  في مسار المرور نفسه <span class="en">inline</span>. <b>Suricata</b> يعمل بالوضعين، وأنت شغّلته
+  كـ IDS لأن المنع أثناء ضبط القواعد قد يقطع مروراً سليماً.</p>
+
+  <h3>الـ <span class="en">SIEM</span> — تجميع السجلات وربطها</h3>
+  <p>كل أداة تكتب سجلاتها وحدها، فترى صورة جزئية. الـ SIEM يجمع السجلات من كل المصادر في مكان واحد
+  ويربط بينها، فتظهر الصورة الكاملة. مثال من مشروعك: تنبيه من Suricata وحده يعني «حدث شيء»،
+  لكن ربطه مع سجل الدخول وتوقيته يعطي: «مضيف واحد فعل كل هذا خلال 12 ثانية»، وهذا استنتاج مختلف تماماً.</p>
+
+  <h3>الـ <span class="en">DNS Tunneling</span> — التسريب عبر أسماء النطاقات</h3>
+  <p>غالبية الشبكات تحجب كل شيء إلا DNS، لأنه ضروري. المهاجم يستغل ذلك فيُخبّئ البيانات المسروقة
+  <b>داخل أسماء النطاقات نفسها</b>، فتخرج البيانات وكأنها استعلامات عادية.</p>
+  <p>كيف يُكشف؟ بالشذوذ. النطاق الطبيعي قصير ومفهوم مثل <span class="en">google.com</span>،
+  أما نطاق النفق فطويل جداً وعشوائي. في مشروعك رُصد نطاق فرعي بطول 72 حرفاً، وهذا وحده كافٍ للاشتباه.</p>
+
+  <h3>الـ <span class="en">Entropy</span> — مقياس العشوائية</h3>
+  <p>رقم يقيس مدى عشوائية النص. الكلمة المفهومة لها إنتروبي منخفض، والنص العشوائي إنتروبي مرتفع.
+  يُستخدم لكشف النطاقات المولّدة آلياً <span class="en">DGA</span>، لأن البرمجيات الخبيثة تولّد
+  أسماء نطاقات عشوائية لتصعّب حجبها.</p>
+
+  <h3>ملفات الـ <span class="en">Canary</span> — الخداع الدفاعي</h3>
+  <p>الاسم من «كناري المنجم»: كان العمال ينزلون بطائر كناري، فإذا مات عرفوا أن الغاز تسرّب.
+  الفكرة نفسها: تضع ملفات وهمية بأسماء مغرية مثل <span class="en">Passwords.xlsx</span> في أماكن حساسة.
+  لا أحد شرعي يفتحها، فأي لمسة لها تعني اختراقاً. وفي حالة الفدية، هي أول ما يُشفَّر، فتحصل على إنذار
+  قبل أن يكتمل التشفير.</p>
+
+  <h3>الـ <span class="en">SBOM</span> — قائمة مكوّنات البرمجية</h3>
+  <p>مثل جدول المكوّنات على علبة الطعام، لكن للبرمجيات: قائمة بكل مكتبة داخل تطبيقك وإصدارها.
+  فائدتها أنه عند ظهور ثغرة في مكتبة ما، تعرف فوراً هل أنت متأثر. تُقارَن القائمة مع قاعدة الثغرات
+  العالمية <span class="en">NVD</span>.</p>
+</div>
+
+<h2>3. الأطر المعيارية — وهي جوهر عنوان مشروعك</h2>
+<div class="card">
+  <p>هذه أهم نقطة، لأن عنوان مشروعك يَعِد بـ«القياس»، والقياس يتم عبر هذه الأطر.</p>
+
+  <h3><span class="en">MITRE ATT&CK</span></h3>
+  <p>موسوعة تُصنّف أساليب المهاجمين الحقيقية، ولكل أسلوب رقم. مثلاً <span class="en">T1046</span> يعني مسح المنافذ،
+  و<span class="en">T1048.003</span> يعني تسريب بيانات عبر بروتوكول غير مشفّر.</p>
+  <p>لماذا هي مفيدة؟ لأنها تحوّل الكلام العام إلى قياس. بدل أن تقول «مختبري آمن»، تقول:
+  «أرصد هذه التقنيات المحددة، وهذه أدلة الرصد». هذا فرق بين رأي ودليل.</p>
+
+  <h3><span class="en">NIST CSF 2.0</span></h3>
+  <p>إطار يقسّم الأمن إلى وظائف: الحوكمة، التحديد، الحماية، الكشف، الاستجابة، التعافي.
+  إذا كانت ATT&CK تصف <b>ما يفعله المهاجم</b>، فـ NIST CSF تصف <b>ما يجب أن تفعله أنت</b>.
+  كل مهارة في مشروعك مربوطة برموز من الإطارين معاً.</p>
+
+  <div class="ok">
+    <b>الجملة التي تلخّص عنوان مشروعك:</b> «التطبيق» أن أُشغّل الضوابط فعلياً،
+    و«القياس» أن أربط كل ضابط برمز في ATT&CK و NIST، فتصبح التغطية الدفاعية رقماً يمكن مراجعته لا انطباعاً.
+  </div>
+</div>
+
+<h2>4. رحلة المشروع كما حدثت</h2>
+<div class="card">
+  <ol>
+    <li><b>التحقق قبل التثبيت:</b> نزّلت ملف Proxmox وقارنت بصمته <span class="en">SHA-256</span> بالبصمة
+    المنشورة رسمياً. لماذا؟ لأن ملفاً معدَّلاً يعني نظاماً مخترَقاً من اللحظة الأولى. هذه أول ممارسة أمنية في المشروع.</li>
+
+    <li><b>بناء العقدة:</b> Proxmox VE 9.2.2 داخل VMware مع تفعيل nested virtualization، والنتيجة عقدة حقيقية
+    عليها <span class="en">/dev/kvm</span>.</li>
+
+    <li><b>تقسيم الشبكة:</b> ثلاث مناطق معزولة وجسر trunk موسوم، وتحققت من ذلك بقراءة
+    <span class="en">vlan_filtering = 1</span> من النواة مباشرة، لا من واجهة رسومية.</li>
+
+    <li><b>الجدار الناري:</b> سياسة منع افتراضي وسماح محدود للإدارة، ومنع منطقة الأهداف من بلوغ الإدارة والخوادم.
+    وقبل التفعيل شغّلت آلية تراجع تلقائي، لأن سياسة المنع قد تقطع الوصول عن المسؤول نفسه.</li>
+
+    <li><b>المراقبة:</b> Suricata مع خمس قواعد كتبتها بنفسي، كل قاعدة مربوطة بتقنية ATT&CK.</li>
+
+    <li><b>الهجوم المُحاكى:</b> ولّدت مروراً هجومياً داخل المختبر: مسح ICMP، واستعلامات DNS مشبوهة، ومسح منافذ.</li>
+
+    <li><b>الكشف:</b> سجّل Suricata ستة تنبيهات فعلية.</li>
+
+    <li><b>التحليل المستقل:</b> أخذت 36 حدث DNS من سجلات Suricata ومرّرتها لوكيل تحليل منفصل، فكشف النفقين.</li>
+
+    <li><b>الربط والتصليب:</b> جمعت 26 حدثاً من مصدرين وأعدت بناء الحادثة زمنياً، ثم فحصت الثغرات
+    فوجدت 61 حزمة تنتظر التحديث، ودقّقت إعداد TLS.</li>
+  </ol>
+</div>
+
+<h2>5. أقوى ما في مشروعك: سلسلة الكشف</h2>
+<div class="card">
+  <p>إذا لم تحفظ شيئاً غير هذا، فاحفظه. ابدأ عرضك به.</p>
+  <div class="flow">
+    <b>هجوم محاكى</b> &nbsp;→&nbsp; <b>التقاط بـ Suricata</b> &nbsp;→&nbsp; <b>تحليل بوكيل مستقل</b> &nbsp;→&nbsp; <b>كشف مؤكَّد</b>
+  </div>
+  <p>لماذا هي قوية؟ لأن الأداة التي كشفت ليست هي الأداة التي التقطت. Suricata سجّل المرور،
+  ثم أخذتُ سجلاته الخام وأعطيتها لوكيل تحليل لا يعرف شيئاً عن الهجوم، فاستنتج وجود نفقين
+  اعتماداً على طول النطاق الفرعي وحجم الاستعلامات فقط.</p>
+  <p>هذا يُثبت أن الكشف حقيقي وليس دورة مغلقة تُثبت نفسها بنفسها.</p>
+  <div class="say">«أقوى نتيجة عندي ليست أداة بعينها، بل أن المنظومة عملت كوحدة: هجوم حقيقي، التقاط حقيقي، وتحليل مستقل أعطى كشفاً صحيحاً.»</div>
+</div>
+
+<h2>6. المصطلحات في سطر واحد</h2>
+<table>
+<tr><th>المصطلح</th><th>المعنى المختصر</th></tr>
+<tr><td>Hypervisor</td><td>برنامج يشغّل عدة أنظمة افتراضية على جهاز واحد</td></tr>
+<tr><td>Nested Virtualization</td><td>تشغيل hypervisor داخل hypervisor آخر</td></tr>
+<tr><td>Bridge / vmbr</td><td>مبدّل شبكة افتراضي داخل الـ hypervisor</td></tr>
+<tr><td>VLAN / 802.1Q</td><td>تقسيم شبكة واحدة إلى شبكات منطقية معزولة بالوسم</td></tr>
+<tr><td>Trunk</td><td>وصلة تحمل عدة VLANs موسومة في آن واحد</td></tr>
+<tr><td>Lateral Movement</td><td>تنقّل المهاجم بين الأجهزة بعد اختراق أولها</td></tr>
+<tr><td>Default Deny</td><td>منع كل شيء إلا ما سُمح به صراحة</td></tr>
+<tr><td>IDS / IPS</td><td>يراقب ويُنبّه / يمنع فعلياً</td></tr>
+<tr><td>SIEM</td><td>تجميع السجلات من كل المصادر وربطها</td></tr>
+<tr><td>EVE JSON</td><td>صيغة مخرجات Suricata المنظّمة الجاهزة للـ SIEM</td></tr>
+<tr><td>DNS Tunneling</td><td>تهريب بيانات مخبّأة داخل استعلامات DNS</td></tr>
+<tr><td>DGA</td><td>توليد أسماء نطاقات عشوائية آلياً لتصعيب الحجب</td></tr>
+<tr><td>Entropy</td><td>مقياس عشوائية النص، يكشف الأسماء المولّدة آلياً</td></tr>
+<tr><td>Canary File</td><td>ملف خداعي، أي لمسة له تعني اختراقاً</td></tr>
+<tr><td>SBOM</td><td>قائمة مكوّنات البرمجية ومكتباتها</td></tr>
+<tr><td>CVE / NVD</td><td>رقم الثغرة / قاعدة الثغرات العالمية</td></tr>
+<tr><td>False Positive</td><td>إنذار كاذب: تنبيه على شيء سليم</td></tr>
+<tr><td>Zero Trust</td><td>لا ثقة ضمنية: كل طلب يُتحقق منه بالهوية</td></tr>
+<tr><td>TLS 1.3</td><td>أحدث إصدار لتشفير الاتصال</td></tr>
+<tr><td>Defense in Depth</td><td>طبقات دفاع متعددة، فشل إحداها تلتقطه الأخرى</td></tr>
+</table>
+
+<h2>7. ثلاث جمل احفظها كما هي</h2>
+<div class="card">
+  <div class="say">«المهارات لم تُقرأ بل نُفِّذت. المكتبة مصمّمة لذلك: كل مهارة فيها ملف agent.py قابل للتشغيل، ومجلد .claude-plugin يسجّلها كإضافة للوكيل.»</div>
+  <div class="say">«تحققت من الإعدادات من النواة مباشرة لا من الواجهة الرسومية: قرأت vlan_filtering وقواعد iptables بنفسي، لأن الواجهة قد تقول إن القاعدة مضافة دون أن تكون فعّالة.»</div>
+  <div class="say">«حين لم تتوفر أداة استبدلتها بما يحقق هدف المهارة، ووثّقت السبب. الهدف ضابط أمني عامل، لا اسم منتج في التقرير.»</div>
+</div>
+
+<div class="hl">
+  <b>آخر نصيحة:</b> لا تتكلم بسرعة ولا تحفظ حرفياً. لو نسيت رقماً قل «موجود في ملف الأدلة».
+  إنت بنيت شيئاً حقيقياً ويعمل الآن، وهذه أقوى ورقة بيدك.
+</div>
+
+</div>
