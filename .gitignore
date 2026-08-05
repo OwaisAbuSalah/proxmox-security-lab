@@ -25,3 +25,9 @@ _tmp*
 *.vmx
 _scratch/
 content.py.bak*
+
+# --- personal defense-prep material (kept local, not published) ---
+video-script.html
+understand-the-project.html
+سكربت-الفيديو.html
+فهم-المشروع.html
