@@ -1,20 +1,21 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>تطبيق وقياس ضوابط دفاعية على مختبر افتراضي وفق MITRE ATT&amp;CK و NIST CSF 2.0</title>
+<title>Implementing and Measuring Defensive Controls in a Virtual Lab, Mapped to MITRE ATT&amp;CK and NIST CSF 2.0</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
- --navy:#0B2A4A; --navy2:#123a56; --teal:#0E7C86; --teal2:#12a0ad;
- --ink:#16202b; --mut:#5f6b7a; --line:#dde5ee; --card:#fff; --bg:#e8edf3;
+ --navy:#0B2A4A; --teal:#0E7C86; --ink:#16202b; --mut:#5f6b7a; --line:#dde5ee;
+ --card:#fff; --bg:#e8edf3;
  --att:#8c2233; --attbg:#fdeef0; --nist:#0d5c47; --nistbg:#e7f4ef;
  --warnbg:#fff8ec; --warnb:#d99b1c; --okbg:#e9f5f0; --okb:#0d7a5f;
 }
 html,body{height:100%}
-body{font-family:"Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink);
+body{font-family:"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);
  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+.mono,code{font-family:Consolas,"Courier New",monospace}
 
 /* ── deck / slide frame ───────────────────────── */
 .deck{padding:26px 14px 90px}
@@ -22,19 +23,17 @@ body{font-family:"Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:v
  background:var(--card);border:1px solid var(--line);border-radius:16px;
  padding:52px 60px;overflow:hidden;box-shadow:0 14px 40px rgba(11,42,74,.10);
  display:flex;flex-direction:column;scroll-margin-top:14px}
-.slide::after{content:attr(data-n);position:absolute;bottom:20px;inset-inline-start:32px;
- font:600 12px/1 Consolas,monospace;color:#b6c2d0;direction:ltr}
-.slide::before{content:"";position:absolute;top:0;inset-inline-start:0;width:100%;height:4px;
- background:linear-gradient(90deg,var(--teal),var(--navy))}
+.slide::after{content:attr(data-n);position:absolute;bottom:20px;right:32px;
+ font:600 12px/1 Consolas,monospace;color:#b6c2d0}
+.slide::before{content:"";position:absolute;top:0;left:0;width:100%;height:4px;
+ background:linear-gradient(90deg,var(--navy),var(--teal))}
 
 h3{font-size:clamp(20px,2.35vw,31px);color:var(--navy);font-weight:700;margin-bottom:22px;
  padding-bottom:13px;border-bottom:2px solid var(--line);position:relative;flex:none}
-h3::after{content:"";position:absolute;bottom:-2px;inset-inline-start:0;width:82px;height:2px;background:var(--teal)}
-.lat{direction:ltr;unicode-bidi:isolate;font-family:"Segoe UI",Arial,sans-serif}
-code.lat,.mono{font-family:Consolas,"Courier New",monospace}
-.lead{font-size:clamp(14px,1.32vw,18px);line-height:1.95;color:var(--ink)}
-.lead.sm{font-size:clamp(13px,1.18vw,16px);line-height:1.85}
-.foot-note{margin-top:12px;font-size:clamp(11px,1vw,13.5px);line-height:1.7;color:var(--mut)}
+h3::after{content:"";position:absolute;bottom:-2px;left:0;width:82px;height:2px;background:var(--teal)}
+.lead{font-size:clamp(14px,1.3vw,18px);line-height:1.75;color:var(--ink)}
+.lead.sm{font-size:clamp(13px,1.16vw,16px);line-height:1.7}
+.foot-note{margin-top:12px;font-size:clamp(11px,1vw,13.5px);line-height:1.6;color:var(--mut)}
 
 /* ── title + closing ──────────────────────────── */
 .title{background:
@@ -43,15 +42,14 @@ code.lat,.mono{font-family:Consolas,"Courier New",monospace}
  border:none;color:#fff;justify-content:center}
 .title::before{display:none}
 .title::after{color:rgba(255,255,255,.30)}
-.t-inner{max-width:87%}
-.eyebrow{display:inline-block;font-size:clamp(10px,.92vw,12.5px);letter-spacing:.30em;
+.t-inner{max-width:88%}
+.eyebrow{display:inline-block;font-size:clamp(10px,.9vw,12px);letter-spacing:.30em;text-transform:uppercase;
  color:#8fd7de;border:1px solid rgba(143,215,222,.42);padding:6px 17px;border-radius:999px;margin-bottom:26px}
-.title h1{font-size:clamp(26px,3.5vw,50px);line-height:1.34;font-weight:700;color:#fff}
-.close-h{font-size:clamp(28px,4vw,56px)!important}
+.title h1{font-size:clamp(24px,3.1vw,45px);line-height:1.28;font-weight:700;color:#fff;letter-spacing:-.01em}
+.close-h{font-size:clamp(28px,3.9vw,54px)!important}
 .rule{width:104px;height:3px;background:linear-gradient(90deg,#12a0ad,transparent);margin:24px 0 20px;border-radius:2px}
-.title h2{font-size:clamp(13px,1.32vw,18px);font-weight:500;color:#a9c9dc;line-height:1.62}
-.t-sub{margin-top:20px;font-size:clamp(13px,1.36vw,19px);color:#d3e3f0;line-height:1.85}
-.t-foot{margin-top:36px;display:flex;align-items:center;gap:15px;font-size:clamp(11px,1.05vw,14px);color:#9fbdd2}
+.t-sub{font-size:clamp(13px,1.34vw,19px);color:#cfe1ef;line-height:1.75}
+.t-foot{margin-top:38px;display:flex;align-items:center;gap:15px;font-size:clamp(11px,1.05vw,14px);color:#9fbdd2}
 .t-foot i{width:5px;height:5px;border-radius:50%;background:#12a0ad;display:inline-block}
 
 /* ── divider ──────────────────────────────────── */
@@ -59,35 +57,34 @@ code.lat,.mono{font-family:Consolas,"Courier New",monospace}
 .divider::before{display:none}
 .divider::after{color:rgba(255,255,255,.28)}
 .d-inner span{font-size:clamp(52px,7.4vw,104px);font-weight:800;color:rgba(255,255,255,.13);line-height:.86;display:block}
-.d-inner h2{font-size:clamp(26px,3.5vw,48px);margin-top:-18px}
-.d-inner p{margin-top:14px;font-size:clamp(13px,1.36vw,19px);color:#a9d8de}
+.d-inner h2{font-size:clamp(26px,3.5vw,48px);margin-top:-18px;letter-spacing:-.01em}
+.d-inner p{margin-top:14px;font-size:clamp(13px,1.34vw,19px);color:#a9d8de}
 
 /* ── brief ────────────────────────────────────── */
 .brief{display:flex;flex-direction:column;gap:13px;flex:1;justify-content:center}
 .brief-row{display:flex;gap:20px;align-items:center;background:#f7fafc;border:1px solid var(--line);
  border-radius:13px;padding:17px 22px}
 .brief-row.hi{background:linear-gradient(100deg,#0B2A4A,#0E7C86);border:none;color:#fff}
-.bnum{flex:none;font:800 clamp(17px,1.75vw,25px)/1 Consolas,monospace;color:var(--teal);
- width:52px;text-align:center;direction:ltr}
+.bnum{flex:none;font:800 clamp(17px,1.75vw,25px)/1 Consolas,monospace;color:var(--teal);width:52px;text-align:center}
 .brief-row.hi .bnum{color:#8fd7de}
-.brief-row b{display:block;font-size:clamp(14px,1.42vw,20px);color:var(--navy);margin-bottom:4px}
+.brief-row b{display:block;font-size:clamp(14px,1.4vw,20px);color:var(--navy);margin-bottom:4px}
 .brief-row.hi b{color:#fff}
-.brief-row span{font-size:clamp(12px,1.12vw,15.5px);color:var(--mut);line-height:1.6}
+.brief-row span{font-size:clamp(12px,1.1vw,15.5px);color:var(--mut);line-height:1.5}
 .brief-row.hi span{color:#cfe6ee}
 
 /* ── stats ────────────────────────────────────── */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
 .stat{background:#f5f9fc;border:1px solid var(--line);border-radius:14px;padding:20px 12px;text-align:center}
-.stat b{display:block;font:800 clamp(28px,3.6vw,50px)/1 Consolas,monospace;color:var(--navy);direction:ltr}
-.stat span{display:block;margin-top:7px;font-size:clamp(11px,1.05vw,14px);color:var(--mut)}
+.stat b{display:block;font:800 clamp(28px,3.6vw,50px)/1 Consolas,monospace;color:var(--navy)}
+.stat span{display:block;margin-top:7px;font-size:clamp(11px,1.05vw,14px);color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
 .stat.acc{background:linear-gradient(150deg,#0B2A4A,#0E7C86);border:none}
 .stat.acc b,.stat.acc span{color:#fff}
 
 /* ── callouts ─────────────────────────────────── */
-.callout{margin-top:auto;background:#f4f9fb;border-inline-start:4px solid var(--teal);
- padding:14px 19px;border-radius:11px;font-size:clamp(12px,1.12vw,15.5px);line-height:1.78}
+.callout{margin-top:auto;background:#f4f9fb;border-left:4px solid var(--teal);
+ padding:14px 19px;border-radius:11px;font-size:clamp(12px,1.1vw,15.5px);line-height:1.65}
 .callout b{color:var(--navy)}
-.callout.warn{background:var(--warnbg);border-inline-start-color:var(--warnb)}
+.callout.warn{background:var(--warnbg);border-left-color:var(--warnb)}
 .callout.hero{background:linear-gradient(100deg,#0B2A4A,#0E7C86);border:none;color:#fff;padding:19px 24px}
 .callout.hero b{color:#8fd7de}
 
@@ -97,22 +94,22 @@ code.lat,.mono{font-family:Consolas,"Courier New",monospace}
 
 /* ── file tree ────────────────────────────────── */
 .filetree{background:#0f1c28;border-radius:14px;padding:20px 22px;align-self:start}
-.ft-h{font:700 clamp(12px,1.12vw,15px)/1 Consolas,monospace;color:#63d9e4;margin-bottom:14px}
+.ft-h{font:700 clamp(12px,1.1vw,15px)/1 Consolas,monospace;color:#63d9e4;margin-bottom:14px}
 .ft-row{display:flex;flex-direction:column;gap:3px;padding:10px 0;border-top:1px solid #1e3243}
 .ft-row code{font-size:clamp(11px,1.05vw,14px);color:#d8e6f2}
-.ft-row span{font-size:clamp(10.5px,.98vw,13px);color:#8fa6b8;line-height:1.55}
+.ft-row span{font-size:clamp(10.5px,.96vw,13px);color:#8fa6b8;line-height:1.5}
 .ft-row.hi code{color:#63d9e4;font-weight:700}
 
 /* ── architecture ─────────────────────────────── */
 .arch{display:flex;flex-direction:column;gap:9px;flex:1;justify-content:center}
-.layer{display:grid;grid-template-columns:130px 1fr 78px;align-items:center;gap:18px;
+.layer{display:grid;grid-template-columns:132px 1fr 82px;align-items:center;gap:18px;
  background:var(--c);color:#fff;border-radius:11px;padding:15px 22px}
-.l-name{font-weight:700;font-size:clamp(13px,1.28vw,18px)}
-.l-comp{font-size:clamp(11.5px,1.08vw,15px);opacity:.94}
+.l-name{font-weight:700;font-size:clamp(13px,1.28vw,18px);letter-spacing:.01em}
+.l-comp{font-size:clamp(11.5px,1.08vw,15px);opacity:.94;font-family:Consolas,monospace}
 .l-sk{text-align:center;font:700 clamp(11px,1.05vw,14px)/1 Consolas,monospace;
  background:rgba(255,255,255,.17);padding:5px 9px;border-radius:7px}
-.arch-note{margin-top:16px;font-size:clamp(11.5px,1.08vw,15px);color:var(--mut);line-height:1.75;
- border-inline-start:3px solid var(--teal);padding-inline-start:14px}
+.arch-note{margin-top:16px;font-size:clamp(11.5px,1.06vw,15px);color:var(--mut);line-height:1.6;
+ border-left:3px solid var(--teal);padding-left:14px}
 
 /* ── skills grid ──────────────────────────────── */
 .sk-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:13px;flex:1;align-content:center}
@@ -120,8 +117,8 @@ code.lat,.mono{font-family:Consolas,"Courier New",monospace}
  display:flex;flex-direction:column;gap:7px;transition:.15s}
 .sk-card:hover{border-color:var(--teal);transform:translateY(-2px)}
 .sk-n{font:800 clamp(15px,1.5vw,21px)/1 Consolas,monospace;color:var(--teal)}
-.sk-t{font-size:clamp(11.5px,1.08vw,14.5px);font-weight:600;color:var(--navy);line-height:1.45;flex:1}
-.sk-d{font-size:clamp(9.5px,.88vw,11.5px);color:var(--mut)}
+.sk-t{font-size:clamp(11px,1.02vw,13.5px);font-weight:600;color:var(--navy);line-height:1.35;flex:1}
+.sk-d{font-size:clamp(9.5px,.86vw,11px);color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
 
 /* ── skill pair panels ────────────────────────── */
 .sp-two{display:grid;grid-template-columns:1fr 1fr;gap:26px;flex:1}
@@ -130,100 +127,103 @@ code.lat,.mono{font-family:Consolas,"Courier New",monospace}
 .sp-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:12px}
 .sp-n{flex:none;width:38px;height:38px;border-radius:10px;background:var(--navy);color:#fff;
  display:flex;align-items:center;justify-content:center;font:800 14px/1 Consolas,monospace}
-.sp-head b{display:block;font-size:clamp(13px,1.28vw,17.5px);color:var(--navy);line-height:1.4}
-.sp-head i{display:block;font-size:clamp(10px,.95vw,12.5px);color:var(--teal);font-style:normal;margin-top:3px}
-.sp-what{font-size:clamp(11px,1.02vw,14px);line-height:1.75;color:var(--mut);margin-bottom:11px}
-.sp-steps{padding-inline-start:19px;margin-bottom:12px;flex:1}
-.sp-steps li{font-size:clamp(10.5px,.98vw,13.5px);line-height:1.62;margin-bottom:5px;color:var(--ink)}
+.sp-head b{display:block;font-size:clamp(13px,1.24vw,17px);color:var(--navy);line-height:1.3}
+.sp-head i{display:block;font-size:clamp(9.5px,.9vw,11.5px);color:var(--teal);font-style:normal;
+ margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
+.sp-what{font-size:clamp(11px,1vw,13.5px);line-height:1.62;color:var(--mut);margin-bottom:11px}
+.sp-steps{padding-left:19px;margin-bottom:12px;flex:1}
+.sp-steps li{font-size:clamp(10.5px,.96vw,13px);line-height:1.5;margin-bottom:5px;color:var(--ink)}
 .sp-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto}
 .tag{font:700 clamp(9.5px,.88vw,11.5px)/1 Consolas,monospace;padding:4px 8px;border-radius:6px}
 .tag.att{background:var(--attbg);color:var(--att)}
 .tag.nist{background:var(--nistbg);color:var(--nist)}
 
 /* ── facts table ──────────────────────────────── */
-.facts{width:100%;border-collapse:collapse;flex:1}
-.facts td{padding:9px 15px;border-bottom:1px solid var(--line);font-size:clamp(11px,1.05vw,14.5px);line-height:1.5}
-.facts td:first-child{font-weight:700;color:var(--navy);width:31%}
-.facts td:last-child{font-family:Consolas,monospace;color:var(--mut)}
+.facts{width:100%;border-collapse:collapse;flex:1;margin-bottom:6px}
+.facts td{padding:5px 14px;border-bottom:1px solid var(--line);font-size:clamp(10px,.94vw,12.5px);line-height:1.35}
+.facts td:first-child{font-weight:700;color:var(--navy);width:29%}
+.facts td:last-child{color:var(--mut)}
 .facts tr:nth-child(even) td{background:#f7fafc}
 
 /* ── detection chain ──────────────────────────── */
 .chain{display:grid;grid-template-columns:1fr 30px 1fr 30px 1fr 30px 1fr;align-items:stretch;
- gap:0;margin:6px 0 22px;flex:1;max-height:270px}
+ margin:6px 0 22px;flex:1;max-height:270px}
 .ch{background:#f6fafc;border:1.5px solid var(--line);border-radius:14px;padding:20px 16px;
  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:9px}
 .ch-i{width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;
  display:flex;align-items:center;justify-content:center;font:800 16px/1 Consolas,monospace}
-.ch b{font-size:clamp(12px,1.18vw,16.5px);color:var(--navy)}
-.ch span{font-size:clamp(10px,.95vw,13px);color:var(--mut);line-height:1.55}
+.ch b{font-size:clamp(12px,1.16vw,16px);color:var(--navy)}
+.ch span{font-size:clamp(10px,.94vw,12.5px);color:var(--mut);line-height:1.45}
 .ch.ok{background:linear-gradient(155deg,#0d7a5f,#0E7C86);border-color:transparent}
 .ch.ok b,.ch.ok span{color:#fff}
 .ch.ok .ch-i{background:rgba(255,255,255,.22)}
-/* deck is RTL: flow runs right-to-left, so the arrowhead points left */
+/* LTR flow: arrowhead points right */
 .ch-a{align-self:center;width:100%;height:2px;background:var(--teal);position:relative}
-.ch-a::after{content:"";position:absolute;left:-2px;top:-4px;width:0;height:0;
- border:5px solid transparent;border-right-color:var(--teal)}
+.ch-a::after{content:"";position:absolute;right:-2px;top:-4px;width:0;height:0;
+ border:5px solid transparent;border-left-color:var(--teal)}
 
 /* ── kpi / mini table ─────────────────────────── */
 .kpi{background:linear-gradient(150deg,#0B2A4A,#0E7C86);color:#fff;border-radius:14px;
  padding:22px;text-align:center;margin-bottom:16px}
-.kpi b{display:block;font:800 clamp(34px,4.2vw,60px)/1 Consolas,monospace;direction:ltr}
-.kpi span{display:block;margin-top:8px;font-size:clamp(11.5px,1.08vw,15px);color:#cfe6ee}
+.kpi b{display:block;font:800 clamp(34px,4.2vw,60px)/1 Consolas,monospace}
+.kpi span{display:block;margin-top:8px;font-size:clamp(11.5px,1.06vw,15px);color:#cfe6ee;
+ text-transform:uppercase;letter-spacing:.07em}
 .mini{width:100%;border-collapse:collapse}
-.mini td{padding:10px 13px;border-bottom:1px solid var(--line);font-size:clamp(11px,1.05vw,14.5px)}
-.mini td:first-child{font-family:Consolas,monospace;font-weight:700;color:var(--att)}
-.mini td.n{text-align:end;font-weight:800;color:var(--teal);font-family:Consolas,monospace}
+.mini td{padding:10px 13px;border-bottom:1px solid var(--line);font-size:clamp(11px,1.03vw,14px)}
+.mini td:first-child{font-weight:700;color:var(--att)}
+.mini td.n{text-align:right;font-weight:800;color:var(--teal);font-family:Consolas,monospace}
 
 /* ── zones / rules ────────────────────────────── */
-.zone-h{font-size:clamp(12px,1.15vw,16px);font-weight:700;color:var(--teal);margin-bottom:11px}
+.zone-h{font-size:clamp(12px,1.12vw,15.5px);font-weight:700;color:var(--teal);margin-bottom:11px;
+ text-transform:uppercase;letter-spacing:.07em}
 .zone{display:grid;grid-template-columns:82px 1fr auto;align-items:center;gap:11px;
  background:#f7fafc;border:1px solid var(--line);border-radius:10px;padding:11px 15px;margin-bottom:8px}
 .zone code{font-weight:700;color:var(--navy);font-size:clamp(11px,1.02vw,14px)}
 .zone span{font-size:clamp(11px,1.02vw,14px)}
-.zone i{font-style:normal;font-family:Consolas,monospace;font-size:clamp(10px,.92vw,12.5px);color:var(--mut)}
+.zone i{font-style:normal;font-family:Consolas,monospace;font-size:clamp(10px,.9vw,12px);color:var(--mut)}
 .rule-row{display:grid;grid-template-columns:78px 1fr;align-items:center;gap:13px;
  border-radius:10px;padding:11px 15px;margin-bottom:8px;font-size:clamp(11px,1.02vw,14px)}
-.rule-row b{font-family:Consolas,monospace;font-size:clamp(10.5px,.98vw,13px);text-align:center;
+.rule-row b{font-family:Consolas,monospace;font-size:clamp(10px,.94vw,12.5px);text-align:center;
  padding:4px 7px;border-radius:6px;color:#fff}
 .rule-row.deny{background:var(--attbg)} .rule-row.deny b{background:var(--att)}
 .rule-row.allow{background:var(--nistbg)} .rule-row.allow b{background:var(--nist)}
-.verify{margin-top:10px;font:700 clamp(11px,1.02vw,14px)/1.5 Consolas,monospace;color:var(--okb);
+.verify{margin-top:10px;font:700 clamp(11px,1.02vw,14px)/1.4 Consolas,monospace;color:var(--okb);
  background:var(--okbg);padding:9px 14px;border-radius:9px;text-align:center}
 
 /* ── verdict ──────────────────────────────────── */
 .verdict{background:#0f1c28;color:#d8e6f2;border-radius:14px;padding:24px;align-self:start}
-.v-h{font-size:clamp(11px,1.02vw,13.5px);letter-spacing:.16em;color:#63d9e4;margin-bottom:14px}
-.verdict p{font-size:clamp(13px,1.25vw,17.5px);line-height:1.85;margin-bottom:11px}
+.v-h{font-size:clamp(10.5px,.98vw,13px);letter-spacing:.18em;color:#63d9e4;margin-bottom:14px}
+.verdict p{font-size:clamp(13px,1.22vw,17px);line-height:1.65;margin-bottom:11px}
 .verdict b{color:#63d9e4}
-.v-c{font-size:clamp(11.5px,1.05vw,14.5px)!important;color:#8fa6b8;border-top:1px solid #1e3243;padding-top:12px}
+.v-c{font-size:clamp(11.5px,1.04vw,14px)!important;color:#8fa6b8;border-top:1px solid #1e3243;padding-top:12px}
 
 /* ── results grid ─────────────────────────────── */
 .res-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;flex:1;align-content:center}
 .res{background:#f7fafc;border:1px solid var(--line);border-radius:13px;padding:18px 21px;
- border-inline-start:4px solid var(--teal)}
-.r-k{font-size:clamp(13px,1.25vw,17px);font-weight:700;color:var(--navy);margin-bottom:8px}
-.res p{font-size:clamp(11px,1.02vw,14px);line-height:1.78;color:var(--mut)}
+ border-left:4px solid var(--teal)}
+.r-k{font-size:clamp(13px,1.22vw,16.5px);font-weight:700;color:var(--navy);margin-bottom:8px}
+.res p{font-size:clamp(11px,1vw,13.5px);line-height:1.65;color:var(--mut)}
 .res b{color:var(--navy)}
 
 /* ── coverage ─────────────────────────────────── */
 .cov{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;align-content:center}
 .cov-col{background:#f7fafc;border:1px solid var(--line);border-radius:14px;padding:22px}
-.cov-h{font-size:clamp(13px,1.25vw,17px);font-weight:700;color:var(--navy);margin-bottom:15px;
+.cov-h{font-size:clamp(13px,1.22vw,17px);font-weight:700;color:var(--navy);margin-bottom:15px;
  padding-bottom:10px;border-bottom:2px solid var(--line)}
 .cov-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:15px}
-.cov-f{font-size:clamp(10.5px,.98vw,13.5px);color:var(--mut);line-height:1.65;
+.cov-f{font-size:clamp(10.5px,.96vw,13px);color:var(--mut);line-height:1.55;
  border-top:1px solid var(--line);padding-top:12px}
 .cov-f b{color:var(--teal)}
 
 /* ── failures ─────────────────────────────────── */
 .fails{display:grid;grid-template-columns:1fr 1fr;gap:15px;flex:1;align-content:center}
-.fail{background:var(--warnbg);border-inline-start:4px solid var(--warnb);border-radius:12px;padding:17px 20px}
-.fail.ok{background:var(--okbg);border-inline-start-color:var(--okb)}
-.f-t{font-size:clamp(12.5px,1.18vw,16px);font-weight:700;color:var(--navy);margin-bottom:8px}
-.fail p{font-size:clamp(11px,1.02vw,14px);line-height:1.78;color:var(--mut)}
+.fail{background:var(--warnbg);border-left:4px solid var(--warnb);border-radius:12px;padding:17px 20px}
+.fail.ok{background:var(--okbg);border-left-color:var(--okb)}
+.f-t{font-size:clamp(12.5px,1.16vw,15.5px);font-weight:700;color:var(--navy);margin-bottom:8px}
+.fail p{font-size:clamp(11px,1vw,13.5px);line-height:1.65;color:var(--mut)}
 
-/* ── chrome: top bar + progress ───────────────── */
-.bar{position:fixed;top:0;inset-inline:0;z-index:60;background:rgba(232,237,243,.93);
+/* ── chrome ───────────────────────────────────── */
+.bar{position:fixed;top:0;left:0;right:0;z-index:60;background:rgba(232,237,243,.93);
  backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
  display:flex;align-items:center;justify-content:space-between;gap:14px;padding:9px 20px}
 .bar .ttl{font-size:13px;font-weight:700;color:var(--navy)}
@@ -231,9 +231,9 @@ code.lat,.mono{font-family:Consolas,"Courier New",monospace}
 .bar button{border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:8px;
  padding:6px 13px;font:600 12px/1 inherit;cursor:pointer;transition:.14s}
 .bar button:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
-.counter{font:700 12px/1 Consolas,monospace;color:var(--mut);min-width:52px;text-align:center;direction:ltr}
-.prog{position:fixed;top:0;inset-inline-start:0;height:3px;z-index:61;
- background:linear-gradient(90deg,var(--teal),var(--navy));width:0;transition:width .22s}
+.counter{font:700 12px/1 Consolas,monospace;color:var(--mut);min-width:52px;text-align:center}
+.prog{position:fixed;top:0;left:0;height:3px;z-index:61;
+ background:linear-gradient(90deg,var(--navy),var(--teal));width:0;transition:width .22s}
 .deck{padding-top:64px}
 
 /* ── presentation mode ────────────────────────── */
@@ -244,8 +244,8 @@ body.present .slide{display:none;margin:0;width:min(1600px,98vw);
  max-height:96vh;border-radius:10px;box-shadow:0 30px 90px rgba(0,0,0,.6)}
 body.present .slide.on{display:flex}
 body.present .prog{background:linear-gradient(90deg,#12a0ad,#63d9e4)}
-.exit-hint{display:none;position:fixed;bottom:14px;inset-inline-end:18px;z-index:62;
- color:#5f7183;font-size:11px;letter-spacing:.05em}
+.exit-hint{display:none;position:fixed;bottom:14px;right:18px;z-index:62;
+ color:#5f7183;font:11px/1 Consolas,monospace;letter-spacing:.05em}
 body.present .exit-hint{display:block}
 
 @media print{
@@ -270,280 +270,279 @@ body.present .exit-hint{display:block}
 <body>
 <div class="prog"></div>
 <div class="bar">
-  <span class="ttl">مختبر أمني على Proxmox VE</span>
+  <span class="ttl">Proxmox Security Lab</span>
   <div class="ctr">
-    <button id="prev">‹ السابق</button>
+    <button id="prev">&lsaquo; Prev</button>
     <span class="counter">1 / 23</span>
-    <button id="next">التالي ›</button>
-    <button id="pres">وضع العرض (F)</button>
+    <button id="next">Next &rsaquo;</button>
+    <button id="pres">Present (F)</button>
   </div>
 </div>
 <div class="deck">
 <section class="slide title">
   <div class="t-inner">
-    <div class="eyebrow">مشروع الأمن السيبراني</div>
-    <h1>تطبيق وقياس ضوابط دفاعية على مختبر افتراضي وفق MITRE ATT&amp;CK و NIST CSF 2.0</h1>
+    <div class="eyebrow">Cybersecurity Project</div>
+    <h1>Implementing and Measuring Defensive Controls in a Virtual Lab, Mapped to MITRE ATT&amp;CK and NIST CSF 2.0</h1>
     <div class="rule"></div>
-    <h2 class="lat">Implementing and Measuring Defensive Controls in a Virtual Lab, Mapped to MITRE ATT&amp;CK and NIST CSF 2.0</h2>
-    <p class="t-sub">تنفيذ عشر مهارات دفاعية عبر وكيل ذكاء اصطناعي على عقدة Proxmox VE</p>
+    <p class="t-sub">Ten defensive skills executed through an AI agent on a Proxmox VE node</p>
     <div class="t-foot">
-      <span>owaisabusalah@gmail.com</span><i></i><span class="lat">2026-08-02</span>
+      <span>owaisabusalah@gmail.com</span><i></i><span>2026-08-02</span>
     </div>
   </div></section>
 <section class="slide ">
-  <h3>الفكرة في سطر</h3>
+  <h3>The project in four points</h3>
   <div class="brief">
     <div class="brief-row">
       <div class="bnum">01</div>
-      <div><b>مختبر افتراضي حقيقي</b><span>عقدة Proxmox VE تعمل بمحاكاة متداخلة، معزولة تماماً</span></div>
+      <div><b>A real virtual lab</b><span>A Proxmox VE node running under nested virtualisation, fully isolated</span></div>
     </div>
     <div class="brief-row">
       <div class="bnum">02</div>
-      <div><b>عشر مهارات دفاعية نُفِّذت لا وُصِفت</b><span>من مكتبة فيها 817 مهارة عبر 29 مجالاً</span></div>
+      <div><b>Ten defensive skills executed, not described</b><span>Drawn from a library of 817 skills across 29 domains</span></div>
     </div>
     <div class="brief-row">
       <div class="bnum">03</div>
-      <div><b>التنفيذ عبر وكيل ذكاء اصطناعي</b><span>المكتبة مبنية لهذا: كل مهارة فيها وكيل قابل للتشغيل</span></div>
+      <div><b>Executed through an AI agent</b><span>The library is built for this: every skill ships a runnable agent</span></div>
     </div>
     <div class="brief-row hi">
       <div class="bnum">04</div>
-      <div><b>قياس لا وصف</b><span>كل ضابط مربوط برمز في MITRE ATT&amp;CK و NIST CSF 2.0</span></div>
+      <div><b>Measured, not just applied</b><span>Every control mapped to MITRE ATT&amp;CK and NIST CSF 2.0</span></div>
     </div>
   </div></section>
 <section class="slide ">
-  <h3>المصدر: مكتبة مفتوحة المصدر</h3>
+  <h3>The source library</h3>
   <div class="stats">
-    <div class="stat"><b>817</b><span>مهارة</span></div>
-    <div class="stat"><b>29</b><span>مجالاً</span></div>
-    <div class="stat"><b>6</b><span>أطر معيارية</span></div>
-    <div class="stat acc"><b>10</b><span>طُبِّقت هنا</span></div>
+    <div class="stat"><b>817</b><span>skills</span></div>
+    <div class="stat"><b>29</b><span>domains</span></div>
+    <div class="stat"><b>6</b><span>frameworks</span></div>
+    <div class="stat acc"><b>10</b><span>applied here</span></div>
   </div>
-  <p class="lead">مكتبة Anthropic Cybersecurity Skills قاعدة معرفة مفتوحة المصدر تحت رخصة Apache 2.0، وفيها 817 مهارة أمن سيبراني موزّعة على 29 مجالاً. كل مهارة مكتوبة بصيغة موحّدة تتبع معيار agentskills.io: ترويسة YAML مختصرة في أعلى الملف تتيح البحث السريع، يليها شرح بصيغة Markdown يوضّح خطوات التنفيذ. الميزة الأهم أن كل مهارة مربوطة بأطر معيارية معروفة مثل MITRE ATT&amp;CK و NIST CSF 2.0 و D3FEND، وهو ما يسمح بقياس التغطية الدفاعية بدل الاكتفاء بوصفها.</p>
-  <div class="callout warn"><b>النطاق دفاعي بالكامل.</b> كل ما نُفِّذ جرى داخل مختبر معزول نملكه ونملك صلاحية اختباره.</div></section>
+  <p class="lead">The Anthropic Cybersecurity Skills library is an open-source knowledge base released under Apache 2.0. It holds 817 security skills spread across 29 domains. Every skill uses the same layout, following the agentskills.io standard: a short YAML header for fast lookup, then a Markdown body describing how to carry the work out. What makes it useful is that each skill carries mappings to recognised frameworks such as MITRE ATT&amp;CK, NIST CSF 2.0 and D3FEND, so defensive coverage can be measured rather than just described.</p>
+  <div class="callout warn"><b>The scope is entirely defensive.</b> Everything was carried out inside an isolated lab we own and are authorised to test.</div></section>
 <section class="slide ">
-  <h3>كيف يُنفِّذ الوكيل مهارة؟</h3>
+  <h3>How the agent executes a skill</h3>
   <div class="two">
     <div>
-      <p class="lead sm">المهارات في هذا المشروع لم تُقرأ فحسب، بل نُفِّذت عبر وكيل ذكاء اصطناعي. والريبو مبني لهذا الغرض أصلاً: مجلد .claude-plugin يسجّله كإضافة تعمل داخل Claude Code، وكل مهارة تحتوي ملف scripts/agent.py وهو برنامج قابل للتشغيل ينفّذ خطواتها. يقرأ الوكيل ترويسة YAML ليحدّد المهارة المناسبة للمهمة، ثم يشغّل ملف الوكيل بالمعاملات الملائمة ويقرأ المخرجات ويبني عليها قراره التالي.</p>
-      <div class="callout"><b>الوكيل نفّذ، والقرار بقي قراراً هندسياً:</b> اختيار المهارات، وتصميم المناطق، والبديل عند غياب الأداة، وقراءة النتيجة.</div>
+      <p class="lead sm">The skills in this project were not merely read; they were executed through an AI agent. The repository is built for that: a .claude-plugin directory registers it as an extension inside Claude Code, and each skill ships a scripts/agent.py, a runnable program that performs its steps. The agent reads the YAML header to pick the skill that fits the task, runs the agent file with suitable arguments, then reads the output and decides what to do next.</p>
+      <div class="callout"><b>The agent executed; the engineering judgement stayed human:</b> which skills to pick, how to design the zones, what to substitute when a tool was unavailable, and how to read the result.</div>
     </div>
     <div class="filetree">
-      <div class="ft-h lat">skill/</div>
-      <div class="ft-row"><code class="lat">SKILL.md</code><span>ترويسة YAML للاكتشاف + خطوات Markdown</span></div>
-      <div class="ft-row hi"><code class="lat">scripts/agent.py</code><span>الوكيل القابل للتشغيل الذي ينفّذ المهارة</span></div>
-      <div class="ft-row"><code class="lat">references/</code><span>مراجع تقنية</span></div>
-      <div class="ft-row"><code class="lat">.claude-plugin/</code><span>يسجّل المكتبة كإضافة للوكيل</span></div>
+      <div class="ft-h">skill/</div>
+      <div class="ft-row"><code>SKILL.md</code><span>YAML frontmatter for discovery + Markdown workflow</span></div>
+      <div class="ft-row hi"><code>scripts/agent.py</code><span>The runnable agent that performs the skill</span></div>
+      <div class="ft-row"><code>references/</code><span>Technical references</span></div>
+      <div class="ft-row"><code>.claude-plugin/</code><span>Registers the library as an agent extension</span></div>
     </div>
   </div></section>
-<section class="slide divider"><div class="d-inner"><span class="lat">01</span><h2>معمارية المختبر</h2><p>طبقات دفاع متتالية على عقدة واحدة</p></div></section>
+<section class="slide divider"><div class="d-inner"><span>01</span><h2>Lab Architecture</h2><p>Successive layers of defence on a single node</p></div></section>
 <section class="slide ">
-  <h3>خمس طبقات، عشر مهارات</h3>
-  <div class="arch"><div class="layer" style="--c:#0E7C86"><div class="l-name">الوصول</div><div class="l-comp lat">Tailscale ZTNA + TLS 1.3</div><div class="l-sk lat">4 · 5</div></div><div class="layer" style="--c:#15616d"><div class="l-name">الحافة</div><div class="l-comp lat">Firewall (default deny) + VLANs</div><div class="l-sk lat">1 · 2</div></div><div class="layer" style="--c:#1d4e6b"><div class="l-name">المراقبة</div><div class="l-comp lat">Suricata IDS → SIEM correlation</div><div class="l-sk lat">3 · 6 · 7</div></div><div class="layer" style="--c:#123a56"><div class="l-name">التصليب</div><div class="l-comp lat">Vulnerability scanning + SBOM</div><div class="l-sk lat">8 · 10</div></div><div class="layer" style="--c:#0b2a4a"><div class="l-name">الخداع</div><div class="l-comp lat">Ransomware canary files</div><div class="l-sk lat">9</div></div></div>
-  <div class="arch-note">لو فشلت طبقة، التي تليها تلتقط. وهذا ما حدث فعلاً: قاعدتان في Suricata لم تُطلقا، ومع ذلك كُشف النفق عبر تحليل DNS.</div></section>
-<section class="slide divider"><div class="d-inner"><span class="lat">02</span><h2>المهارات العشر</h2><p>مختارة لتشكّل منظومة مترابطة لا قائمة</p></div></section>
-<section class="slide "><h3>نظرة شاملة</h3><div class="sk-grid"><div class="sk-card"><div class="sk-n lat">01</div><div class="sk-t">تقسيم الشبكة باستخدام VLANs</div><div class="sk-d lat">Network Security</div></div><div class="sk-card"><div class="sk-n lat">02</div><div class="sk-t">إعداد قواعد جدار pfSense الناري</div><div class="sk-d lat">Network Security</div></div><div class="sk-card"><div class="sk-n lat">03</div><div class="sk-t">إعداد Suricata لمراقبة الشبكة (IDS/IPS)</div><div class="sk-d lat">Network Security</div></div><div class="sk-card"><div class="sk-n lat">04</div><div class="sk-t">نشر Tailscale كـ VPN بمبدأ Zero Trust</div><div class="sk-d lat">Zero Trust Architecture</div></div><div class="sk-card"><div class="sk-n lat">05</div><div class="sk-t">إعداد TLS 1.3 للاتصالات الآمنة</div><div class="sk-d lat">Cryptography</div></div><div class="sk-card"><div class="sk-n lat">06</div><div class="sk-t">تحليل السجلات الأمنية بـ Splunk (SIEM)</div><div class="sk-d lat">Incident Response / SIEM</div></div><div class="sk-card"><div class="sk-n lat">07</div><div class="sk-t">تحليل سجلات DNS لكشف تسريب البيانات</div><div class="sk-d lat">SOC Operations</div></div><div class="sk-card"><div class="sk-n lat">08</div><div class="sk-t">بناء سير عمل لفحص الثغرات</div><div class="sk-d lat">Vulnerability Management</div></div><div class="sk-card"><div class="sk-n lat">09</div><div class="sk-t">نشر ملفات الإنذار المبكر (Canary) ضد الفدية</div><div class="sk-d lat">Ransomware Defense / Deception</div></div><div class="sk-card"><div class="sk-n lat">10</div><div class="sk-t">تحليل SBOM لكشف ثغرات سلسلة التوريد</div><div class="sk-d lat">Supply Chain Security</div></div></div></section>
-<section class="slide "><h3>المهارات <span class="lat">1–2</span></h3>
+  <h3>Five layers, ten skills</h3>
+  <div class="arch"><div class="layer" style="--c:#0E7C86"><div class="l-name">Access</div><div class="l-comp">Tailscale ZTNA + TLS 1.3</div><div class="l-sk">4 · 5</div></div><div class="layer" style="--c:#15616d"><div class="l-name">Edge</div><div class="l-comp">Firewall (default deny) + VLANs</div><div class="l-sk">1 · 2</div></div><div class="layer" style="--c:#1d4e6b"><div class="l-name">Monitoring</div><div class="l-comp">Suricata IDS → SIEM correlation</div><div class="l-sk">3 · 6 · 7</div></div><div class="layer" style="--c:#123a56"><div class="l-name">Hardening</div><div class="l-comp">Vulnerability scanning + SBOM</div><div class="l-sk">8 · 10</div></div><div class="layer" style="--c:#0b2a4a"><div class="l-name">Deception</div><div class="l-comp">Ransomware canary files</div><div class="l-sk">9</div></div></div>
+  <div class="arch-note">If one layer fails, the next one catches it. That is exactly what happened: two Suricata rules never fired, yet the tunnel was still detected through DNS analysis.</div></section>
+<section class="slide divider"><div class="d-inner"><span>02</span><h2>The Ten Skills</h2><p>Chosen to form a connected system, not a list</p></div></section>
+<section class="slide "><h3>Overview</h3><div class="sk-grid"><div class="sk-card"><div class="sk-n">01</div><div class="sk-t">Configuring Network Segmentation with VLANs</div><div class="sk-d">Network Security</div></div><div class="sk-card"><div class="sk-n">02</div><div class="sk-t">Configuring pfSense Firewall Rules</div><div class="sk-d">Network Security</div></div><div class="sk-card"><div class="sk-n">03</div><div class="sk-t">Configuring Suricata for Network Monitoring (IDS/IPS)</div><div class="sk-d">Network Security</div></div><div class="sk-card"><div class="sk-n">04</div><div class="sk-t">Deploying Tailscale for Zero-Trust VPN</div><div class="sk-d">Zero Trust Architecture</div></div><div class="sk-card"><div class="sk-n">05</div><div class="sk-t">Configuring TLS 1.3 for Secure Communications</div><div class="sk-d">Cryptography</div></div><div class="sk-card"><div class="sk-n">06</div><div class="sk-t">Analyzing Security Logs with Splunk (SIEM)</div><div class="sk-d">Incident Response / SIEM</div></div><div class="sk-card"><div class="sk-n">07</div><div class="sk-t">Analyzing DNS Logs for Exfiltration</div><div class="sk-d">SOC Operations</div></div><div class="sk-card"><div class="sk-n">08</div><div class="sk-t">Building a Vulnerability Scanning Workflow</div><div class="sk-d">Vulnerability Management</div></div><div class="sk-card"><div class="sk-n">09</div><div class="sk-t">Deploying Ransomware Canary Files</div><div class="sk-d">Ransomware Defense / Deception</div></div><div class="sk-card"><div class="sk-n">10</div><div class="sk-t">Analyzing SBOM for Supply-Chain Vulnerabilities</div><div class="sk-d">Supply Chain Security</div></div></div></section>
+<section class="slide "><h3>Skills 1&ndash;2</h3>
       <div class="sp-two">
     <div class="sp">
-      <div class="sp-head"><span class="sp-n lat">01</span>
-        <div><b>تقسيم الشبكة باستخدام VLANs</b><i class="lat">Configuring Network Segmentation with VLANs</i></div></div>
-      <p class="sp-what">تصميم وتطبيق تقسيم الشبكة إلى مناطق معزولة (VLANs) عبر معيار 802.1Q لعزل النطاقات وتقليل مساحة الهجوم ومنع الحركة الجانبية (lateral movement).</p>
-      <ol class="sp-steps"><li>تصميم معمارية VLAN حسب المناطق الأمنية (خوادم، إدارة، IoT، ضيوف، DMZ)</li><li>تعريف الـ VLANs وربط كل منفذ (port) بالـ VLAN المناسب</li><li>إعداد روابط trunk 802.1Q بين المبدلات</li><li>تطبيق ACLs للتحكم في التوجيه بين الـ VLANs</li></ol>
-      <div class="sp-tags"><span class="tag att lat">T1046</span><span class="tag att lat">T1040</span><span class="tag att lat">T1557.002</span><span class="tag att lat">T1021</span><span class="tag nist lat">PR.IR-01</span><span class="tag nist lat">DE.CM-01</span><span class="tag nist lat">ID.AM-03</span></div>
+      <div class="sp-head"><span class="sp-n">01</span>
+        <div><b>Configuring Network Segmentation with VLANs</b><i>Network Security</i></div></div>
+      <p class="sp-what">Design and implement VLAN-based segmentation (802.1Q) to isolate zones, shrink the attack surface, and block lateral movement between segments.</p>
+      <ol class="sp-steps"><li>Design a VLAN architecture by security zone (servers, management, IoT, guest, DMZ)</li><li>Define VLANs and map each switch port to the correct VLAN</li><li>Configure 802.1Q trunk links between switches</li><li>Apply ACLs to control inter-VLAN routing</li></ol>
+      <div class="sp-tags"><span class="tag att">T1046</span><span class="tag att">T1040</span><span class="tag att">T1557.002</span><span class="tag att">T1021</span><span class="tag nist">PR.IR-01</span><span class="tag nist">DE.CM-01</span><span class="tag nist">ID.AM-03</span></div>
     </div>
     <div class="sp">
-      <div class="sp-head"><span class="sp-n lat">02</span>
-        <div><b>إعداد قواعد جدار pfSense الناري</b><i class="lat">Configuring pfSense Firewall Rules</i></div></div>
-      <p class="sp-what">إعداد جدار pfSense الناري: قواعد المرور، سياسات NAT، أنفاق VPN، وتشكيل المرور لفرض العزل بين النطاقات.</p>
-      <ol class="sp-steps"><li>تعريف الواجهات (WAN/LAN/VLANs) في WebConfigurator</li><li>إنشاء aliases للمضيفات والمنافذ لتبسيط القواعد</li><li>كتابة قواعد default-deny ثم السماح المحدد، مع تسجيل الحزم المرفوضة</li><li>إعداد NAT / port forwarding للخدمات المكشوفة بحذر</li></ol>
-      <div class="sp-tags"><span class="tag att lat">T1071.001</span><span class="tag att lat">T1095</span><span class="tag att lat">T1572</span><span class="tag att lat">T1571</span><span class="tag nist lat">PR.IR-01</span><span class="tag nist lat">DE.CM-01</span><span class="tag nist lat">ID.AM-03</span></div>
+      <div class="sp-head"><span class="sp-n">02</span>
+        <div><b>Configuring pfSense Firewall Rules</b><i>Network Security</i></div></div>
+      <p class="sp-what">Configure pfSense firewall rules, NAT policies, VPN tunnels, and traffic shaping to enforce segmentation and control traffic flow between zones.</p>
+      <ol class="sp-steps"><li>Define interfaces (WAN/LAN/VLANs) in the WebConfigurator</li><li>Create host/port aliases to simplify rules</li><li>Write default-deny rules then explicit allows, logging blocked packets</li><li>Configure NAT / port-forwarding for exposed services cautiously</li></ol>
+      <div class="sp-tags"><span class="tag att">T1071.001</span><span class="tag att">T1095</span><span class="tag att">T1572</span><span class="tag att">T1571</span><span class="tag nist">PR.IR-01</span><span class="tag nist">DE.CM-01</span><span class="tag nist">ID.AM-03</span></div>
     </div></div></section>
-<section class="slide "><h3>المهارات <span class="lat">3–4</span></h3>
+<section class="slide "><h3>Skills 3&ndash;4</h3>
       <div class="sp-two">
     <div class="sp">
-      <div class="sp-head"><span class="sp-n lat">03</span>
-        <div><b>إعداد Suricata لمراقبة الشبكة (IDS/IPS)</b><i class="lat">Configuring Suricata for Network Monitoring (IDS/IPS)</i></div></div>
-      <p class="sp-what">نشر وإعداد Suricata كنظام كشف/منع اختراق مع قواعد Emerging Threats وسجلات EVE JSON للتفتيش اللحظي لحركة الشبكة.</p>
-      <ol class="sp-steps"><li>تثبيت Suricata 7.0+ وأداة suricata-update</li><li>ربط واجهة الالتقاط بمنفذ SPAN أو جسر inline</li><li>تفعيل AF_PACKET وتحميل قواعد ET Open</li><li>تفعيل مخرجات EVE JSON (أحداث، HTTP، TLS، DNS، flow)</li></ol>
-      <div class="sp-tags"><span class="tag att lat">T1046</span><span class="tag att lat">T1071.001</span><span class="tag att lat">T1572</span><span class="tag att lat">T1048</span><span class="tag nist lat">PR.IR-01</span><span class="tag nist lat">DE.CM-01</span><span class="tag nist lat">ID.AM-03</span></div>
+      <div class="sp-head"><span class="sp-n">03</span>
+        <div><b>Configuring Suricata for Network Monitoring (IDS/IPS)</b><i>Network Security</i></div></div>
+      <p class="sp-what">Deploy Suricata IDS/IPS with Emerging Threats rulesets and EVE JSON logging for real-time, protocol-aware traffic inspection and SIEM integration.</p>
+      <ol class="sp-steps"><li>Install Suricata 7.0+ and the suricata-update tool</li><li>Attach the capture interface to a SPAN port or inline bridge</li><li>Enable AF_PACKET and load the ET Open ruleset</li><li>Enable EVE JSON outputs (alerts, HTTP, TLS, DNS, flow)</li></ol>
+      <div class="sp-tags"><span class="tag att">T1046</span><span class="tag att">T1071.001</span><span class="tag att">T1572</span><span class="tag att">T1048</span><span class="tag nist">PR.IR-01</span><span class="tag nist">DE.CM-01</span><span class="tag nist">ID.AM-03</span></div>
     </div>
     <div class="sp">
-      <div class="sp-head"><span class="sp-n lat">04</span>
-        <div><b>نشر Tailscale كـ VPN بمبدأ Zero Trust</b><i class="lat">Deploying Tailscale for Zero-Trust VPN</i></div></div>
-      <p class="sp-what">نشر Tailscale (مبني على WireGuard) كشبكة VPN متشابكة بثقة صفرية، مع تحكم وصول مبني على الهوية (ACLs) وعقد خروج (exit nodes).</p>
-      <ol class="sp-steps"><li>ربط Tailscale بمزوّد هوية (Google/GitHub/OIDC)</li><li>تثبيت العميل على الأجهزة وتكوين الـ tailnet</li><li>كتابة سياسات ACL دقيقة (من يصل إلى ماذا)</li><li>تفعيل subnet router للوصول إلى شبكة المختبر دون فتح منافذ</li></ol>
-      <div class="sp-tags"><span class="tag att lat">T1133</span><span class="tag att lat">T1078</span><span class="tag att lat">T1021</span><span class="tag att lat">T1572</span><span class="tag nist lat">PR.AA-01</span><span class="tag nist lat">PR.AA-05</span><span class="tag nist lat">PR.IR-01</span></div>
+      <div class="sp-head"><span class="sp-n">04</span>
+        <div><b>Deploying Tailscale for Zero-Trust VPN</b><i>Zero Trust Architecture</i></div></div>
+      <p class="sp-what">Deploy Tailscale (WireGuard-based) as a zero-trust mesh VPN with identity-aware ACLs and exit nodes for secure peer-to-peer connectivity.</p>
+      <ol class="sp-steps"><li>Connect Tailscale to an identity provider (Google/GitHub/OIDC)</li><li>Install the client on devices and form the tailnet</li><li>Write granular ACL policies (who reaches what)</li><li>Enable a subnet router to reach the lab without opening ports</li></ol>
+      <div class="sp-tags"><span class="tag att">T1133</span><span class="tag att">T1078</span><span class="tag att">T1021</span><span class="tag att">T1572</span><span class="tag nist">PR.AA-01</span><span class="tag nist">PR.AA-05</span><span class="tag nist">PR.IR-01</span></div>
     </div></div></section>
-<section class="slide "><h3>المهارات <span class="lat">5–6</span></h3>
+<section class="slide "><h3>Skills 5&ndash;6</h3>
       <div class="sp-two">
     <div class="sp">
-      <div class="sp-head"><span class="sp-n lat">05</span>
-        <div><b>إعداد TLS 1.3 للاتصالات الآمنة</b><i class="lat">Configuring TLS 1.3 for Secure Communications</i></div></div>
-      <p class="sp-what">إعداد TLS 1.3 (RFC 8446) على الخوادم مع سرية تقدمية تامة (PFS)، وتعطيل الإصدارات والخوارزميات الضعيفة، والتحقق من الإعداد.</p>
-      <ol class="sp-steps"><li>تفعيل TLS 1.3 فقط على nginx/Apache وتعطيل 1.0/1.1</li><li>اختيار مجموعات تشفير TLS 1.3 الآمنة</li><li>إدارة الشهادات (ذاتية التوقيع للمختبر أو Let&#x27;s Encrypt)</li><li>التحقق بـ openssl و testssl.sh</li></ol>
-      <div class="sp-tags"><span class="tag att lat">T1557</span><span class="tag att lat">T1040</span><span class="tag att lat">T1573.002</span><span class="tag att lat">T1539</span><span class="tag nist lat">PR.DS-01</span><span class="tag nist lat">PR.DS-02</span><span class="tag nist lat">PR.DS-10</span></div>
+      <div class="sp-head"><span class="sp-n">05</span>
+        <div><b>Configuring TLS 1.3 for Secure Communications</b><i>Cryptography</i></div></div>
+      <p class="sp-what">Configure TLS 1.3 (RFC 8446) on servers with perfect forward secrecy, disable legacy versions/weak ciphers, and validate the configuration.</p>
+      <ol class="sp-steps"><li>Enable TLS 1.3 only on nginx/Apache, disable 1.0/1.1</li><li>Select secure TLS 1.3 cipher suites</li><li>Manage certificates (self-signed for lab or Let&#x27;s Encrypt)</li><li>Validate with openssl and testssl.sh</li></ol>
+      <div class="sp-tags"><span class="tag att">T1557</span><span class="tag att">T1040</span><span class="tag att">T1573.002</span><span class="tag att">T1539</span><span class="tag nist">PR.DS-01</span><span class="tag nist">PR.DS-02</span><span class="tag nist">PR.DS-10</span></div>
     </div>
     <div class="sp">
-      <div class="sp-head"><span class="sp-n lat">06</span>
-        <div><b>تحليل السجلات الأمنية بـ Splunk (SIEM)</b><i class="lat">Analyzing Security Logs with Splunk (SIEM)</i></div></div>
-      <p class="sp-what">استخدام Splunk ولغة SPL للتحقيق في الحوادث عبر ربط السجلات، وإعادة بناء الخط الزمني، وكشف الشذوذ (Windows/firewall/proxy/auth logs).</p>
-      <ol class="sp-steps"><li>ابتلاع مصادر السجلات (Suricata EVE، pfSense، Windows Events)</li><li>كتابة استعلامات SPL للربط والإحصاء (stats، transaction)</li><li>بناء خط زمني للحادثة عبر المصادر</li><li>ربط الأنماط بـ MITRE ATT&amp;CK (brute force، pass-the-hash، RDP)</li></ol>
-      <div class="sp-tags"><span class="tag att lat">T1110</span><span class="tag att lat">T1550.002</span><span class="tag att lat">T1021.001</span><span class="tag att lat">T1059.001</span><span class="tag nist lat">RS.MA-01</span><span class="tag nist lat">RS.MA-02</span><span class="tag nist lat">RS.AN-03</span></div>
+      <div class="sp-head"><span class="sp-n">06</span>
+        <div><b>Analyzing Security Logs with Splunk (SIEM)</b><i>Incident Response / SIEM</i></div></div>
+      <p class="sp-what">Use Splunk and SPL to investigate incidents via log correlation, timeline reconstruction, and anomaly detection across Windows, firewall, proxy, and auth logs.</p>
+      <ol class="sp-steps"><li>Ingest log sources (Suricata EVE, pfSense, Windows Events)</li><li>Write SPL queries for correlation and stats (stats, transaction)</li><li>Build an incident timeline across sources</li><li>Map patterns to MITRE ATT&amp;CK (brute force, pass-the-hash, RDP)</li></ol>
+      <div class="sp-tags"><span class="tag att">T1110</span><span class="tag att">T1550.002</span><span class="tag att">T1021.001</span><span class="tag att">T1059.001</span><span class="tag nist">RS.MA-01</span><span class="tag nist">RS.MA-02</span><span class="tag nist">RS.AN-03</span></div>
     </div></div></section>
-<section class="slide "><h3>المهارات <span class="lat">7–8</span></h3>
+<section class="slide "><h3>Skills 7&ndash;8</h3>
       <div class="sp-two">
     <div class="sp">
-      <div class="sp-head"><span class="sp-n lat">07</span>
-        <div><b>تحليل سجلات DNS لكشف تسريب البيانات</b><i class="lat">Analyzing DNS Logs for Exfiltration</i></div></div>
-      <p class="sp-what">تحليل استعلامات DNS لكشف تسريب البيانات عبر الأنفاق (DNS tunneling) ونطاقات DGA وقنوات C2 المخفية، باستخدام تحليل الإنتروبي وشذوذ حجم الاستعلامات.</p>
-      <ol class="sp-steps"><li>تجميع سجلات DNS (Suricata dns event أو خادم DNS)</li><li>حساب إنتروبي أسماء النطاقات لكشف DGA</li><li>رصد طول النطاقات الفرعية المفرط (دليل tunneling)</li><li>رصد شذوذ حجم/توقيت الاستعلامات (beaconing)</li></ol>
-      <div class="sp-tags"><span class="tag att lat">T1048.003</span><span class="tag att lat">T1071.004</span><span class="tag att lat">T1567</span><span class="tag nist lat">DE.CM-01</span><span class="tag nist lat">DE.AE-02</span><span class="tag nist lat">RS.MA-01</span></div>
+      <div class="sp-head"><span class="sp-n">07</span>
+        <div><b>Analyzing DNS Logs for Exfiltration</b><i>SOC Operations</i></div></div>
+      <p class="sp-what">Analyze DNS query logs to detect exfiltration via DNS tunneling, DGA domains, and covert C2 using entropy analysis, query-volume anomalies, and subdomain-length detection.</p>
+      <ol class="sp-steps"><li>Collect DNS logs (Suricata dns events or the DNS server)</li><li>Compute domain-name entropy to flag DGA</li><li>Detect excessive subdomain length (tunneling signal)</li><li>Detect query volume/timing anomalies (beaconing)</li></ol>
+      <div class="sp-tags"><span class="tag att">T1048.003</span><span class="tag att">T1071.004</span><span class="tag att">T1567</span><span class="tag nist">DE.CM-01</span><span class="tag nist">DE.AE-02</span><span class="tag nist">RS.MA-01</span></div>
     </div>
     <div class="sp">
-      <div class="sp-head"><span class="sp-n lat">08</span>
-        <div><b>بناء سير عمل لفحص الثغرات</b><i class="lat">Building a Vulnerability Scanning Workflow</i></div></div>
-      <p class="sp-what">بناء سير عمل منظّم لفحص الثغرات بأدوات مثل OpenVAS/Nessus/Qualys لاكتشاف وترتيب وتتبع معالجة الثغرات عبر البنية التحتية.</p>
-      <ol class="sp-steps"><li>جرد الأصول وتحديد نطاق الفحص</li><li>جدولة فحوصات دورية (authenticated/unauthenticated)</li><li>ترتيب النتائج حسب CVSS + سياق الأصل + تهديدات فعلية</li><li>دمج النتائج مع تنبيهات الـ SIEM</li></ol>
-      <div class="sp-tags"><span class="tag att lat">T1595.002</span><span class="tag att lat">T1190</span><span class="tag att lat">T1046</span><span class="tag nist lat">DE.CM-01</span><span class="tag nist lat">DE.AE-02</span><span class="tag nist lat">RS.MA-01</span></div>
+      <div class="sp-head"><span class="sp-n">08</span>
+        <div><b>Building a Vulnerability Scanning Workflow</b><i>Vulnerability Management</i></div></div>
+      <p class="sp-what">Build a structured vulnerability scanning workflow with OpenVAS/Nessus/Qualys to discover, prioritize (beyond raw CVSS), and track remediation across infrastructure.</p>
+      <ol class="sp-steps"><li>Inventory assets and define scan scope</li><li>Schedule recurring scans (authenticated/unauthenticated)</li><li>Prioritize results by CVSS + asset context + real threat intel</li><li>Integrate results with SIEM alerting</li></ol>
+      <div class="sp-tags"><span class="tag att">T1595.002</span><span class="tag att">T1190</span><span class="tag att">T1046</span><span class="tag nist">DE.CM-01</span><span class="tag nist">DE.AE-02</span><span class="tag nist">RS.MA-01</span></div>
     </div></div></section>
-<section class="slide "><h3>المهارات <span class="lat">9–10</span></h3>
+<section class="slide "><h3>Skills 9&ndash;10</h3>
       <div class="sp-two">
     <div class="sp">
-      <div class="sp-head"><span class="sp-n lat">09</span>
-        <div><b>نشر ملفات الإنذار المبكر (Canary) ضد الفدية</b><i class="lat">Deploying Ransomware Canary Files</i></div></div>
-      <p class="sp-what">نشر ملفات خداعية (canary) تحاكي أهدافاً عالية القيمة في المجلدات، ومراقبتها لحظياً بمكتبة watchdog في Python لإطلاق تنبيه فور أي تعديل/قراءة, إنذار مبكر قبل اكتمال التشفير.</p>
-      <ol class="sp-steps"><li>وضع ملفات canary بأسماء جذابة (financial_records.xlsx...) في مجلدات حساسة</li><li>تشغيل مراقب watchdog لأحداث نظام الملفات</li><li>تصنيف الأحداث (read/modify/rename/delete)</li><li>إطلاق تنبيه (email/Slack/syslog) عند أي تفاعل</li></ol>
-      <div class="sp-tags"><span class="tag att lat">T1486</span><span class="tag att lat">T1083</span><span class="tag att lat">T1490</span><span class="tag att lat">T1485</span><span class="tag nist lat">PR.DS-11</span><span class="tag nist lat">RS.MA-01</span><span class="tag nist lat">RC.RP-01</span></div>
+      <div class="sp-head"><span class="sp-n">09</span>
+        <div><b>Deploying Ransomware Canary Files</b><i>Ransomware Defense / Deception</i></div></div>
+      <p class="sp-what">Deploy decoy &quot;canary&quot; files that mimic high-value targets, monitored in real time with Python&#x27;s watchdog to alert instantly on any read/modify/rename, early warning before encryption completes.</p>
+      <ol class="sp-steps"><li>Place canary files with attractive names (financial_records.xlsx…) in sensitive folders</li><li>Run a watchdog monitor for filesystem events</li><li>Classify events (read/modify/rename/delete)</li><li>Alert (email/Slack/syslog) on any interaction</li></ol>
+      <div class="sp-tags"><span class="tag att">T1486</span><span class="tag att">T1083</span><span class="tag att">T1490</span><span class="tag att">T1485</span><span class="tag nist">PR.DS-11</span><span class="tag nist">RS.MA-01</span><span class="tag nist">RC.RP-01</span></div>
     </div>
     <div class="sp">
-      <div class="sp-head"><span class="sp-n lat">10</span>
-        <div><b>تحليل SBOM لكشف ثغرات سلسلة التوريد</b><i class="lat">Analyzing SBOM for Supply-Chain Vulnerabilities</i></div></div>
-      <p class="sp-what">تحليل قوائم مكوّنات البرمجيات (SBOM) بصيغتي CycloneDX و SPDX، ومطابقة المكوّنات مع قاعدة NVD CVE، وبناء رسم اعتماديات وحساب درجات خطورة وتقارير امتثال.</p>
-      <ol class="sp-steps"><li>توليد SBOM للحاويات/التطبيقات بـ syft</li><li>تحليل CycloneDX/SPDX JSON</li><li>مطابقة المكوّنات مع CVEs عبر NVD 2.0 API (أو grype)</li><li>بناء رسم اعتماديات ورصد المسارات المتعدية (transitive)</li></ol>
-      <div class="sp-tags"><span class="tag att">لا ينطبق</span><span class="tag nist lat">GV.SC-01</span><span class="tag nist lat">GV.SC-03</span><span class="tag nist lat">GV.SC-06</span></div>
+      <div class="sp-head"><span class="sp-n">10</span>
+        <div><b>Analyzing SBOM for Supply-Chain Vulnerabilities</b><i>Supply Chain Security</i></div></div>
+      <p class="sp-what">Parse SBOMs (CycloneDX/SPDX JSON), correlate components against the NVD CVE database (NVD 2.0 API), build dependency graphs, compute risk scores, and generate compliance reports.</p>
+      <ol class="sp-steps"><li>Generate SBOMs for containers/apps with syft</li><li>Parse CycloneDX/SPDX JSON</li><li>Correlate components to CVEs via NVD 2.0 API (or grype)</li><li>Build a dependency graph and surface transitive paths</li></ol>
+      <div class="sp-tags"><span class="tag att">n/a</span><span class="tag nist">GV.SC-01</span><span class="tag nist">GV.SC-03</span><span class="tag nist">GV.SC-06</span></div>
     </div></div></section>
-<section class="slide divider"><div class="d-inner"><span class="lat">03</span><h2>النتائج الفعلية</h2><p>كل رقم من تنفيذ حقيقي، ومخرجاته محفوظة</p></div></section>
+<section class="slide divider"><div class="d-inner"><span>03</span><h2>Actual Results</h2><p>Every figure from a real run, with its output kept</p></div></section>
 <section class="slide ">
-  <h3>المختبر كما بُني فعلاً</h3>
-  <table class="facts"><tbody><tr><td>Hypervisor</td><td class="lat">VMware Workstation 25 (nested virtualization enabled)</td></tr><tr><td>Guest platform</td><td class="lat">Proxmox VE 9.2.2 on kernel 7.0.2-6-pve</td></tr><tr><td>ISO integrity</td><td class="lat">SHA-256 verified against proxmox.com (4e88fe41…f2c6c)</td></tr><tr><td>Node resources</td><td class="lat">4 vCPU (i7-12700), 6 GB RAM, 80 GB disk</td></tr><tr><td>Nested KVM</td><td class="lat">/dev/kvm present, so VMs can run inside the node</td></tr><tr><td>Management URL</td><td class="lat">https://192.168.29.132:8006</td></tr><tr><td>Agent access</td><td class="lat">ed25519 SSH key (password auth not used)</td></tr><tr><td>Zones created</td><td class="lat">vmbr10 servers / vmbr20 targets / vmbr30 monitoring</td></tr><tr><td>802.1Q trunk</td><td class="lat">vmbr0 vlan_filtering = 1</td></tr><tr><td>Firewall</td><td class="lat">pve-firewall active, deny-by-default, iptables verified</td></tr><tr><td>IDS</td><td class="lat">Suricata 7.0.10, 5 custom rules, 6 real alerts captured</td></tr><tr><td>ZTNA</td><td class="lat">Tailscale 1.98.10 installed; activation pending user login</td></tr></tbody></table>
-  <div class="callout">كل سطر تم التحقق منه بأمر فعلي على العقدة، لا من واجهة رسومية.</div></section>
+  <h3>The lab as it was actually built</h3>
+  <table class="facts"><tbody><tr><td>Hypervisor</td><td class="mono">VMware Workstation 25 (nested virtualization enabled)</td></tr><tr><td>Guest platform</td><td class="mono">Proxmox VE 9.2.2 on kernel 7.0.2-6-pve</td></tr><tr><td>ISO integrity</td><td class="mono">SHA-256 verified against proxmox.com (4e88fe41…f2c6c)</td></tr><tr><td>Node resources</td><td class="mono">4 vCPU (i7-12700), 6 GB RAM, 80 GB disk</td></tr><tr><td>Nested KVM</td><td class="mono">/dev/kvm present, so VMs can run inside the node</td></tr><tr><td>Management URL</td><td class="mono">https://192.168.29.132:8006</td></tr><tr><td>Agent access</td><td class="mono">ed25519 SSH key (password auth not used)</td></tr><tr><td>Zones created</td><td class="mono">vmbr10 servers / vmbr20 targets / vmbr30 monitoring</td></tr><tr><td>802.1Q trunk</td><td class="mono">vmbr0 vlan_filtering = 1</td></tr><tr><td>Firewall</td><td class="mono">pve-firewall active, deny-by-default, iptables verified</td></tr><tr><td>IDS</td><td class="mono">Suricata 7.0.10, 5 custom rules, 6 real alerts captured</td></tr><tr><td>ZTNA</td><td class="mono">Tailscale 1.98.10 installed; activation pending user login</td></tr></tbody></table>
+  <div class="callout">Every row was verified by an actual command on the node, not read off a graphical interface.</div></section>
 <section class="slide hero">
-  <h3>سلسلة الكشف الكاملة</h3>
+  <h3>The complete detection chain</h3>
   <div class="chain">
-    <div class="ch"><div class="ch-i">1</div><b>هجوم محاكى</b><span>مسح ICMP · استعلامات DNS · مسح منافذ</span></div>
+    <div class="ch"><div class="ch-i">1</div><b>Simulated attack</b><span>ICMP sweep · DNS queries · port scan</span></div>
     <div class="ch-a"></div>
-    <div class="ch"><div class="ch-i">2</div><b>التقاط Suricata</b><span>36 حدث DNS في سجلات EVE</span></div>
+    <div class="ch"><div class="ch-i">2</div><b>Suricata capture</b><span>36 DNS events in the EVE logs</span></div>
     <div class="ch-a"></div>
-    <div class="ch"><div class="ch-i">3</div><b>تحليل مستقل</b><span>وكيل لا يعرف شيئاً عن الهجوم</span></div>
+    <div class="ch"><div class="ch-i">3</div><b>Independent analysis</b><span>An agent that knew nothing of the attack</span></div>
     <div class="ch-a"></div>
-    <div class="ch ok"><div class="ch-i">4</div><b>كشف مؤكَّد</b><span>نفقان: 72 و 60 حرفاً</span></div>
+    <div class="ch ok"><div class="ch-i">4</div><b>Confirmed detection</b><span>Two tunnels: 72 and 60 characters</span></div>
   </div>
-  <div class="callout hero"><b>لماذا هذه أقوى نتيجة؟</b> لأن الأداة التي كشفت ليست هي التي التقطت. لا توجد دورة مغلقة تُثبت نفسها بنفسها: هجوم حقيقي، والتقاط حقيقي، وتحليل مستقل خرج بكشف صحيح.</div></section>
+  <div class="callout hero"><b>Why is this the strongest result?</b> Because the tool that detected is not the tool that captured. There is no closed loop proving itself: a real attack, a real capture, and an independent analysis that arrived at a correct detection.</div></section>
 <section class="slide ">
-  <h3>الكشف على الشبكة</h3>
+  <h3>Detection on the network</h3>
   <div class="two">
     <div>
-      <div class="kpi"><b>6</b><span>تنبيهات حقيقية سُجِّلت</span></div>
+      <div class="kpi"><b>6</b><span>real alerts logged</span></div>
       <table class="mini">
-        <tr><td class="lat">T1048.003</td><td>تسريب عبر DNS</td><td class="n">4×</td></tr>
-        <tr><td class="lat">T1018</td><td>مسح ICMP</td><td class="n">1×</td></tr>
-        <tr><td class="lat">T1046</td><td>مسح منافذ</td><td class="n">1×</td></tr>
+        <tr><td class="mono">T1048.003</td><td>Exfiltration over DNS</td><td class="n">4&times;</td></tr>
+        <tr><td class="mono">T1018</td><td>ICMP sweep</td><td class="n">1&times;</td></tr>
+        <tr><td class="mono">T1046</td><td>Port scan</td><td class="n">1&times;</td></tr>
       </table>
     </div>
     <div>
-      <p class="lead sm">Suricata 7.0.10 مع خمس قواعد كُتبت خصيصاً للمختبر، كل قاعدة مربوطة بتقنية من MITRE ATT&amp;CK، ثم وُلِّد مرور هجومي لاختبارها.</p>
-      <div class="callout warn"><b>قاعدتان لم تُطلقا:</b> قاعدة C2 لغياب خادم HTTP في المسار، وقاعدة نفق DNS لعدم مطابقة نمط pcre.</div>
+      <p class="lead sm">Suricata 7.0.10 with five rules written specifically for the lab, each tied to a MITRE ATT&amp;CK technique, then tested by generating attack traffic.</p>
+      <div class="callout warn"><b>Two rules never fired:</b> the C2 rule, because no HTTP server sat on the test path, and the DNS tunnelling rule, because the query did not match the pcre pattern used.</div>
     </div>
   </div></section>
 <section class="slide ">
-  <h3>العزل وفرض السياسة</h3>
+  <h3>Isolation and policy enforcement</h3>
   <div class="two">
     <div>
-      <div class="zone-h">ثلاث مناطق معزولة</div>
-      <div class="zone"><code class="lat">vmbr10</code><span>الخوادم</span><i class="lat">10.10.10.0/24</i></div>
-      <div class="zone"><code class="lat">vmbr20</code><span>الأنظمة الهدف</span><i class="lat">10.10.20.0/24</i></div>
-      <div class="zone"><code class="lat">vmbr30</code><span>المراقبة</span><i class="lat">10.10.30.0/24</i></div>
-      <div class="verify lat">vlan_filtering = 1 ✓</div>
+      <div class="zone-h">Three isolated zones</div>
+      <div class="zone"><code>vmbr10</code><span>Servers</span><i>10.10.10.0/24</i></div>
+      <div class="zone"><code>vmbr20</code><span>Target systems</span><i>10.10.20.0/24</i></div>
+      <div class="zone"><code>vmbr30</code><span>Monitoring</span><i>10.10.30.0/24</i></div>
+      <div class="verify">vlan_filtering = 1 &check;</div>
     </div>
     <div>
-      <div class="zone-h">سياسة الجدار الناري</div>
-      <div class="rule-row deny"><b>DROP</b><span>كل وارد افتراضياً</span></div>
-      <div class="rule-row allow"><b>ALLOW</b><span>الإدارة → 8006 و 22، مع التسجيل</span></div>
-      <div class="rule-row deny"><b>DROP</b><span>الأهداف ⇸ الإدارة والخوادم</span></div>
-      <div class="verify lat">verified in iptables ✓</div>
-      <p class="foot-note">وقبل التفعيل شُغِّلت آلية تراجع تلقائي، لأن سياسة المنع قد تقطع الوصول عن المسؤول نفسه.</p>
+      <div class="zone-h">Firewall policy</div>
+      <div class="rule-row deny"><b>DROP</b><span>All inbound by default</span></div>
+      <div class="rule-row allow"><b>ALLOW</b><span>Management &rarr; 8006 and 22, logged</span></div>
+      <div class="rule-row deny"><b>DROP</b><span>Targets &#8622; management and servers</span></div>
+      <div class="verify">verified in iptables &check;</div>
+      <p class="foot-note">An automatic rollback was armed before activation, since a default-deny policy can lock out the administrator.</p>
     </div>
   </div></section>
 <section class="slide ">
-  <h3>الربط وإعادة بناء الحادثة</h3>
+  <h3>Correlation and incident reconstruction</h3>
   <div class="two">
     <div>
-      <div class="kpi"><b>26</b><span>حدثاً من مصدرين</span></div>
-      <p class="lead sm">جُمِعت من Suricata وسجل sshd، ثم أُجري عليها الإحصاء وإعادة بناء الخط الزمني وربط الأنماط بالتقنيات.</p>
+      <div class="kpi"><b>26</b><span>events from two sources</span></div>
+      <p class="lead sm">Collected from Suricata and the sshd journal, then put through statistics, timeline reconstruction and technique mapping.</p>
     </div>
     <div class="verdict">
-      <div class="v-h">الحكم التحليلي</div>
-      <p>مضيف داخلي واحد أنتج استطلاعاً ومحاولة تسريب خلال <b>اثنتي عشرة ثانية</b>.</p>
-      <p class="v-c">هذا الإيقاع يدل على أداة آلية لا على مُشغِّل بشري.</p>
+      <div class="v-h">ANALYST VERDICT</div>
+      <p>A single internal host produced reconnaissance and an exfiltration attempt within <b>twelve seconds</b>.</p>
+      <p class="v-c">That tempo points to automated tooling rather than a human operator.</p>
     </div>
   </div>
-  <div class="callout"><b>بديل مُبرَّر:</b> Splunk Enterprise يحتاج خادماً مرخّصاً، فطُبِّق منطق الارتباط نفسه على سجلات المختبر الحقيقية.</div></section>
+  <div class="callout"><b>Justified substitution:</b> Splunk Enterprise needs a licensed server, so the same correlation logic was applied to the lab's own real logs.</div></section>
 <section class="slide ">
-  <h3>بقية النتائج</h3>
+  <h3>Remaining results</h3>
   <div class="res-grid">
-    <div class="res"><div class="r-k lat">TLS 1.3</div>
-      <p>واجهة الإدارة تتفاوض على <span class="lat">TLS_AES_256_GCM_SHA384</span>، والإصداران القديمان معطّلان. الشهادة ذاتية التوقيع، ومن هنا جاءت التوصية بشهادة موثوقة.</p></div>
-    <div class="res"><div class="r-k">فحص الثغرات</div>
-      <p>أربع مضيفات نشطة، وتعداد للخدمات المكشوفة، و<b>61 حزمة</b> تنتظر التحديث، مرتّبة بجدول حسب الخطورة.</p></div>
-    <div class="res"><div class="r-k">ملفات Canary</div>
-      <p><b>16 ملفاً</b> خداعياً ببصمات SHA-256. عند محاكاة التشفير أُطلق تنبيهان خلال أجزاء من الثانية.</p></div>
-    <div class="res"><div class="r-k lat">SBOM</div>
-      <p><b>75 حزمة</b> قُورنت بقاعدة NVD الحيّة. بعض النتائج إيجابيات كاذبة بسبب المطابقة بالاسم، وهذا يُراجَع بالسياق.</p></div>
+    <div class="res"><div class="r-k">TLS 1.3</div>
+      <p>The management interface negotiates <span class="mono">TLS_AES_256_GCM_SHA384</span>, with the legacy versions disabled. The certificate is self-signed, which is where the recommendation for a trusted certificate came from.</p></div>
+    <div class="res"><div class="r-k">Vulnerability scanning</div>
+      <p>Four live hosts, an enumeration of exposed services, and <b>61 packages</b> awaiting updates, ranked in a table by severity.</p></div>
+    <div class="res"><div class="r-k">Canary files</div>
+      <p><b>16 decoy files</b> with SHA-256 baselines. When encryption was simulated, two alerts fired within milliseconds.</p></div>
+    <div class="res"><div class="r-k">SBOM</div>
+      <p><b>75 packages</b> checked against the live NVD database. Some results are false positives from name matching, which has to be reviewed in context.</p></div>
   </div></section>
 <section class="slide ">
-  <h3>التغطية المقيسة</h3>
-  <p class="lead">هذا ما يجعل العنوان يَعِد بـ«القياس»: التغطية الدفاعية رقم قابل للمراجعة لا انطباع.</p>
+  <h3>Measured coverage</h3>
+  <p class="lead">This is what makes the title promise measurement: defensive coverage becomes a reviewable figure rather than an impression.</p>
   <div class="cov">
-    <div class="cov-col"><div class="cov-h lat">MITRE ATT&CK</div>
+    <div class="cov-col"><div class="cov-h">MITRE ATT&CK</div>
       <div class="cov-tags">
-        <span class="tag att lat">T1046</span><span class="tag att lat">T1018</span><span class="tag att lat">T1048.003</span>
-        <span class="tag att lat">T1071.001</span><span class="tag att lat">T1071.004</span><span class="tag att lat">T1486</span>
-        <span class="tag att lat">T1557</span><span class="tag att lat">T1190</span><span class="tag att lat">T1078</span>
-        <span class="tag att lat">T1133</span><span class="tag att lat">T1040</span><span class="tag att lat">T1021</span>
+        <span class="tag att">T1046</span><span class="tag att">T1018</span><span class="tag att">T1048.003</span>
+        <span class="tag att">T1071.001</span><span class="tag att">T1071.004</span><span class="tag att">T1486</span>
+        <span class="tag att">T1557</span><span class="tag att">T1190</span><span class="tag att">T1078</span>
+        <span class="tag att">T1133</span><span class="tag att">T1040</span><span class="tag att">T1021</span>
       </div>
-      <div class="cov-f">منها <b>3 تقنيات</b> رُصدت فعلياً في السجلات</div>
+      <div class="cov-f">Of these, <b>3 techniques</b> were actually observed in the logs</div>
     </div>
-    <div class="cov-col"><div class="cov-h lat">NIST CSF 2.0</div>
+    <div class="cov-col"><div class="cov-h">NIST CSF 2.0</div>
       <div class="cov-tags">
-        <span class="tag nist lat">PR.IR-01</span><span class="tag nist lat">DE.CM-01</span><span class="tag nist lat">DE.AE-02</span>
-        <span class="tag nist lat">PR.DS-01</span><span class="tag nist lat">PR.AA-01</span><span class="tag nist lat">RS.MA-01</span>
-        <span class="tag nist lat">RS.AN-03</span><span class="tag nist lat">RC.RP-01</span><span class="tag nist lat">GV.SC-01</span>
+        <span class="tag nist">PR.IR-01</span><span class="tag nist">DE.CM-01</span><span class="tag nist">DE.AE-02</span>
+        <span class="tag nist">PR.DS-01</span><span class="tag nist">PR.AA-01</span><span class="tag nist">RS.MA-01</span>
+        <span class="tag nist">RS.AN-03</span><span class="tag nist">RC.RP-01</span><span class="tag nist">GV.SC-01</span>
       </div>
-      <div class="cov-f">تغطي: الحماية · الكشف · الاستجابة · التعافي · الحوكمة</div>
+      <div class="cov-f">Covering: Protect · Detect · Respond · Recover · Govern</div>
     </div>
   </div></section>
 <section class="slide ">
-  <h3>ما لم ينجح، وكيف عولج</h3>
+  <h3>What did not work, and how it was handled</h3>
   <div class="fails">
-    <div class="fail"><div class="f-t">إعداد الـ VLAN فشل أولاً</div>
-      <p>أمر <span class="lat">sed</span> كتب المُعامل بصيغة مشوّهة فرفضه النظام. أُعيدت كتابته وطُبِّق، حتى صار <span class="lat">vlan_filtering = 1</span>.</p></div>
-    <div class="fail"><div class="f-t">الجدار الناري فشل أولاً</div>
-      <p>استُخدمت بادئة <span class="lat">+dc/</span> وهي مخصّصة لمجموعات IPSet لا للأسماء المستعارة. صُحِّحت، ومع آلية تراجع تحسّباً لقفل الوصول.</p></div>
-    <div class="fail ok"><div class="f-t">قاعدتان لم تُطلقا، والنفق كُشف رغم ذلك</div>
-      <p>عبر مسار آخر هو تحليل طول النطاق الفرعي. وهذا بالضبط ما يعنيه الدفاع بالطبقات.</p></div>
-    <div class="fail"><div class="f-t">بديلان وخطوة واحدة غير مكتملة</div>
-      <p>جدار Proxmox بدل pfSense، ومحرّك ارتباط بدل Splunk المرخّص. و<span class="lat">tailscale up</span> يتطلب تسجيل دخول شخصي، فتُرك لصاحب المشروع.</p></div>
+    <div class="fail"><div class="f-t">VLAN setup failed on the first attempt</div>
+      <p>A <span class="mono">sed</span> command wrote the directive malformed and the system rejected it. It was rewritten and reapplied until <span class="mono">vlan_filtering = 1</span>.</p></div>
+    <div class="fail"><div class="f-t">The firewall failed on the first attempt</div>
+      <p>The <span class="mono">+dc/</span> prefix was used, which belongs to IPSets rather than aliases. Corrected, with a rollback armed against lockout.</p></div>
+    <div class="fail ok"><div class="f-t">Two rules never fired, yet the tunnel was still found</div>
+      <p>Through a different path: subdomain-length analysis. This is precisely what defence in depth means in practice.</p></div>
+    <div class="fail"><div class="f-t">Two substitutions and one unfinished step</div>
+      <p>Proxmox's firewall instead of pfSense, and a correlation engine instead of licensed Splunk. And <span class="mono">tailscale up</span> requires a personal login, so it was left to the project owner.</p></div>
   </div></section>
 <section class="slide title closing">
   <div class="t-inner">
-    <div class="eyebrow">الخلاصة</div>
-    <h1 class="close-h">من العزل إلى الكشف إلى التصليب</h1>
+    <div class="eyebrow">Conclusion</div>
+    <h1 class="close-h">From isolation, to detection, to hardening</h1>
     <div class="rule"></div>
-    <p class="t-sub">عشر مهارات نُفِّذت على عقدة حقيقية، ومُقيسة بأطر معيارية، وموثّقة بأدلتها الخام<br>بما في ذلك ما لم ينجح منها.</p>
-    <div class="t-foot"><span class="lat">github.com/OwaisAbuSalah/proxmox-security-lab</span></div>
+    <p class="t-sub">Ten skills executed on a real node, measured against recognised frameworks,<br>and documented with their raw evidence, including what did not work.</p>
+    <div class="t-foot"><span>github.com/OwaisAbuSalah/proxmox-security-lab</span></div>
   </div></section>
 </div>
-<div class="exit-hint">Esc للخروج · ← → للتنقل</div>
+<div class="exit-hint">Esc to exit &middot; &larr; &rarr; to navigate</div>
 <script>
 const slides=[...document.querySelectorAll('.slide')];
 slides.forEach((s,i)=>{s.id='s'+i;s.dataset.n=String(i+1).padStart(2,'0')+' / '+slides.length});
@@ -582,7 +581,6 @@ document.querySelector('#prev').onclick=()=>go(-1);
 document.querySelector('#next').onclick=()=>go(1);
 document.querySelector('#pres').onclick=togglePresent;
 
-// track scroll position when not presenting
 addEventListener('scroll',()=>{
   if(present)return;
   const y=scrollY+120; let n=0;
