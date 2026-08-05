@@ -304,5 +304,16 @@ for r in refs:
     p=doc.add_paragraph(style="List Bullet"); rr=p.add_run(r); rr.font.size=Pt(10); rr.font.color.rgb=GREY
 
 out = r"C:\Users\HP\automation\proxmox-security-lab\Proxmox-Security-Lab-Report.docx"
-doc.save(out)
-print("saved", out)
+
+# The delivered .docx carries manual formatting done in Word that does not exist
+# in content.py. Refuse to clobber it silently; write beside it instead.
+import os, sys
+if os.path.exists(out) and "--overwrite" not in sys.argv:
+    alt = out.replace(".docx", "-regenerated.docx")
+    doc.save(alt)
+    print("NOT overwriting the hand-formatted report.")
+    print("Wrote:", alt)
+    print("Pass --overwrite only if you really want to discard the Word formatting.")
+else:
+    doc.save(out)
+    print("saved", out)
