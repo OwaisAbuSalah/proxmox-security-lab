@@ -1,0 +1,59 @@
+########## TLS 1.3 AGENT — real scan: www.proxmox.com ##########
+  print(f"  Generated: {datetime.utcnow().isoformat()} UTC")
+C:\Users\HP\automation\proxmox-security-lab\agent-lab\skills\configuring-tls-1-3-for-secure-communications\scripts\agent.py:35: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  ctx.minimum_version = version
+C:\Users\HP\automation\proxmox-security-lab\agent-lab\skills\configuring-tls-1-3-for-secure-communications\scripts\agent.py:36: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  ctx.maximum_version = version
+C:\Users\HP\automation\proxmox-security-lab\agent-lab\skills\configuring-tls-1-3-for-secure-communications\scripts\agent.py:35: DeprecationWarning: ssl.TLSVersion.TLSv1_1 is deprecated
+  ctx.minimum_version = version
+C:\Users\HP\automation\proxmox-security-lab\agent-lab\skills\configuring-tls-1-3-for-secure-communications\scripts\agent.py:36: DeprecationWarning: ssl.TLSVersion.TLSv1_1 is deprecated
+  ctx.maximum_version = version
+C:\Users\HP\automation\proxmox-security-lab\agent-lab\skills\configuring-tls-1-3-for-secure-communications\scripts\agent.py:59: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  days_remaining = (cert.not_valid_after_utc.replace(tzinfo=None) - datetime.utcnow()).days
+
+============================================================
+  TLS 1.3 CONFIGURATION AUDIT
+  Target: www.proxmox.com:443
+  Generated: 2026-08-02T09:05:33.362573 UTC
+============================================================
+
+--- TLS VERSION SUPPORT ---
+  TLSv1.0: NOT SUPPORTED 
+  TLSv1.1: NOT SUPPORTED 
+  TLSv1.2: SUPPORTED [INFO]
+  TLSv1.3: SUPPORTED [INFO]
+
+--- CERTIFICATE ---
+  Subject: CN=proxmox.com
+  Issuer: CN=YE2,O=Let's Encrypt,C=US
+  Expires: 2026-09-21 23:17:39+00:00 (50 days)
+  Key size: 256
+
+--- CIPHER SUITE ---
+  Negotiated: TLS_AES_256_GCM_SHA384
+  Protocol: TLSv1.3
+
+[+] Report saved to evidence/tls_proxmox.json
+########## TLS AGENT — github.com (comparison) ##########
+  TLS 1.3 CONFIGURATION AUDIT
+  Target: github.com:443
+  Generated: 2026-08-02T09:05:51.859387 UTC
+============================================================
+
+--- TLS VERSION SUPPORT ---
+  TLSv1.0: NOT SUPPORTED 
+  TLSv1.1: NOT SUPPORTED 
+  TLSv1.2: SUPPORTED [INFO]
+  TLSv1.3: SUPPORTED [INFO]
+
+--- CERTIFICATE ---
+  Subject: CN=github.com
+  Issuer: CN=Sectigo Public Server Authentication CA DV E36,O=Sectigo Limited,C=GB
+  Expires: 2026-09-30 23:59:59+00:00 (59 days)
+  Key size: 256
+
+--- CIPHER SUITE ---
+  Negotiated: TLS_AES_128_GCM_SHA256
+  Protocol: TLSv1.3
+
+[+] Report saved to evidence/tls_github.json

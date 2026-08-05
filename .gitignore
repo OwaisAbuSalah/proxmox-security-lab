@@ -1,0 +1,27 @@
+# --- secrets: never commit ---
+agent-lab/.ssh/
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+known_hosts
+
+# --- generated lab artefacts (contain decoy credential files) ---
+agent-lab/sandbox/
+agent-lab/canary_manifest.json
+agent-lab/canary_monitor.log
+
+# --- python / editor noise ---
+__pycache__/
+*.pyc
+*.bak
+*.bak[0-9]
+_tmp*
+~$*
+
+# --- large binaries ---
+*.iso
+*.vmdk
+*.vmx
+_scratch/
+content.py.bak*

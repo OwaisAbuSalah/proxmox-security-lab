@@ -1,0 +1,5 @@
+2026-08-02 11:53:36,094 [INFO] Watching directory: sandbox\finance
+2026-08-02 11:53:36,094 [INFO] Watching directory: sandbox\hr
+2026-08-02 11:53:36,095 [INFO] Monitoring 16 canary files across 2 directories
+2026-08-02 11:53:39,958 [CRITICAL] CANARY TRIGGERED: FILE_MODIFIED on sandbox\finance\backup_credentials.csv (alert #1)
+2026-08-02 11:53:40,006 [CRITICAL] CANARY TRIGGERED: FILE_MODIFIED on sandbox\hr\AWS_Access_Keys.csv (alert #2)

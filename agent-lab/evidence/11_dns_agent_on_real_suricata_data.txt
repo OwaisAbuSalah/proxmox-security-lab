@@ -1,0 +1,21 @@
+################################################################
+# SKILL: analyzing-dns-logs-for-exfiltration  [REAL LAB DATA]
+# INPUT: live Suricata EVE DNS events from Proxmox node
+# EXECUTED: 2026-08-02T17:40:07Z
+################################################################
+Loaded 36 REAL DNS query events captured by Suricata on the Proxmox node
+
+--- [1] DNS Tunneling Detection (T1071.004) ---
+  [ALERT] test.localdomain: 8 queries | avg subdomain len=72.0 | sources=['192.168.29.132']
+  [ALERT] evil-tunnel.test: 6 queries | avg subdomain len=60.0 | sources=['192.168.29.132']
+
+--- [2] DGA Detection (entropy) ---
+  [none]
+
+--- [3] Entropy of observed domains ---
+  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...' -> entropy=-0.0
+  'exfil-data' -> entropy=3.1219
+  '_http' -> entropy=1.9219
+  'debian' -> entropy=2.585
+  '1' -> entropy=-0.0
+  '2' -> entropy=-0.0

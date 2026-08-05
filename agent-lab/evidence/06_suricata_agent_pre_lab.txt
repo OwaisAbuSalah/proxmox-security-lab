@@ -1,0 +1,8 @@
+########## SURICATA AGENT — status check on Windows host (pre-Proxmox) ##########
+{
+  "installed": false,
+  "error": "Suricata not found",
+  "running": false
+}
+
+[EXPECTED] Suricata is a Linux IDS - this agent requires the Proxmox lab VM.

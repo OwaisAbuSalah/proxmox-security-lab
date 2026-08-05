@@ -1,0 +1,38 @@
+##### TLS 1.3 AGENT -> LIVE PROXMOX NODE (192.168.29.132:8006) #####
+# Executed: 2026-08-02T17:25:19Z
+C:\Users\HP\automation\proxmox-security-lab\agent-lab\skills\configuring-tls-1-3-for-secure-communications\scripts\agent.py:98: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  print(f"  Generated: {datetime.utcnow().isoformat()} UTC")
+C:\Users\HP\automation\proxmox-security-lab\agent-lab\skills\configuring-tls-1-3-for-secure-communications\scripts\agent.py:35: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  ctx.minimum_version = version
+C:\Users\HP\automation\proxmox-security-lab\agent-lab\skills\configuring-tls-1-3-for-secure-communications\scripts\agent.py:36: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  ctx.maximum_version = version
+C:\Users\HP\automation\proxmox-security-lab\agent-lab\skills\configuring-tls-1-3-for-secure-communications\scripts\agent.py:35: DeprecationWarning: ssl.TLSVersion.TLSv1_1 is deprecated
+  ctx.minimum_version = version
+C:\Users\HP\automation\proxmox-security-lab\agent-lab\skills\configuring-tls-1-3-for-secure-communications\scripts\agent.py:36: DeprecationWarning: ssl.TLSVersion.TLSv1_1 is deprecated
+  ctx.maximum_version = version
+C:\Users\HP\automation\proxmox-security-lab\agent-lab\skills\configuring-tls-1-3-for-secure-communications\scripts\agent.py:59: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  days_remaining = (cert.not_valid_after_utc.replace(tzinfo=None) - datetime.utcnow()).days
+
+============================================================
+  TLS 1.3 CONFIGURATION AUDIT
+  Target: 192.168.29.132:8006
+  Generated: 2026-08-02T17:25:20.206246 UTC
+============================================================
+
+--- TLS VERSION SUPPORT ---
+  TLSv1.0: NOT SUPPORTED 
+  TLSv1.1: NOT SUPPORTED 
+  TLSv1.2: SUPPORTED [INFO]
+  TLSv1.3: SUPPORTED [INFO]
+
+--- CERTIFICATE ---
+  Subject: CN=pve.localdomain,O=Proxmox Virtual Environment,OU=PVE Cluster Node
+  Issuer: O=PVE Cluster Manager CA,OU=fd84a30f-a600-4bf0-88ee-37b13a921beb,CN=Proxmox Virtual Environment
+  Expires: 2028-07-31 09:31:34+00:00 (728 days)
+  Key size: 2048
+
+--- CIPHER SUITE ---
+  Negotiated: TLS_AES_256_GCM_SHA384
+  Protocol: TLSv1.3
+
+[+] Report saved to evidence/tls_pve_node.json

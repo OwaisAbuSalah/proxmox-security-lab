@@ -1,0 +1,39 @@
+{
+  "versions": {
+    "TLSv1.0": {
+      "supported": false
+    },
+    "TLSv1.1": {
+      "supported": false
+    },
+    "TLSv1.2": {
+      "supported": true,
+      "cipher": "ECDHE-ECDSA-AES128-GCM-SHA256",
+      "severity": "INFO"
+    },
+    "TLSv1.3": {
+      "supported": true,
+      "cipher": "TLS_AES_128_GCM_SHA256",
+      "severity": "INFO"
+    }
+  },
+  "certificate": {
+    "subject": "CN=github.com",
+    "issuer": "CN=Sectigo Public Server Authentication CA DV E36,O=Sectigo Limited,C=GB",
+    "not_after": "2026-09-30 23:59:59+00:00",
+    "days_remaining": 59,
+    "key_size": 256,
+    "signature_algorithm": "sha256",
+    "issues": []
+  },
+  "cipher": {
+    "negotiated_cipher": "TLS_AES_128_GCM_SHA256",
+    "protocol": "TLSv1.3",
+    "bits": 128,
+    "tls13_ciphers": [
+      "TLS_AES_256_GCM_SHA384",
+      "TLS_AES_128_GCM_SHA256",
+      "TLS_CHACHA20_POLY1305_SHA256"
+    ]
+  }
+}

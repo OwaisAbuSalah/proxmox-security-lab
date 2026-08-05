@@ -1,0 +1,218 @@
+########## STEP 1: DEPLOY canary files ##########
+2026-08-02 11:53:06,646 [INFO] Deployed canary: sandbox\finance\Passwords.xlsx (SHA-256: c01a85ca87a120b3)
+2026-08-02 11:53:06,646 [INFO] Deployed canary: sandbox\finance\Financial_Report_2026.docx (SHA-256: 4bdfcbc1ec121747)
+2026-08-02 11:53:06,646 [INFO] Deployed canary: sandbox\finance\backup_credentials.csv (SHA-256: 04c60505604bcf4f)
+2026-08-02 11:53:06,647 [INFO] Deployed canary: sandbox\finance\Employee_SSN_List.xlsx (SHA-256: 09180a04573ec8bf)
+2026-08-02 11:53:06,647 [INFO] Deployed canary: sandbox\finance\tax_returns_2025.pdf (SHA-256: db96b7050a4b2def)
+2026-08-02 11:53:06,647 [INFO] Deployed canary: sandbox\finance\bitcoin_wallet_seed.txt (SHA-256: a8fdcf7be48c88b6)
+2026-08-02 11:53:06,648 [INFO] Deployed canary: sandbox\finance\database_export_prod.sql (SHA-256: 834d479b6ece1de1)
+2026-08-02 11:53:06,648 [INFO] Deployed canary: sandbox\finance\AWS_Access_Keys.csv (SHA-256: 672137b98fc73c94)
+2026-08-02 11:53:06,648 [INFO] Deployed canary: sandbox\hr\Passwords.xlsx (SHA-256: c01a85ca87a120b3)
+2026-08-02 11:53:06,648 [INFO] Deployed canary: sandbox\hr\Financial_Report_2026.docx (SHA-256: 4bdfcbc1ec121747)
+2026-08-02 11:53:06,649 [INFO] Deployed canary: sandbox\hr\backup_credentials.csv (SHA-256: 04c60505604bcf4f)
+2026-08-02 11:53:06,649 [INFO] Deployed canary: sandbox\hr\Employee_SSN_List.xlsx (SHA-256: 09180a04573ec8bf)
+2026-08-02 11:53:06,649 [INFO] Deployed canary: sandbox\hr\tax_returns_2025.pdf (SHA-256: db96b7050a4b2def)
+2026-08-02 11:53:06,649 [INFO] Deployed canary: sandbox\hr\bitcoin_wallet_seed.txt (SHA-256: a8fdcf7be48c88b6)
+2026-08-02 11:53:06,649 [INFO] Deployed canary: sandbox\hr\database_export_prod.sql (SHA-256: 834d479b6ece1de1)
+2026-08-02 11:53:06,650 [INFO] Deployed canary: sandbox\hr\AWS_Access_Keys.csv (SHA-256: 672137b98fc73c94)
+2026-08-02 11:53:06,651 [INFO] Deployed 16 canary files, manifest saved to canary_manifest.json
+{
+  "deployed_at": "2026-08-02T08:53:06.650231+00:00",
+  "canary_count": 16,
+  "directories": [
+    "sandbox/finance",
+    "sandbox/hr"
+  ],
+  "files": [
+    "sandbox\\finance\\Passwords.xlsx",
+    "sandbox\\finance\\Financial_Report_2026.docx",
+    "sandbox\\finance\\backup_credentials.csv",
+    "sandbox\\finance\\Employee_SSN_List.xlsx",
+    "sandbox\\finance\\tax_returns_2025.pdf",
+    "sandbox\\finance\\bitcoin_wallet_seed.txt",
+    "sandbox\\finance\\database_export_prod.sql",
+    "sandbox\\finance\\AWS_Access_Keys.csv",
+    "sandbox\\hr\\Passwords.xlsx",
+    "sandbox\\hr\\Financial_Report_2026.docx",
+    "sandbox\\hr\\backup_credentials.csv",
+    "sandbox\\hr\\Employee_SSN_List.xlsx",
+    "sandbox\\hr\\tax_returns_2025.pdf",
+    "sandbox\\hr\\bitcoin_wallet_seed.txt",
+    "sandbox\\hr\\database_export_prod.sql",
+    "sandbox\\hr\\AWS_Access_Keys.csv"
+  ],
+  "hashes": {
+    "sandbox\\finance\\Passwords.xlsx": "c01a85ca87a120b3ae5cbc1b43f97241200ce79f4fa32c2a5c50a0fc4bb32dbe",
+    "sandbox\\finance\\Financial_Report_2026.docx": "4bdfcbc1ec121747f15c08929b68f09d9efbba2f112d91f7e6d8a89318ee065f",
+    "sandbox\\finance\\backup_credentials.csv": "04c60505604bcf4f0e9f7a973968481a9a4c5941fbb92108868b63065bc81310",
+    "sandbox\\finance\\Employee_SSN_List.xlsx": "09180a04573ec8bfe16d8f18824beb85809479409bfbabb03a0d1733e45c68f5",
+    "sandbox\\finance\\tax_returns_2025.pdf": "db96b7050a4b2def94ec26d8e5a4eff78220cfb118cbb9080a2120d4276af87d",
+    "sandbox\\finance\\bitcoin_wallet_seed.txt": "a8fdcf7be48c88b64d7986ef1b5aeb0f5fdfec53be5d2fdbaa6a0a85238fd63a",
+    "sandbox\\finance\\database_export_prod.sql": "834d479b6ece1de17635b0445dd4a12b32d106c46bcaad081d4e3f079c2e76f9",
+    "sandbox\\finance\\AWS_Access_Keys.csv": "672137b98fc73c94f4b7fe348d1c7132247b695f79107154e0e81843f3a391dd",
+    "sandbox\\hr\\Passwords.xlsx": "c01a85ca87a120b3ae5cbc1b43f97241200ce79f4fa32c2a5c50a0fc4bb32dbe",
+    "sandbox\\hr\\Financial_Report_2026.docx": "4bdfcbc1ec121747f15c08929b68f09d9efbba2f112d91f7e6d8a89318ee065f",
+    "sandbox\\hr\\backup_credentials.csv": "04c60505604bcf4f0e9f7a973968481a9a4c5941fbb92108868b63065bc81310",
+    "sandbox\\hr\\Employee_SSN_List.xlsx": "09180a04573ec8bfe16d8f18824beb85809479409bfbabb03a0d1733e45c68f5",
+    "sandbox\\hr\\tax_returns_2025.pdf": "db96b7050a4b2def94ec26d8e5a4eff78220cfb118cbb9080a2120d4276af87d",
+    "sandbox\\hr\\bitcoin_wallet_seed.txt": "a8fdcf7be48c88b64d7986ef1b5aeb0f5fdfec53be5d2fdbaa6a0a85238fd63a",
+    "sandbox\\hr\\database_export_prod.sql": "834d479b6ece1de17635b0445dd4a12b32d106c46bcaad081d4e3f079c2e76f9",
+    "sandbox\\hr\\AWS_Access_Keys.csv": "672137b98fc73c94f4b7fe348d1c7132247b695f79107154e0e81843f3a391dd"
+  }
+}
+
+########## files created on disk ##########
+sandbox/finance:
+total 12
+drwxr-xr-x 1 HP 197121   0 Aug  2 11:53 .
+drwxr-xr-x 1 HP 197121   0 Aug  2 11:52 ..
+-rw-r--r-- 1 HP 197121 193 Aug  2 11:53 AWS_Access_Keys.csv
+-rw-r--r-- 1 HP 197121 566 Aug  2 11:53 Employee_SSN_List.xlsx
+-rw-r--r-- 1 HP 197121 559 Aug  2 11:53 Financial_Report_2026.docx
+-rw-r--r-- 1 HP 197121 561 Aug  2 11:53 Passwords.xlsx
+-rw-r--r-- 1 HP 197121 226 Aug  2 11:53 backup_credentials.csv
+-rw-r--r-- 1 HP 197121 242 Aug  2 11:53 bitcoin_wallet_seed.txt
+-rw-r--r-- 1 HP 197121 236 Aug  2 11:53 database_export_prod.sql
+-rw-r--r-- 1 HP 197121 301 Aug  2 11:53 tax_returns_2025.pdf
+
+sandbox/hr:
+total 12
+drwxr-xr-x 1 HP 197121   0 Aug  2 11:53 .
+drwxr-xr-x 1 HP 197121   0 Aug  2 11:52 ..
+-rw-r--r-- 1 HP 197121 193 Aug  2 11:53 AWS_Access_Keys.csv
+-rw-r--r-- 1 HP 197121 566 Aug  2 11:53 Employee_SSN_List.xlsx
+-rw-r--r-- 1 HP 197121 559 Aug  2 11:53 Financial_Report_2026.docx
+-rw-r--r-- 1 HP 197121 561 Aug  2 11:53 Passwords.xlsx
+-rw-r--r-- 1 HP 197121 226 Aug  2 11:53 backup_credentials.csv
+-rw-r--r-- 1 HP 197121 242 Aug  2 11:53 bitcoin_wallet_seed.txt
+-rw-r--r-- 1 HP 197121 236 Aug  2 11:53 database_export_prod.sql
+-rw-r--r-- 1 HP 197121 301 Aug  2 11:53 tax_returns_2025.pdf
+
+########## STEP 2: VERIFY (baseline, all intact) ##########
+{
+  "checked": 16,
+  "intact": 16,
+  "modified": 0,
+  "missing": 0,
+  "details": [
+    {
+      "file": "sandbox\\finance\\Passwords.xlsx",
+      "status": "INTACT"
+    },
+    {
+      "file": "sandbox\\finance\\Financial_Report_2026.docx",
+      "status": "INTACT"
+    },
+    {
+      "file": "sandbox\\finance\\backup_credentials.csv",
+      "status": "INTACT"
+    },
+    {
+      "file": "sandbox\\finance\\Employee_SSN_List.xlsx",
+      "status": "INTACT"
+    },
+    {
+      "file": "sandbox\\finance\\tax_returns_2025.pdf",
+      "status": "INTACT"
+    },
+    {
+      "file": "sandbox\\finance\\bitcoin_wallet_seed.txt",
+      "status": "INTACT"
+    },
+    {
+      "file": "sandbox\\finance\\database_export_prod.sql",
+      "status": "INTACT"
+    },
+    {
+      "file": "sandbox\\finance\\AWS_Access_Keys.csv",
+      "status": "INTACT"
+    },
+    {
+      "file": "sandbox\\hr\\Passwords.xlsx",
+      "status": "INTACT"
+    },
+    {
+      "file": "sandbox\\hr\\Financial_Report_2026.docx",
+      "status": "INTACT"
+    },
+    {
+      "file": "sandbox\\hr\\backup_credentials.csv",
+      "status": "INTACT"
+    },
+    {
+      "file": "sandbox\\hr\\Employee_SSN_List.xlsx",
+      "status": "INTACT"
+    },
+    {
+      "file": "sandbox\\hr\\tax_returns_2025.pdf",
+      "status": "INTACT"
+    },
+    {
+      "file": "sandbox\\hr\\bitcoin_wallet_seed.txt",
+      "status": "INTACT"
+    },
+    {
+      "file": "sandbox\\hr\\database_export_prod.sql",
+      "status": "INTACT"
+    },
+    {
+      "file": "sandbox\\hr\\AWS_Access_Keys.csv",
+      "status": "INTACT"
+    }
+  ]
+}
+########## STEP 3: SIMULATE ransomware touching canaries ##########
+[
+  {
+    "file": "sandbox\\finance\\Passwords.xlsx",
+    "test_action": "modified_copy",
+    "test_file": "sandbox\\finance\\Passwords.xlsx.test_canary",
+    "status": "triggered"
+  },
+  {
+    "file": "sandbox\\finance\\Financial_Report_2026.docx",
+    "test_action": "modified_copy",
+    "test_file": "sandbox\\finance\\Financial_Report_2026.docx.test_canary",
+    "status": "triggered"
+  }
+]
+
+########## STEP 4: VERIFY after tampering (DETECTION) ##########
+{
+  "checked": 16,
+  "intact": 16,
+  "modified": 0,
+  "missing": 0
+}
+
+########## STEP 5: VERIFY after real encryption (DETECTION CONFIRMED) ##########
+Traceback (most recent call last):
+  File "<string>", line 3, in <module>
+    d=json.load(sys.stdin)
+  File "C:\Python314\Lib\json\__init__.py", line 298, in load
+    return loads(fp.read(),
+        cls=cls, object_hook=object_hook,
+        parse_float=parse_float, parse_int=parse_int,
+        parse_constant=parse_constant, object_pairs_hook=object_pairs_hook, **kw)
+  File "C:\Python314\Lib\json\__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Python314\Lib\json\decoder.py", line 348, in decode
+    raise JSONDecodeError("Extra data", s, end)
+json.decoder.JSONDecodeError: Extra data: line 74 column 1 (char 1575)
+
+########## Entropy proof: encrypted canary vs normal ##########
+  encrypted (.LOCKED)      : 4.98
+  untouched canary (.sql)  : 5.245
+########## STEP 5: VERIFY after real encryption (DETECTION CONFIRMED) ##########
+  "checked": 16,
+  "intact": 14,
+  "modified": 0,
+  "missing": 2,
+      "status": "MISSING"
+      "status": "MISSING"
+[ALERT] 0 modified, 2 missing canary files!
+
+-- files the agent flagged --
+      "file": "sandbox\\finance\\backup_credentials.csv",
+      "file": "sandbox\\hr\\AWS_Access_Keys.csv",

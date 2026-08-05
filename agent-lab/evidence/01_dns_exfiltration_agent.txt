@@ -1,0 +1,18 @@
+============================================================
+DNS Exfiltration Detection Agent
+Tunneling, DGA, volume anomaly, and TXT abuse detection
+============================================================
+
+--- DNS Tunneling Detection ---
+[!] evil-tunnel.com: 50 queries, avg subdomain len=60.0
+
+--- DGA Detection ---
+[!] x8kj2m9p4qw7nz3.xyz: entropy=3.9069
+
+--- TXT Record Abuse ---
+[!] 192.168.1.105: 50 TXT queries
+
+--- Entropy Examples ---
+  'google' -> entropy=1.9183
+  'x8kj2m9p4qw7n' -> entropy=3.7004
+  'aGVsbG8gd29ybGQ' -> entropy=3.2402

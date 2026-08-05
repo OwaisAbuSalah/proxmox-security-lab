@@ -1,0 +1,82 @@
+################################################################
+# SKILL: configuring-network-segmentation-with-vlans
+# TARGET: Proxmox node pve (192.168.29.132)
+# EXECUTED: 2026-08-02T17:31:36Z
+################################################################
+
+===== [1] BASELINE: current bridges =====
+vmbr0            UP             00:0c:29:4f:a4:0c <BROADCAST,MULTICAST,UP,LOWER_UP> 
+
+--- current interfaces file ---
+auto lo
+iface lo inet loopback
+
+iface nic0 inet manual
+
+auto vmbr0
+iface vmbr0 inet static
+	address 192.168.29.132/24
+	gateway 192.168.29.2
+	bridge-ports nic0
+	bridge-stp off
+	bridge-fd 0
+
+
+source /etc/network/interfaces.d/*
+===== [2] ENABLE VLAN-AWARE BRIDGE + CREATE ZONE BRIDGES =====
+Config written. Applying...
+
+===== [3] VERIFY: bridges now live =====
+vmbr0            UP             192.168.29.132/24 fe80::20c:29ff:fe4f:a40c/64 
+vmbr10           UNKNOWN        10.10.10.1/24 fe80::e06b:5ff:feeb:f7fa/64 
+vmbr20           UNKNOWN        10.10.20.1/24 fe80::eca9:f5ff:fefd:68e7/64 
+vmbr30           UNKNOWN        10.10.30.1/24 fe80::9c38:bff:fed9:c151/64 
+
+===== [4] VLAN-aware trunk status on vmbr0 =====
+vlan_filtering = 0
+
+===== [5] ZONE DESIGN =====
+BRIDGE     SUBNET           SECURITY ZONE
+vmbr0      192.168.29.0/24  MGMT (Proxmox UI, uplink)
+vmbr10     10.10.10.0/24    SERVERS (production sims)
+vmbr20     10.10.20.0/24    TARGETS (vulnerable, isolated)
+vmbr30     10.10.30.0/24    MONITORING (IDS/SIEM)
+===== [4b] CORRECTED vmbr0 STANZA =====
+auto vmbr0
+iface vmbr0 inet static
+^Iaddress 192.168.29.132/24
+^Igateway 192.168.29.2
+^Ibridge-ports nic0
+^Ibridge-stp off
+^Ibridge-fd 0
+^Ibridge-vlan-aware yes
+^Ibridge-vids 2-4094
+
+
+===== [4c] RE-VERIFY vlan_filtering (802.1Q trunk) =====
+vmbr0 vlan_filtering = 1
+
+--- VLAN table on trunk ---
+port              vlan-id  
+nic0              1 PVID Egress Untagged
+                  2
+                  3
+                  4
+                  5
+                  6
+                  7
+                  8
+                  9
+                  10
+                  11
+                  12
+                  13
+                  14
+                  15
+                  16
+                  17
+                  18
+                  19
+
+===== [4d] connectivity intact? =====
+vmbr0            UP             192.168.29.132/24 fe80::20c:29ff:fe4f:a40c/64 

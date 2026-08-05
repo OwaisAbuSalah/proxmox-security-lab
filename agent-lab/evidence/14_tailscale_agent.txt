@@ -1,0 +1,26 @@
+################################################################
+# SKILL: deploying-tailscale-for-zero-trust-vpn
+# EXECUTED: 2026-08-02T17:45:12Z
+################################################################
+===== [1] ADD OFFICIAL TAILSCALE APT REPO (key verified) =====
+keyring bytes: 2288
+Unpacking tailscale-archive-keyring (1.35.181) ...
+Setting up tailscale-archive-keyring (1.35.181) ...
+Setting up tailscale (1.98.10) ...
+Created symlink '/etc/systemd/system/multi-user.target.wants/tailscaled.service' → '/usr/lib/systemd/system/tailscaled.service'.
+
+--- version ---
+1.98.10
+  tailscale commit: 0ee734d3089846b27bc6ebcddd3d6ee5ec13e04d
+--- daemon ---
+active
+
+===== [2] WIREGUARD SUPPORT =====
+wireguard: kernel module loaded
+
+===== [3] IP FORWARDING (subnet router prerequisite) =====
+net.ipv4.ip_forward = 1
+net.ipv6.conf.all.forwarding = 1
+
+===== [4] STATE (auth pending - requires operator identity login) =====
+Logged out.

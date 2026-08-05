@@ -1,0 +1,1338 @@
+{
+  "sbom_file": "sboms/host-python.cdx.json",
+  "sbom_format": "cyclonedx",
+  "analysis_timestamp": "2026-08-02T09:03:20.522123",
+  "summary": {
+    "total_components": 75,
+    "vulnerable_components": 9,
+    "total_cves": 19,
+    "severity_counts": {
+      "MEDIUM": {
+        "components": 4,
+        "cves": 5
+      },
+      "HIGH": {
+        "components": 4,
+        "cves": 13
+      },
+      "CRITICAL": {
+        "components": 1,
+        "cves": 1
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "Deprecated",
+      "version": "1.3.1",
+      "purl": "pkg:pypi/deprecated@1.3.1",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "Flask",
+      "version": "3.1.3",
+      "purl": "pkg:pypi/flask@3.1.3",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [
+        {
+          "cve_id": "CVE-2026-27205",
+          "cvss_score": 4.3,
+          "cvss_version": "3.1",
+          "severity": "MEDIUM",
+          "description": "Flask is a web server gateway interface (WSGI) web application framework. In versions 3.1.2 and below, when the session object is accessed, Flask should set the Vary: Cookie header., resulting in a Use of Cache Containing Sensitive Information vulnerability. The logic instructs caches not to cache t",
+          "is_kev": false,
+          "published": "2026-02-21T06:17:00.910"
+        }
+      ],
+      "max_cvss": 4.3,
+      "risk_level": "MEDIUM"
+    },
+    {
+      "name": "Jinja2",
+      "version": "3.1.6",
+      "purl": "pkg:pypi/jinja2@3.1.6",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "MarkupSafe",
+      "version": "3.0.3",
+      "purl": "pkg:pypi/markupsafe@3.0.3",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "MouseInfo",
+      "version": "0.1.3",
+      "purl": "pkg:pypi/mouseinfo@0.1.3",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "PyAutoGUI",
+      "version": "0.9.54",
+      "purl": "pkg:pypi/pyautogui@0.9.54",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "PyGetWindow",
+      "version": "0.0.9",
+      "purl": "pkg:pypi/pygetwindow@0.0.9",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "PyMsgBox",
+      "version": "2.0.1",
+      "purl": "pkg:pypi/pymsgbox@2.0.1",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "PyRect",
+      "version": "0.2.0",
+      "purl": "pkg:pypi/pyrect@0.2.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "PyScreeze",
+      "version": "1.0.1",
+      "purl": "pkg:pypi/pyscreeze@1.0.1",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "Werkzeug",
+      "version": "3.1.8",
+      "purl": "pkg:pypi/werkzeug@3.1.8",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "aiohappyeyeballs",
+      "version": "2.7.1",
+      "purl": "pkg:pypi/aiohappyeyeballs@2.7.1",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "aiohttp",
+      "version": "3.14.3",
+      "purl": "pkg:pypi/aiohttp@3.14.3",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "aiosignal",
+      "version": "1.4.0",
+      "purl": "pkg:pypi/aiosignal@1.4.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "arabic-reshaper",
+      "version": "3.0.1",
+      "purl": "pkg:pypi/arabic-reshaper@3.0.1",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "attrs",
+      "version": "26.1.0",
+      "purl": "pkg:pypi/attrs@26.1.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "beautifulsoup4",
+      "version": "4.14.3",
+      "purl": "pkg:pypi/beautifulsoup4@4.14.3",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "blinker",
+      "version": "1.9.0",
+      "purl": "pkg:pypi/blinker@1.9.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "certifi",
+      "version": "2026.5.20",
+      "purl": "pkg:pypi/certifi@2026.5.20",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "charset-normalizer",
+      "version": "3.4.7",
+      "purl": "pkg:pypi/charset-normalizer@3.4.7",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "click",
+      "version": "8.4.1",
+      "purl": "pkg:pypi/click@8.4.1",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [
+        {
+          "cve_id": "CVE-2015-5759",
+          "cvss_score": 5.0,
+          "cvss_version": "2.0",
+          "severity": "MEDIUM",
+          "description": "WebKit in Apple iOS before 8.4.1 allows remote attackers to spoof clicks via a crafted web site that leverages tap events.",
+          "is_kev": false,
+          "published": "2015-08-17T00:00:42.673"
+        },
+        {
+          "cve_id": "CVE-2022-31097",
+          "cvss_score": 7.3,
+          "cvss_version": "3.1",
+          "severity": "HIGH",
+          "description": "Grafana is an open-source platform for monitoring and observability. Versions on the 8.x and 9.x branch prior to 9.0.3, 8.5.9, 8.4.10, and 8.3.10 are vulnerable to stored cross-site scripting via the Unified Alerting feature of Grafana. An attacker can exploit this vulnerability to escalate privileg",
+          "is_kev": false,
+          "published": "2022-07-15T12:15:08.903"
+        },
+        {
+          "cve_id": "CVE-2024-0203",
+          "cvss_score": 8.8,
+          "cvss_version": "3.1",
+          "severity": "HIGH",
+          "description": "The Digits plugin for WordPress is vulnerable to Cross-Site Request Forgery in versions up to, and including, 8.4.1. This is due to missing nonce validation in the 'digits_save_settings' function. This makes it possible for unauthenticated attackers to modify the default role of registered users to ",
+          "is_kev": false,
+          "published": "2024-03-07T20:15:50.293"
+        }
+      ],
+      "max_cvss": 8.8,
+      "risk_level": "HIGH"
+    },
+    {
+      "name": "colorama",
+      "version": "0.4.6",
+      "purl": "pkg:pypi/colorama@0.4.6",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "contourpy",
+      "version": "1.3.3",
+      "purl": "pkg:pypi/contourpy@1.3.3",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "cycler",
+      "version": "0.12.1",
+      "purl": "pkg:pypi/cycler@0.12.1",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "dataclasses-json",
+      "version": "0.6.7",
+      "purl": "pkg:pypi/dataclasses-json@0.6.7",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "defusedxml",
+      "version": "0.7.1",
+      "purl": "pkg:pypi/defusedxml@0.7.1",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "edge-tts",
+      "version": "7.2.8",
+      "purl": "pkg:pypi/edge-tts@7.2.8",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "et_xmlfile",
+      "version": "2.0.0",
+      "purl": "pkg:pypi/et_xmlfile@2.0.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "fonttools",
+      "version": "4.63.0",
+      "purl": "pkg:pypi/fonttools@4.63.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "frozenlist",
+      "version": "1.8.0",
+      "purl": "pkg:pypi/frozenlist@1.8.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "idna",
+      "version": "3.16",
+      "purl": "pkg:pypi/idna@3.16",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "itsdangerous",
+      "version": "2.2.0",
+      "purl": "pkg:pypi/itsdangerous@2.2.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "kiwisolver",
+      "version": "1.5.0",
+      "purl": "pkg:pypi/kiwisolver@1.5.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "lxml",
+      "version": "6.1.1",
+      "purl": "pkg:pypi/lxml@6.1.1",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "marshmallow",
+      "version": "3.26.2",
+      "purl": "pkg:pypi/marshmallow@3.26.2",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [
+        {
+          "cve_id": "CVE-2025-68480",
+          "cvss_score": 5.3,
+          "cvss_version": "3.1",
+          "severity": "MEDIUM",
+          "description": "Marshmallow is a lightweight library for converting complex objects to and from simple Python datatypes. In versions from 3.0.0rc1 to before 3.26.2 and from 4.0.0 to before 4.1.2, Schema.load(data, many=True) is vulnerable to denial of service attacks. A moderately sized request can consume a dispro",
+          "is_kev": false,
+          "published": "2025-12-22T22:16:09.457"
+        }
+      ],
+      "max_cvss": 5.3,
+      "risk_level": "MEDIUM"
+    },
+    {
+      "name": "matplotlib",
+      "version": "3.11.0",
+      "purl": "pkg:pypi/matplotlib@3.11.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "multidict",
+      "version": "6.7.1",
+      "purl": "pkg:pypi/multidict@6.7.1",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "mypy_extensions",
+      "version": "1.1.0",
+      "purl": "pkg:pypi/mypy_extensions@1.1.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "numpy",
+      "version": "2.4.6",
+      "purl": "pkg:pypi/numpy@2.4.6",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "opencv-python",
+      "version": "5.0.0.93",
+      "purl": "pkg:pypi/opencv-python@5.0.0.93",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "openpyxl",
+      "version": "3.1.5",
+      "purl": "pkg:pypi/openpyxl@3.1.5",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "packaging",
+      "version": "26.2",
+      "purl": "pkg:pypi/packaging@26.2",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "pandas",
+      "version": "3.0.3",
+      "purl": "pkg:pypi/pandas@3.0.3",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "pillow",
+      "version": "12.2.0",
+      "purl": "pkg:pypi/pillow@12.2.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [
+        {
+          "cve_id": "CVE-2026-42308",
+          "cvss_score": 5.5,
+          "cvss_version": "3.1",
+          "severity": "MEDIUM",
+          "description": "Pillow is a Python imaging library. Prior to version 12.2.0, if a font advances for each glyph by an exceeding large amount, when Pillow keeps track of the current position, it may lead to an integer overflow. This issue has been patched in version 12.2.0.",
+          "is_kev": false,
+          "published": "2026-05-09T06:16:09.793"
+        },
+        {
+          "cve_id": "CVE-2026-42309",
+          "cvss_score": 5.5,
+          "cvss_version": "3.1",
+          "severity": "MEDIUM",
+          "description": "Pillow is a Python imaging library. From version 11.2.1 to before version 12.2.0, passing nested lists as coordinates to APIs that accept coordinates such as ImagePath.Path, ImageDraw.ImageDraw.polygon and ImageDraw.ImageDraw.line could cause a heap buffer overflow, as nested lists were recursively ",
+          "is_kev": false,
+          "published": "2026-05-09T06:16:10.073"
+        },
+        {
+          "cve_id": "CVE-2026-42310",
+          "cvss_score": 5.5,
+          "cvss_version": "3.1",
+          "severity": "MEDIUM",
+          "description": "Pillow is a Python imaging library. From version 4.2.0 to before version 12.2.0, an attacker can supply a malicious PDF that causes the process to hang indefinitely, consuming 100% CPU and making the application unresponsive. This issue has been patched in version 12.2.0.",
+          "is_kev": false,
+          "published": "2026-05-09T06:16:10.273"
+        },
+        {
+          "cve_id": "CVE-2026-42311",
+          "cvss_score": 7.8,
+          "cvss_version": "3.1",
+          "severity": "HIGH",
+          "description": "Pillow is a Python imaging library. From version 10.3.0 to before version 12.2.0, processing a malicious PSD file could lead to memory corruption, potentially resulting in a crash or arbitrary code execution. This issue has been patched in version 12.2.0.",
+          "is_kev": false,
+          "published": "2026-05-09T06:16:10.430"
+        },
+        {
+          "cve_id": "CVE-2026-59203",
+          "cvss_score": 5.3,
+          "cvss_version": "3.1",
+          "severity": "MEDIUM",
+          "description": "Pillow is a Python imaging library. From 12.0.0 through 12.2.0, Pillow's EPS parser in PIL/EpsImagePlugin.py accepts a negative byte count in the %%BeginBinary directive, allowing a crafted EPS file to cause Image.open() to seek backwards to the same directive and parse it repeatedly in an infinite ",
+          "is_kev": false,
+          "published": "2026-07-14T16:17:02.063"
+        },
+        {
+          "cve_id": "CVE-2026-59204",
+          "cvss_score": 7.5,
+          "cvss_version": "3.1",
+          "severity": "HIGH",
+          "description": "Pillow is a Python imaging library. From 8.2.0 through 12.2.0, src/libImaging/Jpeg2KDecode.c accumulates total_component_width across every tile in a JPEG2000 image instead of recomputing it per tile, allowing a crafted tiled JPEG2000 file to force substantially higher transient memory usage and tri",
+          "is_kev": false,
+          "published": "2026-07-14T16:17:02.227"
+        }
+      ],
+      "max_cvss": 7.8,
+      "risk_level": "HIGH"
+    },
+    {
+      "name": "pip",
+      "version": "25.3",
+      "purl": "pkg:pypi/pip@25.3",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [
+        {
+          "cve_id": "CVE-2025-32800",
+          "cvss_score": 9.8,
+          "cvss_version": "3.1",
+          "severity": "CRITICAL",
+          "description": "Conda-build contains commands and tools to build conda packages. Prior to version 25.3.0, the pyproject.toml lists conda-index as a Python dependency. This package is not published in PyPI. An attacker could claim this namespace and upload arbitrary (malicious) code to the package, and then exploit ",
+          "is_kev": false,
+          "published": "2025-06-16T21:15:23.847"
+        }
+      ],
+      "max_cvss": 9.8,
+      "risk_level": "CRITICAL"
+    },
+    {
+      "name": "propcache",
+      "version": "0.5.2",
+      "purl": "pkg:pypi/propcache@0.5.2",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "psutil",
+      "version": "7.2.2",
+      "purl": "pkg:pypi/psutil@7.2.2",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "pygltflib",
+      "version": "1.16.5",
+      "purl": "pkg:pypi/pygltflib@1.16.5",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "pymupdf",
+      "version": "1.28.0",
+      "purl": "pkg:pypi/pymupdf@1.28.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "pyparsing",
+      "version": "3.3.2",
+      "purl": "pkg:pypi/pyparsing@3.3.2",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "pyperclip",
+      "version": "1.11.0",
+      "purl": "pkg:pypi/pyperclip@1.11.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "python-bidi",
+      "version": "0.6.11",
+      "purl": "pkg:pypi/python-bidi@0.6.11",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "python-dateutil",
+      "version": "2.9.0.post0",
+      "purl": "pkg:pypi/python-dateutil@2.9.0.post0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "python-docx",
+      "version": "1.2.0",
+      "purl": "pkg:pypi/python-docx@1.2.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "python-pptx",
+      "version": "1.0.2",
+      "purl": "pkg:pypi/python-pptx@1.0.2",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "pytweening",
+      "version": "1.2.0",
+      "purl": "pkg:pypi/pytweening@1.2.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "pywhatkit",
+      "version": "5.4",
+      "purl": "pkg:pypi/pywhatkit@5.4",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "pywin32",
+      "version": "312",
+      "purl": "pkg:pypi/pywin32@312",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "reportlab",
+      "version": "5.0.0",
+      "purl": "pkg:pypi/reportlab@5.0.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "requests",
+      "version": "2.34.2",
+      "purl": "pkg:pypi/requests@2.34.2",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [
+        {
+          "cve_id": "CVE-2026-55430",
+          "cvss_score": 5.8,
+          "cvss_version": "3.1",
+          "severity": "MEDIUM",
+          "description": "Coder allows organizations to provision remote development environments via Terraform. Prior to versions 2.29.7, 2.32.7, 2.33.8, and 2.34.2, the workspace app proxy resolves the target app from `httpapi.RequestHost()` which prefers the `X-Forwarded-Host` header over the real `Host` header. No middle",
+          "is_kev": false,
+          "published": "2026-07-08T01:16:27.270"
+        }
+      ],
+      "max_cvss": 5.8,
+      "risk_level": "MEDIUM"
+    },
+    {
+      "name": "six",
+      "version": "1.17.0",
+      "purl": "pkg:pypi/six@1.17.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "soupsieve",
+      "version": "2.8.4",
+      "purl": "pkg:pypi/soupsieve@2.8.4",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [
+        {
+          "cve_id": "CVE-2026-49476",
+          "cvss_score": 7.5,
+          "cvss_version": "3.1",
+          "severity": "HIGH",
+          "description": "Soup Sieve is a CSS selector library designed to be used with Beautiful Soup 4. Prior to 2.8.4, the CSS selector parser in soupsieve allocates unbounded memory when compiling large comma-separated selector lists, allowing an attacker who can supply a crafted selector string to soupsieve.compile() or",
+          "is_kev": false,
+          "published": "2026-07-14T21:17:01.877"
+        },
+        {
+          "cve_id": "CVE-2026-49477",
+          "cvss_score": 7.5,
+          "cvss_version": "3.1",
+          "severity": "HIGH",
+          "description": "Soup Sieve is a CSS selector library designed to be used with Beautiful Soup 4. Prior to 2.8.4, the CSS selector parser in soupsieve contains a regular expression vulnerable to catastrophic backtracking when processing an attribute selector with an unterminated quoted value in soupsieve/css_parser.p",
+          "is_kev": false,
+          "published": "2026-07-14T21:17:02.007"
+        }
+      ],
+      "max_cvss": 7.5,
+      "risk_level": "HIGH"
+    },
+    {
+      "name": "tabulate",
+      "version": "0.10.0",
+      "purl": "pkg:pypi/tabulate@0.10.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "trimesh",
+      "version": "4.12.2",
+      "purl": "pkg:pypi/trimesh@4.12.2",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "typing-inspect",
+      "version": "0.9.0",
+      "purl": "pkg:pypi/typing-inspect@0.9.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "typing_extensions",
+      "version": "4.15.0",
+      "purl": "pkg:pypi/typing_extensions@4.15.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "tzdata",
+      "version": "2026.2",
+      "purl": "pkg:pypi/tzdata@2026.2",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "uharfbuzz",
+      "version": "0.55.0",
+      "purl": "pkg:pypi/uharfbuzz@0.55.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "urllib3",
+      "version": "2.7.0",
+      "purl": "pkg:pypi/urllib3@2.7.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [
+        {
+          "cve_id": "CVE-2026-44431",
+          "cvss_score": 5.3,
+          "cvss_version": "3.1",
+          "severity": "MEDIUM",
+          "description": "urllib3 is an HTTP client library for Python. From 1.23 to before 2.7.0, cross-origin redirects followed from the low-level API via ProxyManager.connection_from_url().urlopen(..., assert_same_host=False) still forward these sensitive headers. This vulnerability is fixed in 2.7.0.",
+          "is_kev": false,
+          "published": "2026-05-13T16:16:57.150"
+        },
+        {
+          "cve_id": "CVE-2026-44432",
+          "cvss_score": 7.5,
+          "cvss_version": "3.1",
+          "severity": "HIGH",
+          "description": "urllib3 is an HTTP client library for Python. From 2.6.0 to before 2.7.0, urllib3 could decompress the whole response instead of the requested portion (1) during the second HTTPResponse.read(amt=N) call when the response was decompressed using the official Brotli library or (2) when HTTPResponse.dra",
+          "is_kev": false,
+          "published": "2026-05-13T16:16:57.303"
+        }
+      ],
+      "max_cvss": 7.5,
+      "risk_level": "HIGH"
+    },
+    {
+      "name": "vtracer",
+      "version": "0.6.15",
+      "purl": "pkg:pypi/vtracer@0.6.15",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "watchdog",
+      "version": "6.0.0",
+      "purl": "pkg:pypi/watchdog@6.0.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [
+        {
+          "cve_id": "CVE-2022-50445",
+          "cvss_score": 5.5,
+          "cvss_version": "3.1",
+          "severity": "MEDIUM",
+          "description": "In the Linux kernel, the following vulnerability has been resolved:\n\nxfrm: Reinject transport-mode packets through workqueue\n\nThe following warning is displayed when the tcp6-multi-diffip11 stress\ntest case of the LTP test suite is tested:\n\nwatchdog: BUG: soft lockup - CPU#0 stuck for 22s! [ns-tcpse",
+          "is_kev": false,
+          "published": "2025-10-01T12:15:36.897"
+        },
+        {
+          "cve_id": "CVE-2022-50517",
+          "cvss_score": 5.5,
+          "cvss_version": "3.1",
+          "severity": "MEDIUM",
+          "description": "In the Linux kernel, the following vulnerability has been resolved:\n\nmm/huge_memory: do not clobber swp_entry_t during THP split\n\nThe following has been observed when running stressng mmap since commit\nb653db77350c (\"mm: Clear page->private when splitting or migrating a page\")\n\n   watchdog: BUG: sof",
+          "is_kev": false,
+          "published": "2025-10-07T16:15:35.367"
+        }
+      ],
+      "max_cvss": 5.5,
+      "risk_level": "MEDIUM"
+    },
+    {
+      "name": "wikipedia",
+      "version": "1.4.0",
+      "purl": "pkg:pypi/wikipedia@1.4.0",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "wrapt",
+      "version": "2.2.2",
+      "purl": "pkg:pypi/wrapt@2.2.2",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "xlsxwriter",
+      "version": "3.2.9",
+      "purl": "pkg:pypi/xlsxwriter@3.2.9",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    },
+    {
+      "name": "yarl",
+      "version": "1.24.5",
+      "purl": "pkg:pypi/yarl@1.24.5",
+      "cpe": null,
+      "type": "library",
+      "licenses": [],
+      "cves": [],
+      "max_cvss": 0.0,
+      "risk_level": "NONE"
+    }
+  ],
+  "dependency_graph": {},
+  "license_compliance": {
+    "copyleft_components": [],
+    "unknown_license_components": [
+      {
+        "name": "Deprecated",
+        "version": "1.3.1"
+      },
+      {
+        "name": "Flask",
+        "version": "3.1.3"
+      },
+      {
+        "name": "Jinja2",
+        "version": "3.1.6"
+      },
+      {
+        "name": "MarkupSafe",
+        "version": "3.0.3"
+      },
+      {
+        "name": "MouseInfo",
+        "version": "0.1.3"
+      },
+      {
+        "name": "PyAutoGUI",
+        "version": "0.9.54"
+      },
+      {
+        "name": "PyGetWindow",
+        "version": "0.0.9"
+      },
+      {
+        "name": "PyMsgBox",
+        "version": "2.0.1"
+      },
+      {
+        "name": "PyRect",
+        "version": "0.2.0"
+      },
+      {
+        "name": "PyScreeze",
+        "version": "1.0.1"
+      },
+      {
+        "name": "Werkzeug",
+        "version": "3.1.8"
+      },
+      {
+        "name": "aiohappyeyeballs",
+        "version": "2.7.1"
+      },
+      {
+        "name": "aiohttp",
+        "version": "3.14.3"
+      },
+      {
+        "name": "aiosignal",
+        "version": "1.4.0"
+      },
+      {
+        "name": "arabic-reshaper",
+        "version": "3.0.1"
+      },
+      {
+        "name": "attrs",
+        "version": "26.1.0"
+      },
+      {
+        "name": "beautifulsoup4",
+        "version": "4.14.3"
+      },
+      {
+        "name": "blinker",
+        "version": "1.9.0"
+      },
+      {
+        "name": "certifi",
+        "version": "2026.5.20"
+      },
+      {
+        "name": "charset-normalizer",
+        "version": "3.4.7"
+      },
+      {
+        "name": "click",
+        "version": "8.4.1"
+      },
+      {
+        "name": "colorama",
+        "version": "0.4.6"
+      },
+      {
+        "name": "contourpy",
+        "version": "1.3.3"
+      },
+      {
+        "name": "cycler",
+        "version": "0.12.1"
+      },
+      {
+        "name": "dataclasses-json",
+        "version": "0.6.7"
+      },
+      {
+        "name": "defusedxml",
+        "version": "0.7.1"
+      },
+      {
+        "name": "edge-tts",
+        "version": "7.2.8"
+      },
+      {
+        "name": "et_xmlfile",
+        "version": "2.0.0"
+      },
+      {
+        "name": "fonttools",
+        "version": "4.63.0"
+      },
+      {
+        "name": "frozenlist",
+        "version": "1.8.0"
+      },
+      {
+        "name": "idna",
+        "version": "3.16"
+      },
+      {
+        "name": "itsdangerous",
+        "version": "2.2.0"
+      },
+      {
+        "name": "kiwisolver",
+        "version": "1.5.0"
+      },
+      {
+        "name": "lxml",
+        "version": "6.1.1"
+      },
+      {
+        "name": "marshmallow",
+        "version": "3.26.2"
+      },
+      {
+        "name": "matplotlib",
+        "version": "3.11.0"
+      },
+      {
+        "name": "multidict",
+        "version": "6.7.1"
+      },
+      {
+        "name": "mypy_extensions",
+        "version": "1.1.0"
+      },
+      {
+        "name": "numpy",
+        "version": "2.4.6"
+      },
+      {
+        "name": "opencv-python",
+        "version": "5.0.0.93"
+      },
+      {
+        "name": "openpyxl",
+        "version": "3.1.5"
+      },
+      {
+        "name": "packaging",
+        "version": "26.2"
+      },
+      {
+        "name": "pandas",
+        "version": "3.0.3"
+      },
+      {
+        "name": "pillow",
+        "version": "12.2.0"
+      },
+      {
+        "name": "pip",
+        "version": "25.3"
+      },
+      {
+        "name": "propcache",
+        "version": "0.5.2"
+      },
+      {
+        "name": "psutil",
+        "version": "7.2.2"
+      },
+      {
+        "name": "pygltflib",
+        "version": "1.16.5"
+      },
+      {
+        "name": "pymupdf",
+        "version": "1.28.0"
+      },
+      {
+        "name": "pyparsing",
+        "version": "3.3.2"
+      },
+      {
+        "name": "pyperclip",
+        "version": "1.11.0"
+      },
+      {
+        "name": "python-bidi",
+        "version": "0.6.11"
+      },
+      {
+        "name": "python-dateutil",
+        "version": "2.9.0.post0"
+      },
+      {
+        "name": "python-docx",
+        "version": "1.2.0"
+      },
+      {
+        "name": "python-pptx",
+        "version": "1.0.2"
+      },
+      {
+        "name": "pytweening",
+        "version": "1.2.0"
+      },
+      {
+        "name": "pywhatkit",
+        "version": "5.4"
+      },
+      {
+        "name": "pywin32",
+        "version": "312"
+      },
+      {
+        "name": "reportlab",
+        "version": "5.0.0"
+      },
+      {
+        "name": "requests",
+        "version": "2.34.2"
+      },
+      {
+        "name": "six",
+        "version": "1.17.0"
+      },
+      {
+        "name": "soupsieve",
+        "version": "2.8.4"
+      },
+      {
+        "name": "tabulate",
+        "version": "0.10.0"
+      },
+      {
+        "name": "trimesh",
+        "version": "4.12.2"
+      },
+      {
+        "name": "typing-inspect",
+        "version": "0.9.0"
+      },
+      {
+        "name": "typing_extensions",
+        "version": "4.15.0"
+      },
+      {
+        "name": "tzdata",
+        "version": "2026.2"
+      },
+      {
+        "name": "uharfbuzz",
+        "version": "0.55.0"
+      },
+      {
+        "name": "urllib3",
+        "version": "2.7.0"
+      },
+      {
+        "name": "vtracer",
+        "version": "0.6.15"
+      },
+      {
+        "name": "watchdog",
+        "version": "6.0.0"
+      },
+      {
+        "name": "wikipedia",
+        "version": "1.4.0"
+      },
+      {
+        "name": "wrapt",
+        "version": "2.2.2"
+      },
+      {
+        "name": "xlsxwriter",
+        "version": "3.2.9"
+      },
+      {
+        "name": "yarl",
+        "version": "1.24.5"
+      }
+    ],
+    "license_distribution": {}
+  }
+}

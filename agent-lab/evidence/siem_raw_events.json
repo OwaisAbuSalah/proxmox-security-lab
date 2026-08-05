@@ -1,0 +1,26 @@
+{"ts":"2026-08-02T20:38:31.485321+0300","source":"suricata","type":"ids_alert","sig":"LAB ICMP ping sweep detected (T1018)","sid":9000003,"src_ip":"192.168.29.132","dst_ip":"192.168.29.2"}
+{"ts":"2026-08-02T20:38:42.234821+0300","source":"suricata","type":"ids_alert","sig":"LAB Suspicious TXT query - possible exfil (T1048.003)","sid":9000002,"src_ip":"192.168.29.132","dst_ip":"192.168.29.2"}
+{"ts":"2026-08-02T20:38:42.289207+0300","source":"suricata","type":"ids_alert","sig":"LAB Suspicious TXT query - possible exfil (T1048.003)","sid":9000002,"src_ip":"192.168.29.132","dst_ip":"192.168.29.2"}
+{"ts":"2026-08-02T20:38:42.343565+0300","source":"suricata","type":"ids_alert","sig":"LAB Suspicious TXT query - possible exfil (T1048.003)","sid":9000002,"src_ip":"192.168.29.132","dst_ip":"192.168.29.2"}
+{"ts":"2026-08-02T20:38:42.396936+0300","source":"suricata","type":"ids_alert","sig":"LAB Suspicious TXT query - possible exfil (T1048.003)","sid":9000002,"src_ip":"192.168.29.132","dst_ip":"192.168.29.2"}
+{"ts":"2026-08-02T20:38:42.550645+0300","source":"suricata","type":"ids_alert","sig":"LAB Possible port scan - SYN burst (T1046)","sid":9000005,"src_ip":"192.168.29.132","dst_ip":"192.168.29.2"}
+{"ts":"1785692009170961","source":"sshd","type":"auth","msg":"Accepted publickey for root from 192.168.29.1 port 65127 ssh2: ED25519 SHA256:6Hfh3ZHw4UQfwIWCbzMwN+tH60DS/5AwWLniZOuk7vY"}
+{"ts":"1785692009171915","source":"sshd","type":"auth","msg":"pam_unix(sshd:session): session opened for user root(uid=0) by root(uid=0)"}
+{"ts":"1785692031389586","source":"sshd","type":"auth","msg":"Accepted publickey for root from 192.168.29.1 port 65129 ssh2: ED25519 SHA256:6Hfh3ZHw4UQfwIWCbzMwN+tH60DS/5AwWLniZOuk7vY"}
+{"ts":"1785692031390556","source":"sshd","type":"auth","msg":"pam_unix(sshd:session): session opened for user root(uid=0) by root(uid=0)"}
+{"ts":"1785692069021040","source":"sshd","type":"auth","msg":"Accepted publickey for root from 192.168.29.1 port 49964 ssh2: ED25519 SHA256:6Hfh3ZHw4UQfwIWCbzMwN+tH60DS/5AwWLniZOuk7vY"}
+{"ts":"1785692069021679","source":"sshd","type":"auth","msg":"pam_unix(sshd:session): session opened for user root(uid=0) by root(uid=0)"}
+{"ts":"1785692103671779","source":"sshd","type":"auth","msg":"Accepted publickey for root from 192.168.29.1 port 53135 ssh2: ED25519 SHA256:6Hfh3ZHw4UQfwIWCbzMwN+tH60DS/5AwWLniZOuk7vY"}
+{"ts":"1785692103672836","source":"sshd","type":"auth","msg":"pam_unix(sshd:session): session opened for user root(uid=0) by root(uid=0)"}
+{"ts":"1785692140845093","source":"sshd","type":"auth","msg":"Accepted publickey for root from 192.168.29.1 port 53093 ssh2: ED25519 SHA256:6Hfh3ZHw4UQfwIWCbzMwN+tH60DS/5AwWLniZOuk7vY"}
+{"ts":"1785692140846368","source":"sshd","type":"auth","msg":"pam_unix(sshd:session): session opened for user root(uid=0) by root(uid=0)"}
+{"ts":"1785692175752340","source":"sshd","type":"auth","msg":"Accepted publickey for root from 192.168.29.1 port 63314 ssh2: ED25519 SHA256:6Hfh3ZHw4UQfwIWCbzMwN+tH60DS/5AwWLniZOuk7vY"}
+{"ts":"1785692175753706","source":"sshd","type":"auth","msg":"pam_unix(sshd:session): session opened for user root(uid=0) by root(uid=0)"}
+{"ts":"1785692231081130","source":"sshd","type":"auth","msg":"Accepted publickey for root from 192.168.29.1 port 57420 ssh2: ED25519 SHA256:6Hfh3ZHw4UQfwIWCbzMwN+tH60DS/5AwWLniZOuk7vY"}
+{"ts":"1785692231082271","source":"sshd","type":"auth","msg":"pam_unix(sshd:session): session opened for user root(uid=0) by root(uid=0)"}
+{"ts":"1785692269403764","source":"sshd","type":"auth","msg":"Accepted publickey for root from 192.168.29.1 port 56828 ssh2: ED25519 SHA256:6Hfh3ZHw4UQfwIWCbzMwN+tH60DS/5AwWLniZOuk7vY"}
+{"ts":"1785692269405107","source":"sshd","type":"auth","msg":"pam_unix(sshd:session): session opened for user root(uid=0) by root(uid=0)"}
+{"ts":"1785692311319278","source":"sshd","type":"auth","msg":"Accepted publickey for root from 192.168.29.1 port 56829 ssh2: ED25519 SHA256:6Hfh3ZHw4UQfwIWCbzMwN+tH60DS/5AwWLniZOuk7vY"}
+{"ts":"1785692311320538","source":"sshd","type":"auth","msg":"pam_unix(sshd:session): session opened for user root(uid=0) by root(uid=0)"}
+{"ts":"1785692363394309","source":"sshd","type":"auth","msg":"Accepted publickey for root from 192.168.29.1 port 56843 ssh2: ED25519 SHA256:6Hfh3ZHw4UQfwIWCbzMwN+tH60DS/5AwWLniZOuk7vY"}
+{"ts":"1785692363395431","source":"sshd","type":"auth","msg":"pam_unix(sshd:session): session opened for user root(uid=0) by root(uid=0)"}

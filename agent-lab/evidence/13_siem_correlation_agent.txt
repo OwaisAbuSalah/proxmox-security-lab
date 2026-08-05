@@ -1,0 +1,38 @@
+<stdin>:7: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+################################################################
+# SKILL: analyzing-security-logs-with-splunk  [ADAPTED -> SPL-equivalent correlation]
+# NOTE: Splunk Enterprise requires a licensed server; we implemented the
+#       same correlation logic (stats/timeline/threat-mapping) over the
+#       REAL multi-source logs collected from the Proxmox lab.
+# EXECUTED: 2026-08-02T17:43:14Z
+################################################################
+
+[1] INGESTED 26 events from 2 sources
+      suricata       6 events
+      sshd           20 events
+
+[2] CORRELATION — alerts by signature (SPL: stats count by alert.signature)
+        4x  LAB Suspicious TXT query - possible exfil (T1048.003)
+        1x  LAB ICMP ping sweep detected (T1018)
+        1x  LAB Possible port scan - SYN burst (T1046)
+
+[3] TOP TALKERS (SPL: top src_ip)
+      192.168.29.132     6 events
+
+[4] INCIDENT TIMELINE (chronological reconstruction)
+      2026-08-02T20:38:31  192.168.29.132 -> 192.168.29.2  LAB ICMP ping sweep detected (T1018)
+      2026-08-02T20:38:42  192.168.29.132 -> 192.168.29.2  LAB Suspicious TXT query - possible exfil (T1048.003
+      2026-08-02T20:38:42  192.168.29.132 -> 192.168.29.2  LAB Suspicious TXT query - possible exfil (T1048.003
+      2026-08-02T20:38:42  192.168.29.132 -> 192.168.29.2  LAB Suspicious TXT query - possible exfil (T1048.003
+      2026-08-02T20:38:42  192.168.29.132 -> 192.168.29.2  LAB Suspicious TXT query - possible exfil (T1048.003
+      2026-08-02T20:38:42  192.168.29.132 -> 192.168.29.2  LAB Possible port scan - SYN burst (T1046)
+
+[5] MITRE ATT&CK COVERAGE OBSERVED
+      T1048.003    4 detections
+      T1018        1 detections
+      T1046        1 detections
+
+[6] ANALYST VERDICT
+      Single internal host generated recon + exfil-pattern traffic in a
+      12-second window -> consistent with automated attack tooling.
+      In production this would escalate to IR (NIST CSF RS.MA-01).

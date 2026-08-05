@@ -1,0 +1,80 @@
+################################################################
+# SKILL: configuring-suricata-for-network-monitoring
+# TARGET: Proxmox node pve (192.168.29.132)
+# EXECUTED: 2026-08-02T17:34:00Z
+################################################################
+===== [1] INSTALL SURICATA =====
+E: The repository 'https://enterprise.proxmox.com/debian/ceph-squid trixie InRelease' is not signed.
+E: Failed to fetch https://enterprise.proxmox.com/debian/pve/dists/trixie/InRelease  401  Unauthorized [IP: 185.219.221.167 443]
+E: The repository 'https://enterprise.proxmox.com/debian/pve trixie InRelease' is not signed.
+Setting up librte-hash25:amd64 (24.11.4-0+deb13u1) ...
+Setting up librte-ethdev25:amd64 (24.11.4-0+deb13u1) ...
+Setting up librte-ip-frag25:amd64 (24.11.4-0+deb13u1) ...
+Setting up librte-net-bond25:amd64 (24.11.4-0+deb13u1) ...
+Setting up suricata (1:7.0.10-1+deb13u4) ...
+Created symlink '/etc/systemd/system/multi-user.target.wants/suricata.service' → '/usr/lib/systemd/system/suricata.service'.
+Processing triggers for man-db (2.13.1-1) ...
+Processing triggers for libc-bin (2.41-12+deb13u3) ...
+
+--- version ---
+This is Suricata version 7.0.10 RELEASE
+Features: NFQ PCAP_SET_BUFF AF_PACKET HAVE_PACKET_FANOUT LIBCAP_NG LIBNET1.1 HAVE_HTP_URI_NORMALIZE_HOOK PCRE_JIT HAVE_NSS HTTP2_DECOMPRESSION HAVE_LUA HAVE_JA3 HAVE_JA4 HAVE_LUAJIT HAVE_LIBJANSSON TLS TLS_C11 MAGIC RUST POPCNT64 
+SIMD support: SSE_4_2 SSE_4_1 SSE_3 SSE_2 
+Atomic intrinsics: 1 2 4 8 16 byte(s)
+===== [2] CUSTOM DETECTION RULES (mapped to MITRE ATT&CK) =====
+rules written: 5 /etc/suricata/rules/lab.rules
+suricata.yaml updated
+
+===== [3] CONFIG VALIDATION =====
+Info: suricata: Setting engine mode to IDS mode by default
+Info: exception-policy: master exception-policy set to: auto
+Info: logopenfile: fast output device (regular) initialized: fast.log
+Info: logopenfile: eve-log output device (regular) initialized: eve.json
+Info: logopenfile: stats output device (regular) initialized: stats.log
+Warning: detect: No rule files match the pattern /var/lib/suricata/rules/lab.rules
+===== [3b] RE-VALIDATE =====
+Info: exception-policy: master exception-policy set to: auto
+Info: logopenfile: fast output device (regular) initialized: fast.log
+Info: logopenfile: eve-log output device (regular) initialized: eve.json
+Info: logopenfile: stats output device (regular) initialized: stats.log
+Warning: detect: No rule files match the pattern /var/lib/suricata/rules/suricata.rules
+
+===== [4] START SURICATA ON vmbr0 =====
+service: active
+--- rules actually loaded ---
+[79118 - Suricata-Main] 2026-08-02 20:37:49 Info: detect: 2 rule files processed. 5 rules successfully loaded, 0 rules failed, 0
+===== [5] ATTACK SIMULATION (inside isolated lab) =====
+[a] ICMP ping sweep -> expect T1018 alert
+[b] DNS tunneling query (60-char subdomain) -> expect T1071.004
+[c] DNS exfil-named query -> expect T1048.003
+[d] HTTP request with C2 user-agent -> expect T1071.001
+[e] TCP SYN port scan burst -> expect T1046
+...waiting for Suricata to flush events...
+===== [6] DETECTION RESULTS =====
+--- fast.log alerts ---
+08/02/2026-20:38:31.485321  [**] [1:9000003:1] LAB ICMP ping sweep detected (T1018) [**] [Classification: (null)] [Priority: 3] {ICMP} 192.168.29.132:8 -> 192.168.29.2:0
+08/02/2026-20:38:42.234821  [**] [1:9000002:1] LAB Suspicious TXT query - possible exfil (T1048.003) [**] [Classification: (null)] [Priority: 3] {UDP} 192.168.29.132:41870 -> 192.168.29.2:53
+08/02/2026-20:38:42.289207  [**] [1:9000002:1] LAB Suspicious TXT query - possible exfil (T1048.003) [**] [Classification: (null)] [Priority: 3] {UDP} 192.168.29.132:45340 -> 192.168.29.2:53
+08/02/2026-20:38:42.343565  [**] [1:9000002:1] LAB Suspicious TXT query - possible exfil (T1048.003) [**] [Classification: (null)] [Priority: 3] {UDP} 192.168.29.132:59209 -> 192.168.29.2:53
+08/02/2026-20:38:42.396936  [**] [1:9000002:1] LAB Suspicious TXT query - possible exfil (T1048.003) [**] [Classification: (null)] [Priority: 3] {UDP} 192.168.29.132:51037 -> 192.168.29.2:53
+08/02/2026-20:38:42.550645  [**] [1:9000005:1] LAB Possible port scan - SYN burst (T1046) [**] [Classification: (null)] [Priority: 3] {TCP} 192.168.29.132:58824 -> 192.168.29.2:38
+
+--- EVE JSON alerts (structured, SIEM-ready) ---
+{"ts":"2026-08-02T20:38:31.485321+0300","sig":"LAB ICMP ping sweep detected (T1018)","sid":9000003,"src":"192.168.29.132","dst":"192.168.29.2"}
+{"ts":"2026-08-02T20:38:42.234821+0300","sig":"LAB Suspicious TXT query - possible exfil (T1048.003)","sid":9000002,"src":"192.168.29.132","dst":"192.168.29.2"}
+{"ts":"2026-08-02T20:38:42.289207+0300","sig":"LAB Suspicious TXT query - possible exfil (T1048.003)","sid":9000002,"src":"192.168.29.132","dst":"192.168.29.2"}
+{"ts":"2026-08-02T20:38:42.343565+0300","sig":"LAB Suspicious TXT query - possible exfil (T1048.003)","sid":9000002,"src":"192.168.29.132","dst":"192.168.29.2"}
+{"ts":"2026-08-02T20:38:42.396936+0300","sig":"LAB Suspicious TXT query - possible exfil (T1048.003)","sid":9000002,"src":"192.168.29.132","dst":"192.168.29.2"}
+{"ts":"2026-08-02T20:38:42.550645+0300","sig":"LAB Possible port scan - SYN burst (T1046)","sid":9000005,"src":"192.168.29.132","dst":"192.168.29.2"}
+
+--- alert count by signature ---
+      4 LAB Suspicious TXT query - possible exfil (T1048.003)
+      1 LAB Possible port scan - SYN burst (T1046)
+      1 LAB ICMP ping sweep detected (T1018)
+
+--- total events captured by type ---
+     34 dns
+      6 stats
+      6 alert
+      1 ssh
+      1 flow

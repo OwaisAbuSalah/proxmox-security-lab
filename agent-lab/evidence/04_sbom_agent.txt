@@ -1,0 +1,72 @@
+########## SBOM AGENT: parse ##########
+
+[INFO] Parsing SBOM: sboms/host-python.cdx.json
+  Format: CycloneDX v1.5
+
+  Total components: 75
+    Deprecated@1.3.1 [library] licenses=[]
+    Flask@3.1.3 [library] licenses=[]
+    Jinja2@3.1.6 [library] licenses=[]
+    MarkupSafe@3.0.3 [library] licenses=[]
+    MouseInfo@0.1.3 [library] licenses=[]
+    PyAutoGUI@0.9.54 [library] licenses=[]
+    PyGetWindow@0.0.9 [library] licenses=[]
+    PyMsgBox@2.0.1 [library] licenses=[]
+    PyRect@0.2.0 [library] licenses=[]
+    PyScreeze@1.0.1 [library] licenses=[]
+    Werkzeug@3.1.8 [library] licenses=[]
+    aiohappyeyeballs@2.7.1 [library] licenses=[]
+    aiohttp@3.14.3 [library] licenses=[]
+    aiosignal@1.4.0 [library] licenses=[]
+    arabic-reshaper@3.0.1 [library] licenses=[]
+    attrs@26.1.0 [library] licenses=[]
+    beautifulsoup4@4.14.3 [library] licenses=[]
+    blinker@1.9.0 [library] licenses=[]
+    certifi@2026.5.20 [library] licenses=[]
+    charset-normalizer@3.4.7 [library] licenses=[]
+########## SBOM AGENT: vulnerability analysis (live NVD 2.0 API) ##########
+CRITICAL & HIGH FINDINGS
+----------------------------------------
+
+  1. pip@25.3 [CRITICAL]
+     CVE-2025-32800 (CVSS 9.8)
+       Conda-build contains commands and tools to build conda packages. Prior to version 25.3.0, the pyproject.toml lists conda...
+
+  2. click@8.4.1 [HIGH]
+     CVE-2024-0203 (CVSS 8.8)
+       The Digits plugin for WordPress is vulnerable to Cross-Site Request Forgery in versions up to, and including, 8.4.1. Thi...
+     CVE-2022-31097 (CVSS 7.3)
+       Grafana is an open-source platform for monitoring and observability. Versions on the 8.x and 9.x branch prior to 9.0.3, ...
+     CVE-2015-5759 (CVSS 5.0)
+       WebKit in Apple iOS before 8.4.1 allows remote attackers to spoof clicks via a crafted web site that leverages tap event...
+
+  3. pillow@12.2.0 [HIGH]
+     CVE-2026-42311 (CVSS 7.8)
+       Pillow is a Python imaging library. From version 10.3.0 to before version 12.2.0, processing a malicious PSD file could ...
+     CVE-2026-59204 (CVSS 7.5)
+       Pillow is a Python imaging library. From 8.2.0 through 12.2.0, src/libImaging/Jpeg2KDecode.c accumulates total_component...
+     CVE-2026-42308 (CVSS 5.5)
+       Pillow is a Python imaging library. Prior to version 12.2.0, if a font advances for each glyph by an exceeding large amo...
+     CVE-2026-42309 (CVSS 5.5)
+       Pillow is a Python imaging library. From version 11.2.1 to before version 12.2.0, passing nested lists as coordinates to...
+     CVE-2026-42310 (CVSS 5.5)
+       Pillow is a Python imaging library. From version 4.2.0 to before version 12.2.0, an attacker can supply a malicious PDF ...
+
+  4. soupsieve@2.8.4 [HIGH]
+     CVE-2026-49476 (CVSS 7.5)
+       Soup Sieve is a CSS selector library designed to be used with Beautiful Soup 4. Prior to 2.8.4, the CSS selector parser ...
+     CVE-2026-49477 (CVSS 7.5)
+       Soup Sieve is a CSS selector library designed to be used with Beautiful Soup 4. Prior to 2.8.4, the CSS selector parser ...
+
+  5. urllib3@2.7.0 [HIGH]
+     CVE-2026-44432 (CVSS 7.5)
+       urllib3 is an HTTP client library for Python. From 2.6.0 to before 2.7.0, urllib3 could decompress the whole response in...
+     CVE-2026-44431 (CVSS 5.3)
+       urllib3 is an HTTP client library for Python. From 1.23 to before 2.7.0, cross-origin redirects followed from the low-le...
+
+LICENSE COMPLIANCE
+----------------------------------------
+  Copyleft licenses found: 0
+  Unknown/missing licenses: 75
+
+[OK] Full report saved to evidence/sbom_report.json

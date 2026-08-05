@@ -1,0 +1,57 @@
+################################################################
+# SKILL: configuring-pfsense-firewall-rules  [ADAPTED]
+# NOTE: implemented with Proxmox's built-in firewall (pve-firewall),
+#       which enforces the same zone policy as the pfSense workflow.
+# EXECUTED: 2026-08-02T17:40:54Z
+################################################################
+===== [1] DEFINE ALIASES + SECURITY GROUPS (datacenter level) =====
+cluster.fw written:
+24 /etc/pve/firewall/cluster.fw
+
+===== [2] COMPILE + ACTIVATE =====
+/etc/pve/firewall/cluster.fw (line 14) - errors in rule parameters: IN ACCEPT -source +dc/mgmt_net -p tcp -dport 8006 -log info # Proxmox UI from mgmt only
+/etc/pve/firewall/cluster.fw (line 15) - errors in rule parameters: IN ACCEPT -source +dc/mgmt_net -p tcp -dport 22 -log info   # SSH from mgmt only
+/etc/pve/firewall/cluster.fw (line 18) - errors in rule parameters: IN DROP -source +dc/targets_net -dest +dc/mgmt_net -log warning # targets must not reach mgmt
+/etc/pve/firewall/cluster.fw (line 19) - errors in rule parameters: IN DROP -source +dc/targets_net -dest +dc/servers_net -log warning # no lateral movement
+/etc/pve/firewall/cluster.fw (line 14) - errors in rule parameters: IN ACCEPT -source +dc/mgmt_net -p tcp -dport 8006 -log info # Proxmox UI from mgmt only
+  source: no such ipset 'mgmt_net'
+/etc/pve/firewall/cluster.fw (line 15) - errors in rule parameters: IN ACCEPT -source +dc/mgmt_net -p tcp -dport 22 -log info   # SSH from mgmt only
+  source: no such ipset 'mgmt_net'
+
+===== [3] ACTIVE RULESET (kernel level) =====
+[safety] auto-revert armed (4 min)
+
+===== [1b] FIXED: aliases referenced without '+' (that prefix is for IPSets) =====
+===== [2b] COMPILE (must be clean before activating) =====
+compile clean; activating...
+Status: enabled/running
+[safety] access confirmed -> auto-revert cancelled
+
+===== [3b] ACTIVE KERNEL RULESET =====
+Chain PVEFW-HOST-IN (1 references)
+target     prot opt source               destination         
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           
+DROP       all  --  0.0.0.0/0            0.0.0.0/0            ctstate INVALID
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+PVEFW-smurfs  all  --  0.0.0.0/0            0.0.0.0/0            ctstate INVALID,NEW
+RETURN     2    --  0.0.0.0/0            0.0.0.0/0           
+NFLOG      tcp  --  192.168.29.0/24      0.0.0.0/0            tcp dpt:8006 limit: avg 10/sec burst 5 nflog-prefix ":0:6:PVEFW-HOST-IN: ACCEPT: "
+RETURN     tcp  --  192.168.29.0/24      0.0.0.0/0            tcp dpt:8006
+NFLOG      tcp  --  192.168.29.0/24      0.0.0.0/0            tcp dpt:22 limit: avg 10/sec burst 5 nflog-prefix ":0:6:PVEFW-HOST-IN: ACCEPT: "
+RETURN     tcp  --  192.168.29.0/24      0.0.0.0/0            tcp dpt:22
+NFLOG      all  --  10.10.20.0/24        192.168.29.0/24      limit: avg 10/sec burst 5 nflog-prefix ":0:4:PVEFW-HOST-IN: DROP: "
+DROP       all  --  10.10.20.0/24        192.168.29.0/24     
+NFLOG      all  --  10.10.20.0/24        10.10.10.0/24        limit: avg 10/sec burst 5 nflog-prefix ":0:4:PVEFW-HOST-IN: DROP: "
+DROP       all  --  10.10.20.0/24        10.10.10.0/24       
+RETURN     icmp --  0.0.0.0/0            0.0.0.0/0           
+
+===== [4] ALIASES REGISTERED =====
+  mgmt_net     192.168.29.0/24
+  monitor_net  10.10.30.0/24
+  servers_net  10.10.10.0/24
+  targets_net  10.10.20.0/24
+
+===== [5] POLICY SUMMARY =====
+  default inbound policy : DROP (deny-by-default)
+  mgmt 192.168.29.0/24   : ALLOW -> 8006 (UI), 22 (SSH)  [logged]
+  targets 10.10.20.0/24  : DROP  -> mgmt + servers        [lateral movement blocked]
