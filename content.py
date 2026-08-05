@@ -4,10 +4,10 @@ Source: https://github.com/mukul975/Anthropic-Cybersecurity-Skills
 """
 
 PROJECT = {
-    "title_ar": "مشروع مختبر أمني منزلي على Proxmox VE",
-    "title_en": "Home Security Lab on Proxmox VE",
-    "subtitle_ar": "تطبيق 10 مهارات دفاعية من مكتبة Anthropic Cybersecurity Skills",
-    "subtitle_en": "Applying 10 Defensive Skills from the Anthropic Cybersecurity Skills Library",
+    "title_ar": "تطبيق وقياس ضوابط دفاعية على مختبر افتراضي وفق MITRE ATT&CK و NIST CSF 2.0",
+    "title_en": "Implementing and Measuring Defensive Controls in a Virtual Lab, Mapped to MITRE ATT&CK and NIST CSF 2.0",
+    "subtitle_ar": "تنفيذ عشر مهارات دفاعية عبر وكيل ذكاء اصطناعي على عقدة Proxmox VE",
+    "subtitle_en": "Ten defensive skills executed through an AI agent on a Proxmox VE node",
     "author": "owaisabusalah@gmail.com",
     "date": "2026-08-02",
     "repo": "https://github.com/mukul975/Anthropic-Cybersecurity-Skills",

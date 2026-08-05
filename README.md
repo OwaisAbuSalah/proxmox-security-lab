@@ -1,12 +1,15 @@
-# Proxmox Security Lab — 10 Defensive Skills Executed by an AI Agent
+# تطبيق وقياس ضوابط دفاعية على مختبر افتراضي وفق MITRE ATT&CK و NIST CSF 2.0
 
-مشروع مختبر أمني على Proxmox VE: تطبيق عشر مهارات دفاعية من مكتبة
+**Implementing and Measuring Defensive Controls in a Virtual Lab, Mapped to MITRE ATT&CK and NIST CSF 2.0**
+
+تنفيذ عشر مهارات دفاعية من مكتبة
 [Anthropic Cybersecurity Skills](https://github.com/mukul975/Anthropic-Cybersecurity-Skills)
-عبر وكيل ذكاء اصطناعي، مع تقرير وعرض تقديمي.
+عبر وكيل ذكاء اصطناعي على عقدة Proxmox VE، مع قياس التغطية الدفاعية وفق الأطر المعيارية،
+وتقرير وعرض تقديمي مبنيّين على النتائج.
 
-A home security lab built on Proxmox VE. Ten defensive skills from the Anthropic
-Cybersecurity Skills library were executed through an AI agent, with a bilingual
-report and slide deck produced from the results.
+Ten defensive skills from the Anthropic Cybersecurity Skills library, executed through an
+AI agent against a Proxmox VE node, with defensive coverage measured against recognised
+frameworks. A bilingual report and slide deck are generated from the results.
 
 ---
 
