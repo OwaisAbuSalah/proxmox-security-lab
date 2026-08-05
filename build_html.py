@@ -1,299 +1,612 @@
 # -*- coding: utf-8 -*-
-"""Build the bilingual HTML slide-deck presentation from content.py."""
+"""Build the presentation deck: true 16:9 slides with a presentation mode."""
 import content as C
 import html
 
-def esc(x): return html.escape(x)
+def esc(x): return html.escape(str(x))
 
-slides = []
+S = []          # slides
+def slide(body, cls="", note=""):
+    S.append(f'<section class="slide {cls}">{body}</section>')
 
-# --- Title slide ---
-slides.append(f"""
-<section class="slide title">
-  <div class="badge">Anthropic Cybersecurity Skills · 817 skills · 29 domains</div>
-  <h1 dir="rtl">{esc(C.PROJECT['title_ar'])}</h1>
-  <h2>{esc(C.PROJECT['title_en'])}</h2>
-  <p class="sub" dir="rtl">{esc(C.PROJECT['subtitle_ar'])}</p>
-  <p class="sub en">{esc(C.PROJECT['subtitle_en'])}</p>
-  <div class="meta">{esc(C.PROJECT['author'])} &nbsp;·&nbsp; {esc(C.PROJECT['date'])}<br>
-  <a href="{esc(C.PROJECT['repo'])}">{esc(C.PROJECT['repo'])}</a></div>
-</section>""")
-
-# --- Agenda / intro ---
-slides.append(f"""
-<section class="slide">
-  <span class="kicker">01 · Introduction</span>
-  <h3 dir="rtl">المقدمة والنطاق <span class="en">/ Introduction &amp; Scope</span></h3>
-  <p dir="rtl">{esc(C.INTRO['about_repo_ar'])}</p>
-  <p class="en">{esc(C.INTRO['about_repo_en'])}</p>
-  <div class="statrow">
-    <div class="stat"><b>817</b><span>Skills</span></div>
-    <div class="stat"><b>29</b><span>Domains</span></div>
-    <div class="stat"><b>6</b><span>Frameworks</span></div>
-    <div class="stat"><b>10</b><span>Applied here</span></div>
-  </div>
-  <p class="note" dir="rtl"><b>النطاق دفاعي (blue-team):</b> {esc(C.INTRO['scope_ar'])}</p>
-</section>""")
-
-# --- AI Agent methodology ---
-struct = [
-    ("SKILL.md","ترويسة YAML + خطوات Markdown","YAML frontmatter + Markdown workflow"),
-    ("scripts/agent.py","الوكيل القابل للتشغيل","The runnable agent"),
-    ("references/","مراجع تقنية","Technical references"),
-    (".claude-plugin/","يسجّل الريبو كإضافة Claude Code","Registers repo as a Claude Code plugin"),
-]
-srows = "".join(f"<tr><td class='mono'>{esc(f)}</td><td dir='rtl'>{esc(a)}<span class='en'> {esc(e)}</span></td></tr>" for f,a,e in struct)
-slides.append(f"""
-<section class="slide">
-  <span class="kicker">02 · AI Agent Method</span>
-  <h3 dir="rtl">التنفيذ عبر وكيل ذكاء اصطناعي <span class="en">/ AI-Agent Execution</span></h3>
-  <p dir="rtl">{esc(C.INTRO['agent_method_ar'])}</p>
-  <p class="en">{esc(C.INTRO['agent_method_en'])}</p>
-  <table class="arch"><thead><tr><th>File</th><th>Purpose</th></tr></thead><tbody>{srows}</tbody></table>
-  <p class="note" dir="rtl">{esc(C.INTRO['tiers_ar'])}</p>
-</section>""")
-
-# --- Why Proxmox / Architecture ---
-arch = [
-    ("Access","Tailscale + TLS 1.3 reverse proxy","4 · 5"),
-    ("Edge","pfSense firewall + VLAN segmentation","1 · 2"),
-    ("Monitoring","Suricata IDS → Splunk / Wazuh SIEM","3 · 6 · 7"),
-    ("Hardening","OpenVAS scans + SBOM analysis","8 · 10"),
-    ("Deception","Ransomware canary files","9"),
-]
-rows = "".join(f"<tr><td class='lay'>{esc(l)}</td><td>{esc(c)}</td><td class='sk'>{esc(s)}</td></tr>" for l,c,s in arch)
-slides.append(f"""
-<section class="slide">
-  <span class="kicker">02 · Architecture</span>
-  <h3 dir="rtl">معمارية المختبر <span class="en">/ Lab Architecture on Proxmox</span></h3>
-  <p dir="rtl">{esc(C.INTRO['why_proxmox_ar'])}</p>
-  <table class="arch"><thead><tr><th>Layer</th><th>Component</th><th>Skill</th></tr></thead><tbody>{rows}</tbody></table>
-</section>""")
-
-# --- One slide per skill ---
-for s in C.SKILLS:
-    steps = "".join(f"<li><span class='ar' dir='rtl'>{esc(a)}</span><span class='en'>{esc(e)}</span></li>"
-                    for a,e in zip(s['steps_ar'], s['steps_en']))
-    attack = " ".join(f"<span class='tag att'>{esc(t)}</span>" for t in s['attack']) or "<span class='tag att'></span>"
-    nist = " ".join(f"<span class='tag nist'>{esc(t)}</span>" for t in s['nist'])
-    slides.append(f"""
-<section class="slide skill">
-  <span class="kicker">Skill {s['n']} / 10 · {esc(s['domain'])}</span>
-  <h3 dir="rtl">{esc(s['name_ar'])}</h3>
-  <h4 class="en">{esc(s['name_en'])}</h4>
-  <p class="what" dir="rtl">{esc(s['what_ar'])}</p>
-  <p class="what en">{esc(s['what_en'])}</p>
-  <div class="cols">
-    <div class="col-steps">
-      <div class="lbl">Workflow · سير العمل</div>
-      <ol>{steps}</ol>
+# ══════════════════════════════ 1. TITLE
+slide(f"""
+  <div class="t-inner">
+    <div class="eyebrow">مشروع الأمن السيبراني</div>
+    <h1>{esc(C.PROJECT['title_ar'])}</h1>
+    <div class="rule"></div>
+    <h2 class="lat">{esc(C.PROJECT['title_en'])}</h2>
+    <p class="t-sub">{esc(C.PROJECT['subtitle_ar'])}</p>
+    <div class="t-foot">
+      <span>{esc(C.PROJECT['author'])}</span><i></i><span class="lat">{esc(C.PROJECT['date'])}</span>
     </div>
-    <div class="col-side">
-      <div class="lbl">MITRE ATT&amp;CK</div><div class="tags">{attack}</div>
-      <div class="lbl">NIST CSF 2.0</div><div class="tags">{nist}</div>
-      <div class="lbl">In the lab · في المختبر</div>
-      <p class="lab" dir="rtl">{esc(s['lab_ar'])}</p>
-      <p class="lab en">{esc(s['lab_en'])}</p>
+  </div>""", "title")
+
+# ══════════════════════════════ 2. THE BRIEF
+slide("""
+  <h3>الفكرة في سطر</h3>
+  <div class="brief">
+    <div class="brief-row">
+      <div class="bnum">01</div>
+      <div><b>مختبر افتراضي حقيقي</b><span>عقدة Proxmox VE تعمل بمحاكاة متداخلة، معزولة تماماً</span></div>
+    </div>
+    <div class="brief-row">
+      <div class="bnum">02</div>
+      <div><b>عشر مهارات دفاعية نُفِّذت لا وُصِفت</b><span>من مكتبة فيها 817 مهارة عبر 29 مجالاً</span></div>
+    </div>
+    <div class="brief-row">
+      <div class="bnum">03</div>
+      <div><b>التنفيذ عبر وكيل ذكاء اصطناعي</b><span>المكتبة مبنية لهذا: كل مهارة فيها وكيل قابل للتشغيل</span></div>
+    </div>
+    <div class="brief-row hi">
+      <div class="bnum">04</div>
+      <div><b>قياس لا وصف</b><span>كل ضابط مربوط برمز في MITRE ATT&amp;CK و NIST CSF 2.0</span></div>
+    </div>
+  </div>""")
+
+# ══════════════════════════════ 3. LIBRARY STATS
+slide(f"""
+  <h3>المصدر: مكتبة مفتوحة المصدر</h3>
+  <div class="stats">
+    <div class="stat"><b>817</b><span>مهارة</span></div>
+    <div class="stat"><b>29</b><span>مجالاً</span></div>
+    <div class="stat"><b>6</b><span>أطر معيارية</span></div>
+    <div class="stat acc"><b>10</b><span>طُبِّقت هنا</span></div>
+  </div>
+  <p class="lead">{esc(C.INTRO['about_repo_ar'])}</p>
+  <div class="callout warn"><b>النطاق دفاعي بالكامل.</b> كل ما نُفِّذ جرى داخل مختبر معزول نملكه ونملك صلاحية اختباره.</div>""")
+
+# ══════════════════════════════ 4. AI AGENT
+slide(f"""
+  <h3>كيف يُنفِّذ الوكيل مهارة؟</h3>
+  <div class="two">
+    <div>
+      <p class="lead sm">{esc(C.INTRO['agent_method_ar'])}</p>
+      <div class="callout"><b>الوكيل نفّذ، والقرار بقي قراراً هندسياً:</b> اختيار المهارات، وتصميم المناطق، والبديل عند غياب الأداة، وقراءة النتيجة.</div>
+    </div>
+    <div class="filetree">
+      <div class="ft-h lat">skill/</div>
+      <div class="ft-row"><code class="lat">SKILL.md</code><span>ترويسة YAML للاكتشاف + خطوات Markdown</span></div>
+      <div class="ft-row hi"><code class="lat">scripts/agent.py</code><span>الوكيل القابل للتشغيل الذي ينفّذ المهارة</span></div>
+      <div class="ft-row"><code class="lat">references/</code><span>مراجع تقنية</span></div>
+      <div class="ft-row"><code class="lat">.claude-plugin/</code><span>يسجّل المكتبة كإضافة للوكيل</span></div>
+    </div>
+  </div>""")
+
+# ══════════════════════════════ 5. DIVIDER
+slide("""<div class="d-inner"><span class="lat">01</span><h2>معمارية المختبر</h2><p>طبقات دفاع متتالية على عقدة واحدة</p></div>""", "divider")
+
+# ══════════════════════════════ 6. ARCHITECTURE
+LAYERS = [
+    ("الوصول",    "Tailscale ZTNA + TLS 1.3",           "4 · 5",  "#0E7C86"),
+    ("الحافة",    "Firewall (default deny) + VLANs",     "1 · 2",  "#15616d"),
+    ("المراقبة",  "Suricata IDS → SIEM correlation",     "3 · 6 · 7", "#1d4e6b"),
+    ("التصليب",   "Vulnerability scanning + SBOM",       "8 · 10", "#123a56"),
+    ("الخداع",    "Ransomware canary files",             "9",      "#0b2a4a"),
+]
+bars = "".join(
+    f'<div class="layer" style="--c:{c}">'
+    f'<div class="l-name">{esc(n)}</div>'
+    f'<div class="l-comp lat">{esc(comp)}</div>'
+    f'<div class="l-sk lat">{esc(sk)}</div></div>'
+    for n, comp, sk, c in LAYERS)
+slide(f"""
+  <h3>خمس طبقات، عشر مهارات</h3>
+  <div class="arch">{bars}</div>
+  <div class="arch-note">لو فشلت طبقة، التي تليها تلتقط. وهذا ما حدث فعلاً: قاعدتان في Suricata لم تُطلقا، ومع ذلك كُشف النفق عبر تحليل DNS.</div>""")
+
+# ══════════════════════════════ 7. DIVIDER
+slide("""<div class="d-inner"><span class="lat">02</span><h2>المهارات العشر</h2><p>مختارة لتشكّل منظومة مترابطة لا قائمة</p></div>""", "divider")
+
+# ══════════════════════════════ 8. SKILLS GRID
+cells = "".join(
+    f'<div class="sk-card"><div class="sk-n lat">{s["n"]:02d}</div>'
+    f'<div class="sk-t">{esc(s["name_ar"])}</div>'
+    f'<div class="sk-d lat">{esc(s["domain"])}</div></div>'
+    for s in C.SKILLS)
+slide(f"""<h3>نظرة شاملة</h3><div class="sk-grid">{cells}</div>""")
+
+# ══════════════════════════════ 9-13. SKILL PAIRS
+def skill_panel(s):
+    steps = "".join(f"<li>{esc(x)}</li>" for x in s["steps_ar"][:4])
+    att = "".join(f'<span class="tag att lat">{esc(t)}</span>' for t in s["attack"][:4]) or '<span class="tag att">لا ينطبق</span>'
+    nist = "".join(f'<span class="tag nist lat">{esc(t)}</span>' for t in s["nist"][:3])
+    return f"""
+    <div class="sp">
+      <div class="sp-head"><span class="sp-n lat">{s['n']:02d}</span>
+        <div><b>{esc(s['name_ar'])}</b><i class="lat">{esc(s['name_en'])}</i></div></div>
+      <p class="sp-what">{esc(s['what_ar'])}</p>
+      <ol class="sp-steps">{steps}</ol>
+      <div class="sp-tags">{att}{nist}</div>
+    </div>"""
+
+for i in range(0, 10, 2):
+    pair = C.SKILLS[i:i+2]
+    slide(f"""<h3>المهارات <span class="lat">{pair[0]['n']}–{pair[-1]['n']}</span></h3>
+      <div class="sp-two">{''.join(skill_panel(s) for s in pair)}</div>""")
+
+# ══════════════════════════════ 14. DIVIDER
+slide("""<div class="d-inner"><span class="lat">03</span><h2>النتائج الفعلية</h2><p>كل رقم من تنفيذ حقيقي، ومخرجاته محفوظة</p></div>""", "divider")
+
+# ══════════════════════════════ 15. VERIFIED FACTS
+rows = "".join(f'<tr><td>{esc(k)}</td><td class="lat">{esc(v)}</td></tr>' for k, v in C.LAB_FACTS)
+slide(f"""
+  <h3>المختبر كما بُني فعلاً</h3>
+  <table class="facts"><tbody>{rows}</tbody></table>
+  <div class="callout">كل سطر تم التحقق منه بأمر فعلي على العقدة، لا من واجهة رسومية.</div>""")
+
+# ══════════════════════════════ 16. DETECTION CHAIN  (hero)
+slide("""
+  <h3>سلسلة الكشف الكاملة</h3>
+  <div class="chain">
+    <div class="ch"><div class="ch-i">1</div><b>هجوم محاكى</b><span>مسح ICMP · استعلامات DNS · مسح منافذ</span></div>
+    <div class="ch-a"></div>
+    <div class="ch"><div class="ch-i">2</div><b>التقاط Suricata</b><span>36 حدث DNS في سجلات EVE</span></div>
+    <div class="ch-a"></div>
+    <div class="ch"><div class="ch-i">3</div><b>تحليل مستقل</b><span>وكيل لا يعرف شيئاً عن الهجوم</span></div>
+    <div class="ch-a"></div>
+    <div class="ch ok"><div class="ch-i">4</div><b>كشف مؤكَّد</b><span>نفقان: 72 و 60 حرفاً</span></div>
+  </div>
+  <div class="callout hero"><b>لماذا هذه أقوى نتيجة؟</b> لأن الأداة التي كشفت ليست هي التي التقطت. لا توجد دورة مغلقة تُثبت نفسها بنفسها: هجوم حقيقي، والتقاط حقيقي، وتحليل مستقل خرج بكشف صحيح.</div>""", "hero")
+
+# ══════════════════════════════ 17. SURICATA
+slide("""
+  <h3>الكشف على الشبكة</h3>
+  <div class="two">
+    <div>
+      <div class="kpi"><b>6</b><span>تنبيهات حقيقية سُجِّلت</span></div>
+      <table class="mini">
+        <tr><td class="lat">T1048.003</td><td>تسريب عبر DNS</td><td class="n">4×</td></tr>
+        <tr><td class="lat">T1018</td><td>مسح ICMP</td><td class="n">1×</td></tr>
+        <tr><td class="lat">T1046</td><td>مسح منافذ</td><td class="n">1×</td></tr>
+      </table>
+    </div>
+    <div>
+      <p class="lead sm">Suricata 7.0.10 مع خمس قواعد كُتبت خصيصاً للمختبر، كل قاعدة مربوطة بتقنية من MITRE ATT&amp;CK، ثم وُلِّد مرور هجومي لاختبارها.</p>
+      <div class="callout warn"><b>قاعدتان لم تُطلقا:</b> قاعدة C2 لغياب خادم HTTP في المسار، وقاعدة نفق DNS لعدم مطابقة نمط pcre.</div>
+    </div>
+  </div>""")
+
+# ══════════════════════════════ 18. SEGMENTATION + FIREWALL
+slide("""
+  <h3>العزل وفرض السياسة</h3>
+  <div class="two">
+    <div>
+      <div class="zone-h">ثلاث مناطق معزولة</div>
+      <div class="zone"><code class="lat">vmbr10</code><span>الخوادم</span><i class="lat">10.10.10.0/24</i></div>
+      <div class="zone"><code class="lat">vmbr20</code><span>الأنظمة الهدف</span><i class="lat">10.10.20.0/24</i></div>
+      <div class="zone"><code class="lat">vmbr30</code><span>المراقبة</span><i class="lat">10.10.30.0/24</i></div>
+      <div class="verify lat">vlan_filtering = 1 ✓</div>
+    </div>
+    <div>
+      <div class="zone-h">سياسة الجدار الناري</div>
+      <div class="rule-row deny"><b>DROP</b><span>كل وارد افتراضياً</span></div>
+      <div class="rule-row allow"><b>ALLOW</b><span>الإدارة → 8006 و 22، مع التسجيل</span></div>
+      <div class="rule-row deny"><b>DROP</b><span>الأهداف ⇸ الإدارة والخوادم</span></div>
+      <div class="verify lat">verified in iptables ✓</div>
+      <p class="foot-note">وقبل التفعيل شُغِّلت آلية تراجع تلقائي، لأن سياسة المنع قد تقطع الوصول عن المسؤول نفسه.</p>
+    </div>
+  </div>""")
+
+# ══════════════════════════════ 19. SIEM
+slide("""
+  <h3>الربط وإعادة بناء الحادثة</h3>
+  <div class="two">
+    <div>
+      <div class="kpi"><b>26</b><span>حدثاً من مصدرين</span></div>
+      <p class="lead sm">جُمِعت من Suricata وسجل sshd، ثم أُجري عليها الإحصاء وإعادة بناء الخط الزمني وربط الأنماط بالتقنيات.</p>
+    </div>
+    <div class="verdict">
+      <div class="v-h">الحكم التحليلي</div>
+      <p>مضيف داخلي واحد أنتج استطلاعاً ومحاولة تسريب خلال <b>اثنتي عشرة ثانية</b>.</p>
+      <p class="v-c">هذا الإيقاع يدل على أداة آلية لا على مُشغِّل بشري.</p>
     </div>
   </div>
-</section>""")
+  <div class="callout"><b>بديل مُبرَّر:</b> Splunk Enterprise يحتاج خادماً مرخّصاً، فطُبِّق منطق الارتباط نفسه على سجلات المختبر الحقيقية.</div>""")
 
-# --- Real agent execution results ---
-for i, r in enumerate(C.AGENT_RUNS, 1):
-    cmd = esc(r["cmd"]).replace("\n","<br>")
-    slides.append(f"""
-<section class="slide">
-  <span class="kicker">Agent Run {i} / {len(C.AGENT_RUNS)} · Executed 2026-08-02</span>
-  <h3 class="mono runname">{esc(r['skill'])}</h3>
-  <div class="lbl">Command</div>
-  <pre class="cmd">{cmd}</pre>
-  <div class="lbl">Result · النتيجة</div>
-  <p class="res" dir="rtl">{esc(r['result_ar'])}</p>
-  <p class="res en">{esc(r['result_en'])}</p>
-  <div class="evid">📎 {esc(r['evidence'])}</div>
-</section>""")
+# ══════════════════════════════ 20. REMAINING RESULTS
+slide("""
+  <h3>بقية النتائج</h3>
+  <div class="res-grid">
+    <div class="res"><div class="r-k lat">TLS 1.3</div>
+      <p>واجهة الإدارة تتفاوض على <span class="lat">TLS_AES_256_GCM_SHA384</span>، والإصداران القديمان معطّلان. الشهادة ذاتية التوقيع، ومن هنا جاءت التوصية بشهادة موثوقة.</p></div>
+    <div class="res"><div class="r-k">فحص الثغرات</div>
+      <p>أربع مضيفات نشطة، وتعداد للخدمات المكشوفة، و<b>61 حزمة</b> تنتظر التحديث، مرتّبة بجدول حسب الخطورة.</p></div>
+    <div class="res"><div class="r-k">ملفات Canary</div>
+      <p><b>16 ملفاً</b> خداعياً ببصمات SHA-256. عند محاكاة التشفير أُطلق تنبيهان خلال أجزاء من الثانية.</p></div>
+    <div class="res"><div class="r-k lat">SBOM</div>
+      <p><b>75 حزمة</b> قُورنت بقاعدة NVD الحيّة. بعض النتائج إيجابيات كاذبة بسبب المطابقة بالاسم، وهذا يُراجَع بالسياق.</p></div>
+  </div>""")
 
-# --- Verified lab facts ---
-factrows = "".join(
-    f"<tr><td class='lay'>{esc(k)}</td><td class='mono'>{esc(v)}</td></tr>"
-    for k, v in C.LAB_FACTS)
-slides.append(f"""
-<section class="slide">
-  <span class="kicker">Verified · تم التحقق</span>
-  <h3 dir="rtl">حقائق المختبر المُتحقَّق منها <span class="en">/ Verified Lab Facts</span></h3>
-  <p dir="rtl">كل سطر تم التحقق منه بأمر فعلي على العقدة، ومخرجاته محفوظة في مجلد الأدلة.</p>
-  <p class="en">Every row was verified by an actual command on the node, with output saved in the evidence folder.</p>
-  <table class="arch t2"><thead><tr><th>Item</th><th>Verified value</th></tr></thead><tbody>{factrows}</tbody></table>
-</section>""")
+# ══════════════════════════════ 21. COVERAGE
+slide("""
+  <h3>التغطية المقيسة</h3>
+  <p class="lead">هذا ما يجعل العنوان يَعِد بـ«القياس»: التغطية الدفاعية رقم قابل للمراجعة لا انطباع.</p>
+  <div class="cov">
+    <div class="cov-col"><div class="cov-h lat">MITRE ATT&CK</div>
+      <div class="cov-tags">
+        <span class="tag att lat">T1046</span><span class="tag att lat">T1018</span><span class="tag att lat">T1048.003</span>
+        <span class="tag att lat">T1071.001</span><span class="tag att lat">T1071.004</span><span class="tag att lat">T1486</span>
+        <span class="tag att lat">T1557</span><span class="tag att lat">T1190</span><span class="tag att lat">T1078</span>
+        <span class="tag att lat">T1133</span><span class="tag att lat">T1040</span><span class="tag att lat">T1021</span>
+      </div>
+      <div class="cov-f">منها <b>3 تقنيات</b> رُصدت فعلياً في السجلات</div>
+    </div>
+    <div class="cov-col"><div class="cov-h lat">NIST CSF 2.0</div>
+      <div class="cov-tags">
+        <span class="tag nist lat">PR.IR-01</span><span class="tag nist lat">DE.CM-01</span><span class="tag nist lat">DE.AE-02</span>
+        <span class="tag nist lat">PR.DS-01</span><span class="tag nist lat">PR.AA-01</span><span class="tag nist lat">RS.MA-01</span>
+        <span class="tag nist lat">RS.AN-03</span><span class="tag nist lat">RC.RP-01</span><span class="tag nist lat">GV.SC-01</span>
+      </div>
+      <div class="cov-f">تغطي: الحماية · الكشف · الاستجابة · التعافي · الحوكمة</div>
+    </div>
+  </div>""")
 
-# --- Integrity / honesty slide ---
-slides.append("""
-<section class="slide">
-  <span class="kicker">Methodology · النزاهة العلمية</span>
-  <h3 dir="rtl">ما لم ينجح, وكيف عالجناه <span class="en">/ What Did Not Work, and How We Handled It</span></h3>
-  <ul class="ethics" dir="rtl">
-    <li>فشل إعداد الـ VLAN أولاً بسبب صياغة sed مشوّهة، ثم صُحّح وأُعيد التطبيق حتى صار vlan_filtering=1.
-        <span class="en">VLAN setup first failed on a malformed sed directive, then corrected and reapplied until vlan_filtering=1.</span></li>
-    <li>فشل الجدار الناري أولاً لاستخدام بادئة IPSet بدل الأسماء المستعارة، ثم صُحّح، ومع آلية تراجع تلقائي تحسّباً لقفل الوصول.
-        <span class="en">The firewall first failed using an IPSet prefix instead of aliases, then corrected, with an automatic rollback armed against lockout.</span></li>
-    <li>قاعدتان في Suricata لم تُطلقا: قاعدة C2 (لا خادم HTTP في المسار) وقاعدة نفق DNS (عدم مطابقة نمط pcre).
-        <span class="en">Two Suricata rules did not fire: the C2 rule (no HTTP server on path) and the DNS-tunneling rule (pcre did not match).</span></li>
-    <li>بديلان مبرَّران: جدار Proxmox المدمج بدل pfSense، ومحرّك ارتباط مكافئ بدل Splunk المرخّص.
-        <span class="en">Two justified substitutions: Proxmox's built-in firewall instead of pfSense, and an equivalent correlation engine instead of licensed Splunk.</span></li>
-    <li>خطوة واحدة غير مكتملة: تفعيل Tailscale يتطلب تسجيل دخول شخصي. والبنية جاهزة والتفعيل بأمر واحد.
-        <span class="en">One incomplete step: Tailscale activation requires a personal login. The infrastructure is ready, activation is one command.</span></li>
-  </ul>
-</section>""")
+# ══════════════════════════════ 22. WHAT DIDN'T WORK
+slide("""
+  <h3>ما لم ينجح، وكيف عولج</h3>
+  <div class="fails">
+    <div class="fail"><div class="f-t">إعداد الـ VLAN فشل أولاً</div>
+      <p>أمر <span class="lat">sed</span> كتب المُعامل بصيغة مشوّهة فرفضه النظام. أُعيدت كتابته وطُبِّق، حتى صار <span class="lat">vlan_filtering = 1</span>.</p></div>
+    <div class="fail"><div class="f-t">الجدار الناري فشل أولاً</div>
+      <p>استُخدمت بادئة <span class="lat">+dc/</span> وهي مخصّصة لمجموعات IPSet لا للأسماء المستعارة. صُحِّحت، ومع آلية تراجع تحسّباً لقفل الوصول.</p></div>
+    <div class="fail ok"><div class="f-t">قاعدتان لم تُطلقا، والنفق كُشف رغم ذلك</div>
+      <p>عبر مسار آخر هو تحليل طول النطاق الفرعي. وهذا بالضبط ما يعنيه الدفاع بالطبقات.</p></div>
+    <div class="fail"><div class="f-t">بديلان وخطوة واحدة غير مكتملة</div>
+      <p>جدار Proxmox بدل pfSense، ومحرّك ارتباط بدل Splunk المرخّص. و<span class="lat">tailscale up</span> يتطلب تسجيل دخول شخصي، فتُرك لصاحب المشروع.</p></div>
+  </div>""")
 
-# --- Lab build ---
-lsteps = "".join(f"<li><span class='ar' dir='rtl'>{esc(a)}</span><span class='en'>{esc(e)}</span></li>"
-                 for a,e in zip(C.LAB_BUILD['steps_ar'], C.LAB_BUILD['steps_en']))
-slides.append(f"""
-<section class="slide">
-  <span class="kicker">03 · Lab Build</span>
-  <h3 dir="rtl">بناء مختبر Proxmox <span class="en">/ Building the Proxmox Lab</span></h3>
-  <p dir="rtl"><b>{esc(C.LAB_BUILD['host_ar'])}</b></p>
-  <p class="en">{esc(C.LAB_BUILD['host_en'])}</p>
-  <ol class="labsteps">{lsteps}</ol>
-  <p class="note" dir="rtl"><b>الافتراضية المتداخلة:</b> تشغيل Proxmox (وهو hypervisor) داخل VMware يتطلب <span class="mono">vhv.enable = TRUE</span> وتعطيل Hyper-V على المضيف.</p>
-</section>""")
+# ══════════════════════════════ 23. CLOSING
+slide("""
+  <div class="t-inner">
+    <div class="eyebrow">الخلاصة</div>
+    <h1 class="close-h">من العزل إلى الكشف إلى التصليب</h1>
+    <div class="rule"></div>
+    <p class="t-sub">عشر مهارات نُفِّذت على عقدة حقيقية، ومُقيسة بأطر معيارية، وموثّقة بأدلتها الخام<br>بما في ذلك ما لم ينجح منها.</p>
+    <div class="t-foot"><span class="lat">github.com/OwaisAbuSalah/proxmox-security-lab</span></div>
+  </div>""", "title closing")
 
-# --- Roadmap ---
-phases = "".join(
-    f"<div class='phase'><div class='pnum'>{i}</div><div class='pbody'>"
-    f"<b dir='rtl'>{esc(ar_t)}</b><span class='en'>{esc(en_t)}</span>"
-    f"<p dir='rtl'>{esc(ar_d)}</p><p class='en'>{esc(en_d)}</p></div></div>"
-    for i,(ar_t,en_t,ar_d,en_d) in enumerate(C.ROADMAP))
-slides.append(f"""
-<section class="slide">
-  <span class="kicker">03 · Roadmap</span>
-  <h3 dir="rtl">خطة النشر المرحلية <span class="en">/ Phased Deployment Roadmap</span></h3>
-  <div class="roadmap">{phases}</div>
-</section>""")
 
-# --- Ethics / closing ---
-slides.append(f"""
-<section class="slide">
-  <span class="kicker">04 · Ethics &amp; Conclusion</span>
-  <h3 dir="rtl">اعتبارات أخلاقية والخلاصة <span class="en">/ Ethics &amp; Conclusion</span></h3>
-  <ul class="ethics" dir="rtl">
-    <li>جميع الأنشطة دفاعية وتعليمية داخل مختبر معزول تملكه. <span class="en">Defensive &amp; educational, in an isolated lab you own.</span></li>
-    <li>لا فحص أو هجوم محاكى ضد أنظمة لا تملك إذن اختبارها. <span class="en">No testing against systems you are not authorized for.</span></li>
-    <li>واجهة Proxmox (8006) لا تُفتح للإنترنت, Tailscale فقط. <span class="en">Port 8006 never internet-exposed, Tailscale only.</span></li>
-    <li>أنظمة الهدف الضعيفة معزولة خلف pfSense. <span class="en">Vulnerable targets isolated behind pfSense.</span></li>
-  </ul>
-  <p class="close" dir="rtl">من عزل الشبكة إلى المراقبة والكشف إلى التصليب والخداع: عشر مهارات مربوطة بـ MITRE ATT&amp;CK و NIST CSF في مختبر Proxmox واحد.</p>
-  <p class="close en">From isolation to detection to hardening to deception: ten skills mapped to MITRE ATT&amp;CK &amp; NIST CSF in one Proxmox lab.</p>
-</section>""")
-
-deck = "\n".join(slides)
-n = len(slides)
-
-CSS = """
-:root{--navy:#0B2A4A;--teal:#0E7C86;--ink:#12202f;--grey:#5b6472;--bg:#eef2f7;--card:#ffffff;--line:#dbe3ec;--att:#7a1f2b;--attbg:#fbe9eb;--nist:#0d5c47;--nistbg:#e6f3ef;}
+# ══════════════════════════════ CSS
+CSS = r"""
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:"Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
-.en{font-style:italic;color:var(--grey)}
-.deck{max-width:1180px;margin:0 auto;padding:26px 16px 80px}
-.slide{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:44px 52px;margin:0 auto 26px;min-height:600px;box-shadow:0 10px 30px rgba(11,42,74,.07);position:relative;scroll-margin-top:20px}
-.slide h1{font-size:2.7rem;color:var(--navy);line-height:1.2;margin:6px 0}
-.slide h2{font-size:1.5rem;color:var(--teal);font-weight:600;margin-bottom:18px}
-.slide h3{font-size:1.9rem;color:var(--navy);margin-bottom:6px;line-height:1.3}
-.slide h3 .en{font-size:1.1rem}
-.slide h4{font-size:1.15rem;color:var(--teal);margin-bottom:14px;font-weight:600}
-.kicker{display:inline-block;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--teal);padding:5px 14px;border-radius:999px;margin-bottom:16px;font-weight:700}
-.slide p{line-height:1.75;margin-bottom:10px;font-size:1.02rem}
-/* title */
-.title{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:linear-gradient(150deg,#0B2A4A,#12405f 60%,#0E7C86);color:#fff;min-height:640px}
-.title h1{color:#fff}.title h2{color:#bfe6ea}
-.title .sub{color:#dbe7f2;font-size:1.2rem;max-width:760px}.title .sub.en{color:#a9c7d6}
-.title .badge{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);padding:7px 16px;border-radius:999px;font-size:.85rem;margin-bottom:26px;letter-spacing:.04em}
-.title .meta{margin-top:38px;font-size:.95rem;color:#cfe0ee}.title .meta a{color:#8fd7de;text-decoration:none}
-.note{background:#fffaf0;border-inline-start:4px solid #e2a600;padding:12px 16px;border-radius:10px;font-size:.95rem;margin-top:16px}
-/* stats */
-.statrow{display:flex;gap:16px;margin:22px 0}
-.stat{flex:1;background:linear-gradient(160deg,#0B2A4A,#0E7C86);color:#fff;border-radius:14px;padding:20px;text-align:center}
-.stat b{display:block;font-size:2.3rem;line-height:1}.stat span{font-size:.9rem;opacity:.85}
-/* arch table */
-table.arch{width:100%;border-collapse:collapse;margin-top:16px;font-size:1rem}
-table.arch th{background:var(--navy);color:#fff;text-align:left;padding:11px 14px}
-table.arch td{padding:11px 14px;border-bottom:1px solid var(--line)}
-table.arch td.lay{font-weight:700;color:var(--navy)}
-table.arch td.sk{font-weight:700;color:var(--teal);white-space:nowrap}
-table.arch tr:nth-child(even) td{background:#f6f9fc}
-/* skill slide */
-.skill .what{font-size:1rem}
-.cols{display:grid;grid-template-columns:1.35fr 1fr;gap:26px;margin-top:16px}
-.lbl{font-size:.75rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin:14px 0 7px}
-.col-steps ol{margin:0;padding-inline-start:20px}
-.col-steps li{margin-bottom:9px;line-height:1.45}
-.col-steps li .ar{display:block;font-size:.96rem}
-.col-steps li .en{display:block;font-size:.82rem}
-.col-side{background:#f6f9fc;border:1px solid var(--line);border-radius:14px;padding:14px 18px}
-.col-side .lbl:first-child{margin-top:0}
-.tags{display:flex;flex-wrap:wrap;gap:6px}
-.tag{font-size:.78rem;font-weight:700;padding:3px 9px;border-radius:7px;font-family:"Consolas",monospace}
+:root{
+ --navy:#0B2A4A; --navy2:#123a56; --teal:#0E7C86; --teal2:#12a0ad;
+ --ink:#16202b; --mut:#5f6b7a; --line:#dde5ee; --card:#fff; --bg:#e8edf3;
+ --att:#8c2233; --attbg:#fdeef0; --nist:#0d5c47; --nistbg:#e7f4ef;
+ --warnbg:#fff8ec; --warnb:#d99b1c; --okbg:#e9f5f0; --okb:#0d7a5f;
+}
+html,body{height:100%}
+body{font-family:"Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink);
+ -webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* ── deck / slide frame ───────────────────────── */
+.deck{padding:26px 14px 90px}
+.slide{position:relative;width:min(1160px,96vw);aspect-ratio:16/9;margin:0 auto 26px;
+ background:var(--card);border:1px solid var(--line);border-radius:16px;
+ padding:52px 60px;overflow:hidden;box-shadow:0 14px 40px rgba(11,42,74,.10);
+ display:flex;flex-direction:column;scroll-margin-top:14px}
+.slide::after{content:attr(data-n);position:absolute;bottom:20px;inset-inline-start:32px;
+ font:600 12px/1 Consolas,monospace;color:#b6c2d0;direction:ltr}
+.slide::before{content:"";position:absolute;top:0;inset-inline-start:0;width:100%;height:4px;
+ background:linear-gradient(90deg,var(--teal),var(--navy))}
+
+h3{font-size:clamp(20px,2.35vw,31px);color:var(--navy);font-weight:700;margin-bottom:22px;
+ padding-bottom:13px;border-bottom:2px solid var(--line);position:relative;flex:none}
+h3::after{content:"";position:absolute;bottom:-2px;inset-inline-start:0;width:82px;height:2px;background:var(--teal)}
+.lat{direction:ltr;unicode-bidi:isolate;font-family:"Segoe UI",Arial,sans-serif}
+code.lat,.mono{font-family:Consolas,"Courier New",monospace}
+.lead{font-size:clamp(14px,1.32vw,18px);line-height:1.95;color:var(--ink)}
+.lead.sm{font-size:clamp(13px,1.18vw,16px);line-height:1.85}
+.foot-note{margin-top:12px;font-size:clamp(11px,1vw,13.5px);line-height:1.7;color:var(--mut)}
+
+/* ── title + closing ──────────────────────────── */
+.title{background:
+   radial-gradient(1100px 520px at 82% -8%,rgba(18,160,173,.30),transparent 62%),
+   linear-gradient(155deg,#08223d 0%,#0d3350 52%,#0E7C86 155%);
+ border:none;color:#fff;justify-content:center}
+.title::before{display:none}
+.title::after{color:rgba(255,255,255,.30)}
+.t-inner{max-width:87%}
+.eyebrow{display:inline-block;font-size:clamp(10px,.92vw,12.5px);letter-spacing:.30em;
+ color:#8fd7de;border:1px solid rgba(143,215,222,.42);padding:6px 17px;border-radius:999px;margin-bottom:26px}
+.title h1{font-size:clamp(26px,3.5vw,50px);line-height:1.34;font-weight:700;color:#fff}
+.close-h{font-size:clamp(28px,4vw,56px)!important}
+.rule{width:104px;height:3px;background:linear-gradient(90deg,#12a0ad,transparent);margin:24px 0 20px;border-radius:2px}
+.title h2{font-size:clamp(13px,1.32vw,18px);font-weight:500;color:#a9c9dc;line-height:1.62}
+.t-sub{margin-top:20px;font-size:clamp(13px,1.36vw,19px);color:#d3e3f0;line-height:1.85}
+.t-foot{margin-top:36px;display:flex;align-items:center;gap:15px;font-size:clamp(11px,1.05vw,14px);color:#9fbdd2}
+.t-foot i{width:5px;height:5px;border-radius:50%;background:#12a0ad;display:inline-block}
+
+/* ── divider ──────────────────────────────────── */
+.divider{background:linear-gradient(150deg,#0B2A4A,#123a56 60%,#0E7C86);border:none;color:#fff;justify-content:center}
+.divider::before{display:none}
+.divider::after{color:rgba(255,255,255,.28)}
+.d-inner span{font-size:clamp(52px,7.4vw,104px);font-weight:800;color:rgba(255,255,255,.13);line-height:.86;display:block}
+.d-inner h2{font-size:clamp(26px,3.5vw,48px);margin-top:-18px}
+.d-inner p{margin-top:14px;font-size:clamp(13px,1.36vw,19px);color:#a9d8de}
+
+/* ── brief ────────────────────────────────────── */
+.brief{display:flex;flex-direction:column;gap:13px;flex:1;justify-content:center}
+.brief-row{display:flex;gap:20px;align-items:center;background:#f7fafc;border:1px solid var(--line);
+ border-radius:13px;padding:17px 22px}
+.brief-row.hi{background:linear-gradient(100deg,#0B2A4A,#0E7C86);border:none;color:#fff}
+.bnum{flex:none;font:800 clamp(17px,1.75vw,25px)/1 Consolas,monospace;color:var(--teal);
+ width:52px;text-align:center;direction:ltr}
+.brief-row.hi .bnum{color:#8fd7de}
+.brief-row b{display:block;font-size:clamp(14px,1.42vw,20px);color:var(--navy);margin-bottom:4px}
+.brief-row.hi b{color:#fff}
+.brief-row span{font-size:clamp(12px,1.12vw,15.5px);color:var(--mut);line-height:1.6}
+.brief-row.hi span{color:#cfe6ee}
+
+/* ── stats ────────────────────────────────────── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat{background:#f5f9fc;border:1px solid var(--line);border-radius:14px;padding:20px 12px;text-align:center}
+.stat b{display:block;font:800 clamp(28px,3.6vw,50px)/1 Consolas,monospace;color:var(--navy);direction:ltr}
+.stat span{display:block;margin-top:7px;font-size:clamp(11px,1.05vw,14px);color:var(--mut)}
+.stat.acc{background:linear-gradient(150deg,#0B2A4A,#0E7C86);border:none}
+.stat.acc b,.stat.acc span{color:#fff}
+
+/* ── callouts ─────────────────────────────────── */
+.callout{margin-top:auto;background:#f4f9fb;border-inline-start:4px solid var(--teal);
+ padding:14px 19px;border-radius:11px;font-size:clamp(12px,1.12vw,15.5px);line-height:1.78}
+.callout b{color:var(--navy)}
+.callout.warn{background:var(--warnbg);border-inline-start-color:var(--warnb)}
+.callout.hero{background:linear-gradient(100deg,#0B2A4A,#0E7C86);border:none;color:#fff;padding:19px 24px}
+.callout.hero b{color:#8fd7de}
+
+/* ── two-col ──────────────────────────────────── */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:32px;flex:1;align-content:start}
+.two>div{display:flex;flex-direction:column}
+
+/* ── file tree ────────────────────────────────── */
+.filetree{background:#0f1c28;border-radius:14px;padding:20px 22px;align-self:start}
+.ft-h{font:700 clamp(12px,1.12vw,15px)/1 Consolas,monospace;color:#63d9e4;margin-bottom:14px}
+.ft-row{display:flex;flex-direction:column;gap:3px;padding:10px 0;border-top:1px solid #1e3243}
+.ft-row code{font-size:clamp(11px,1.05vw,14px);color:#d8e6f2}
+.ft-row span{font-size:clamp(10.5px,.98vw,13px);color:#8fa6b8;line-height:1.55}
+.ft-row.hi code{color:#63d9e4;font-weight:700}
+
+/* ── architecture ─────────────────────────────── */
+.arch{display:flex;flex-direction:column;gap:9px;flex:1;justify-content:center}
+.layer{display:grid;grid-template-columns:130px 1fr 78px;align-items:center;gap:18px;
+ background:var(--c);color:#fff;border-radius:11px;padding:15px 22px}
+.l-name{font-weight:700;font-size:clamp(13px,1.28vw,18px)}
+.l-comp{font-size:clamp(11.5px,1.08vw,15px);opacity:.94}
+.l-sk{text-align:center;font:700 clamp(11px,1.05vw,14px)/1 Consolas,monospace;
+ background:rgba(255,255,255,.17);padding:5px 9px;border-radius:7px}
+.arch-note{margin-top:16px;font-size:clamp(11.5px,1.08vw,15px);color:var(--mut);line-height:1.75;
+ border-inline-start:3px solid var(--teal);padding-inline-start:14px}
+
+/* ── skills grid ──────────────────────────────── */
+.sk-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:13px;flex:1;align-content:center}
+.sk-card{background:#f7fafc;border:1px solid var(--line);border-radius:12px;padding:15px 13px;
+ display:flex;flex-direction:column;gap:7px;transition:.15s}
+.sk-card:hover{border-color:var(--teal);transform:translateY(-2px)}
+.sk-n{font:800 clamp(15px,1.5vw,21px)/1 Consolas,monospace;color:var(--teal)}
+.sk-t{font-size:clamp(11.5px,1.08vw,14.5px);font-weight:600;color:var(--navy);line-height:1.45;flex:1}
+.sk-d{font-size:clamp(9.5px,.88vw,11.5px);color:var(--mut)}
+
+/* ── skill pair panels ────────────────────────── */
+.sp-two{display:grid;grid-template-columns:1fr 1fr;gap:26px;flex:1}
+.sp{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:20px 22px;
+ display:flex;flex-direction:column}
+.sp-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:12px}
+.sp-n{flex:none;width:38px;height:38px;border-radius:10px;background:var(--navy);color:#fff;
+ display:flex;align-items:center;justify-content:center;font:800 14px/1 Consolas,monospace}
+.sp-head b{display:block;font-size:clamp(13px,1.28vw,17.5px);color:var(--navy);line-height:1.4}
+.sp-head i{display:block;font-size:clamp(10px,.95vw,12.5px);color:var(--teal);font-style:normal;margin-top:3px}
+.sp-what{font-size:clamp(11px,1.02vw,14px);line-height:1.75;color:var(--mut);margin-bottom:11px}
+.sp-steps{padding-inline-start:19px;margin-bottom:12px;flex:1}
+.sp-steps li{font-size:clamp(10.5px,.98vw,13.5px);line-height:1.62;margin-bottom:5px;color:var(--ink)}
+.sp-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto}
+.tag{font:700 clamp(9.5px,.88vw,11.5px)/1 Consolas,monospace;padding:4px 8px;border-radius:6px}
 .tag.att{background:var(--attbg);color:var(--att)}
 .tag.nist{background:var(--nistbg);color:var(--nist)}
-.lab{font-size:.9rem;line-height:1.55;margin-bottom:6px}
-/* agent run slides */
-.mono{font-family:"Consolas","Courier New",monospace}
-.runname{font-size:1.3rem!important;color:var(--teal)!important;word-break:break-all}
-pre.cmd{background:#0d1a26;color:#8fe3c0;padding:14px 18px;border-radius:10px;font-family:"Consolas",monospace;font-size:.88rem;line-height:1.6;overflow-x:auto;white-space:pre-wrap;word-break:break-word}
-.res{font-size:1rem;line-height:1.7}
-.evid{margin-top:14px;display:inline-block;background:var(--nistbg);color:var(--nist);font-family:"Consolas",monospace;font-size:.82rem;padding:7px 13px;border-radius:8px}
-table.t2 td.req{font-size:.78rem;color:var(--teal)}
-table.t2 td{font-size:.85rem}
-.labsteps{margin:14px 0 0;padding-inline-start:22px}
-.labsteps li{margin-bottom:10px;line-height:1.5}
-.labsteps li .ar{display:block;font-size:.95rem}
-.labsteps li .en{display:block;font-size:.8rem}
-/* roadmap */
-.roadmap{display:flex;flex-direction:column;gap:14px;margin-top:18px}
-.phase{display:flex;gap:16px;align-items:flex-start;background:#f6f9fc;border:1px solid var(--line);border-radius:12px;padding:14px 18px}
-.pnum{flex:none;width:40px;height:40px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem}
-.pbody b{color:var(--navy);font-size:1.05rem}.pbody .en{margin-inline-start:8px;font-size:.9rem}
-.pbody p{font-size:.9rem;margin:2px 0 0}
-/* ethics */
-.ethics{list-style:none;margin:6px 0 18px}
-.ethics li{padding:11px 16px;background:#f6f9fc;border-inline-start:4px solid var(--teal);border-radius:10px;margin-bottom:9px;line-height:1.5}
-.ethics li .en{display:block;font-size:.85rem;margin-top:3px}
-.close{font-size:1.1rem;font-weight:600;color:var(--navy);margin-top:8px}
-.close.en{font-weight:400}
-/* nav */
-.topbar{position:sticky;top:0;z-index:20;background:rgba(238,242,247,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);padding:9px 16px;display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
-.topbar b{color:var(--navy)}
-.dots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
-.dots a{width:11px;height:11px;border-radius:50%;background:#c3cedb;transition:.15s}
-.dots a:hover{background:var(--teal);transform:scale(1.25)}
-@media print{.topbar{display:none}.slide{box-shadow:none;page-break-after:always;min-height:auto;border:none}body{background:#fff}}
-@media(max-width:820px){.cols{grid-template-columns:1fr}.statrow{flex-wrap:wrap}.stat{min-width:44%}.slide{padding:30px 24px}.slide h1{font-size:2rem}}
-@media (prefers-color-scheme:dark){:root{--bg:#0c141d;--card:#141f2b;--ink:#e8eef5;--line:#26374a;--grey:#9fb0c2}body{color:var(--ink)}.col-side,.phase,.ethics li,table.arch tr:nth-child(even) td{background:#0f1a25}.note{background:#241f10}}
+
+/* ── facts table ──────────────────────────────── */
+.facts{width:100%;border-collapse:collapse;flex:1}
+.facts td{padding:9px 15px;border-bottom:1px solid var(--line);font-size:clamp(11px,1.05vw,14.5px);line-height:1.5}
+.facts td:first-child{font-weight:700;color:var(--navy);width:31%}
+.facts td:last-child{font-family:Consolas,monospace;color:var(--mut)}
+.facts tr:nth-child(even) td{background:#f7fafc}
+
+/* ── detection chain ──────────────────────────── */
+.chain{display:grid;grid-template-columns:1fr 30px 1fr 30px 1fr 30px 1fr;align-items:stretch;
+ gap:0;margin:6px 0 22px;flex:1;max-height:270px}
+.ch{background:#f6fafc;border:1.5px solid var(--line);border-radius:14px;padding:20px 16px;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:9px}
+.ch-i{width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;
+ display:flex;align-items:center;justify-content:center;font:800 16px/1 Consolas,monospace}
+.ch b{font-size:clamp(12px,1.18vw,16.5px);color:var(--navy)}
+.ch span{font-size:clamp(10px,.95vw,13px);color:var(--mut);line-height:1.55}
+.ch.ok{background:linear-gradient(155deg,#0d7a5f,#0E7C86);border-color:transparent}
+.ch.ok b,.ch.ok span{color:#fff}
+.ch.ok .ch-i{background:rgba(255,255,255,.22)}
+/* deck is RTL: flow runs right-to-left, so the arrowhead points left */
+.ch-a{align-self:center;width:100%;height:2px;background:var(--teal);position:relative}
+.ch-a::after{content:"";position:absolute;left:-2px;top:-4px;width:0;height:0;
+ border:5px solid transparent;border-right-color:var(--teal)}
+
+/* ── kpi / mini table ─────────────────────────── */
+.kpi{background:linear-gradient(150deg,#0B2A4A,#0E7C86);color:#fff;border-radius:14px;
+ padding:22px;text-align:center;margin-bottom:16px}
+.kpi b{display:block;font:800 clamp(34px,4.2vw,60px)/1 Consolas,monospace;direction:ltr}
+.kpi span{display:block;margin-top:8px;font-size:clamp(11.5px,1.08vw,15px);color:#cfe6ee}
+.mini{width:100%;border-collapse:collapse}
+.mini td{padding:10px 13px;border-bottom:1px solid var(--line);font-size:clamp(11px,1.05vw,14.5px)}
+.mini td:first-child{font-family:Consolas,monospace;font-weight:700;color:var(--att)}
+.mini td.n{text-align:end;font-weight:800;color:var(--teal);font-family:Consolas,monospace}
+
+/* ── zones / rules ────────────────────────────── */
+.zone-h{font-size:clamp(12px,1.15vw,16px);font-weight:700;color:var(--teal);margin-bottom:11px}
+.zone{display:grid;grid-template-columns:82px 1fr auto;align-items:center;gap:11px;
+ background:#f7fafc;border:1px solid var(--line);border-radius:10px;padding:11px 15px;margin-bottom:8px}
+.zone code{font-weight:700;color:var(--navy);font-size:clamp(11px,1.02vw,14px)}
+.zone span{font-size:clamp(11px,1.02vw,14px)}
+.zone i{font-style:normal;font-family:Consolas,monospace;font-size:clamp(10px,.92vw,12.5px);color:var(--mut)}
+.rule-row{display:grid;grid-template-columns:78px 1fr;align-items:center;gap:13px;
+ border-radius:10px;padding:11px 15px;margin-bottom:8px;font-size:clamp(11px,1.02vw,14px)}
+.rule-row b{font-family:Consolas,monospace;font-size:clamp(10.5px,.98vw,13px);text-align:center;
+ padding:4px 7px;border-radius:6px;color:#fff}
+.rule-row.deny{background:var(--attbg)} .rule-row.deny b{background:var(--att)}
+.rule-row.allow{background:var(--nistbg)} .rule-row.allow b{background:var(--nist)}
+.verify{margin-top:10px;font:700 clamp(11px,1.02vw,14px)/1.5 Consolas,monospace;color:var(--okb);
+ background:var(--okbg);padding:9px 14px;border-radius:9px;text-align:center}
+
+/* ── verdict ──────────────────────────────────── */
+.verdict{background:#0f1c28;color:#d8e6f2;border-radius:14px;padding:24px;align-self:start}
+.v-h{font-size:clamp(11px,1.02vw,13.5px);letter-spacing:.16em;color:#63d9e4;margin-bottom:14px}
+.verdict p{font-size:clamp(13px,1.25vw,17.5px);line-height:1.85;margin-bottom:11px}
+.verdict b{color:#63d9e4}
+.v-c{font-size:clamp(11.5px,1.05vw,14.5px)!important;color:#8fa6b8;border-top:1px solid #1e3243;padding-top:12px}
+
+/* ── results grid ─────────────────────────────── */
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;flex:1;align-content:center}
+.res{background:#f7fafc;border:1px solid var(--line);border-radius:13px;padding:18px 21px;
+ border-inline-start:4px solid var(--teal)}
+.r-k{font-size:clamp(13px,1.25vw,17px);font-weight:700;color:var(--navy);margin-bottom:8px}
+.res p{font-size:clamp(11px,1.02vw,14px);line-height:1.78;color:var(--mut)}
+.res b{color:var(--navy)}
+
+/* ── coverage ─────────────────────────────────── */
+.cov{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;align-content:center}
+.cov-col{background:#f7fafc;border:1px solid var(--line);border-radius:14px;padding:22px}
+.cov-h{font-size:clamp(13px,1.25vw,17px);font-weight:700;color:var(--navy);margin-bottom:15px;
+ padding-bottom:10px;border-bottom:2px solid var(--line)}
+.cov-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:15px}
+.cov-f{font-size:clamp(10.5px,.98vw,13.5px);color:var(--mut);line-height:1.65;
+ border-top:1px solid var(--line);padding-top:12px}
+.cov-f b{color:var(--teal)}
+
+/* ── failures ─────────────────────────────────── */
+.fails{display:grid;grid-template-columns:1fr 1fr;gap:15px;flex:1;align-content:center}
+.fail{background:var(--warnbg);border-inline-start:4px solid var(--warnb);border-radius:12px;padding:17px 20px}
+.fail.ok{background:var(--okbg);border-inline-start-color:var(--okb)}
+.f-t{font-size:clamp(12.5px,1.18vw,16px);font-weight:700;color:var(--navy);margin-bottom:8px}
+.fail p{font-size:clamp(11px,1.02vw,14px);line-height:1.78;color:var(--mut)}
+
+/* ── chrome: top bar + progress ───────────────── */
+.bar{position:fixed;top:0;inset-inline:0;z-index:60;background:rgba(232,237,243,.93);
+ backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+ display:flex;align-items:center;justify-content:space-between;gap:14px;padding:9px 20px}
+.bar .ttl{font-size:13px;font-weight:700;color:var(--navy)}
+.bar .ctr{display:flex;align-items:center;gap:9px}
+.bar button{border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:8px;
+ padding:6px 13px;font:600 12px/1 inherit;cursor:pointer;transition:.14s}
+.bar button:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+.counter{font:700 12px/1 Consolas,monospace;color:var(--mut);min-width:52px;text-align:center;direction:ltr}
+.prog{position:fixed;top:0;inset-inline-start:0;height:3px;z-index:61;
+ background:linear-gradient(90deg,var(--teal),var(--navy));width:0;transition:width .22s}
+.deck{padding-top:64px}
+
+/* ── presentation mode ────────────────────────── */
+body.present{overflow:hidden;background:#050c14}
+body.present .bar{display:none}
+body.present .deck{padding:0;height:100vh;display:flex;align-items:center;justify-content:center}
+body.present .slide{display:none;margin:0;width:min(1600px,98vw);
+ max-height:96vh;border-radius:10px;box-shadow:0 30px 90px rgba(0,0,0,.6)}
+body.present .slide.on{display:flex}
+body.present .prog{background:linear-gradient(90deg,#12a0ad,#63d9e4)}
+.exit-hint{display:none;position:fixed;bottom:14px;inset-inline-end:18px;z-index:62;
+ color:#5f7183;font-size:11px;letter-spacing:.05em}
+body.present .exit-hint{display:block}
+
+@media print{
+ .bar,.prog,.exit-hint{display:none}
+ body{background:#fff}
+ .deck{padding:0}
+ .slide{box-shadow:none;border:none;border-radius:0;margin:0;page-break-after:always;
+  width:100%;aspect-ratio:16/9}
+ @page{size:A4 landscape;margin:0}
+}
+@media(max-width:760px){
+ .slide{aspect-ratio:auto;min-height:auto;padding:26px 22px}
+ .two,.sp-two,.res-grid,.cov,.fails{grid-template-columns:1fr;gap:16px}
+ .stats{grid-template-columns:repeat(2,1fr)}
+ .sk-grid{grid-template-columns:repeat(2,1fr)}
+ .chain{grid-template-columns:1fr;max-height:none;gap:9px}
+ .ch-a{width:2px;height:20px;justify-self:center}
+ .layer{grid-template-columns:1fr;gap:5px;text-align:center}
+}
 """
 
-JS = """
-const dots=document.querySelector('.dots');
-document.querySelectorAll('.slide').forEach((s,i)=>{s.id='s'+i;const a=document.createElement('a');a.href='#s'+i;a.title='Slide '+(i+1);dots.appendChild(a);});
-document.addEventListener('keydown',e=>{const ss=[...document.querySelectorAll('.slide')];let cur=0;const y=window.scrollY;ss.forEach((s,i)=>{if(s.offsetTop-80<=y)cur=i;});if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();ss[Math.min(cur+1,ss.length-1)].scrollIntoView({behavior:'smooth'});}if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();ss[Math.max(cur-1,0)].scrollIntoView({behavior:'smooth'});}});
+JS = r"""
+const slides=[...document.querySelectorAll('.slide')];
+slides.forEach((s,i)=>{s.id='s'+i;s.dataset.n=String(i+1).padStart(2,'0')+' / '+slides.length});
+const prog=document.querySelector('.prog'), ctr=document.querySelector('.counter');
+let cur=0, present=false;
+
+function setCur(i,scroll){
+  cur=Math.max(0,Math.min(slides.length-1,i));
+  ctr.textContent=(cur+1)+' / '+slides.length;
+  prog.style.width=((cur+1)/slides.length*100)+'%';
+  if(present){slides.forEach((s,k)=>s.classList.toggle('on',k===cur));}
+  else if(scroll){slides[cur].scrollIntoView({behavior:'smooth',block:'start'});}
+}
+function go(d){setCur(cur+d,true)}
+
+function togglePresent(){
+  present=!present;
+  document.body.classList.toggle('present',present);
+  if(present){ if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{}); }
+  else if(document.fullscreenElement){ document.exitFullscreen().catch(()=>{}); }
+  setCur(cur,!present);
+}
+document.addEventListener('fullscreenchange',()=>{
+  if(!document.fullscreenElement && present){present=false;document.body.classList.remove('present');setCur(cur,true);}
+});
+
+addEventListener('keydown',e=>{
+  if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();go(1)}
+  else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();go(-1)}
+  else if(e.key==='Home'){e.preventDefault();setCur(0,true)}
+  else if(e.key==='End'){e.preventDefault();setCur(slides.length-1,true)}
+  else if(e.key==='f'||e.key==='F'||e.key==='p'||e.key==='P'){e.preventDefault();togglePresent()}
+  else if(e.key==='Escape'&&present){togglePresent()}
+});
+document.querySelector('#prev').onclick=()=>go(-1);
+document.querySelector('#next').onclick=()=>go(1);
+document.querySelector('#pres').onclick=togglePresent;
+
+// track scroll position when not presenting
+addEventListener('scroll',()=>{
+  if(present)return;
+  const y=scrollY+120; let n=0;
+  slides.forEach((s,i)=>{if(s.offsetTop<=y)n=i});
+  if(n!==cur)setCur(n,false);
+},{passive:true});
+
+setCur(0,false);
 """
 
 DOC = f"""<!doctype html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Proxmox Security Lab | Presentation</title>
+<title>{esc(C.PROJECT['title_ar'])}</title>
 <style>{CSS}</style>
 </head>
 <body>
-<div class="topbar"><b>Proxmox Security Lab</b> · {n} slides · <span class="en">← → to navigate · Ctrl+P to export PDF</span><div class="dots"></div></div>
-<div class="deck">
-{deck}
+<div class="prog"></div>
+<div class="bar">
+  <span class="ttl">مختبر أمني على Proxmox VE</span>
+  <div class="ctr">
+    <button id="prev">‹ السابق</button>
+    <span class="counter">1 / {len(S)}</span>
+    <button id="next">التالي ›</button>
+    <button id="pres">وضع العرض (F)</button>
+  </div>
 </div>
+<div class="deck">
+{chr(10).join(S)}
+</div>
+<div class="exit-hint">Esc للخروج · ← → للتنقل</div>
 <script>{JS}</script>
 </body>
 </html>"""
 
 out = r"C:\Users\HP\automation\proxmox-security-lab\Proxmox-Security-Lab-Presentation.html"
-open(out,"w",encoding="utf-8").write(DOC)
-print("saved", out, len(DOC), "bytes,", n, "slides")
+open(out, "w", encoding="utf-8").write(DOC)
+print("saved", out, f"| {len(S)} slides | {len(DOC)//1024} KB")
