@@ -1,0 +1,311 @@
+<title>ورقة المناقشة، Proxmox Security Lab</title>
+<style>
+:root{--navy:#0B2A4A;--teal:#0E7C86;--ink:#16202b;--grey:#5b6472;--bg:#eef2f7;--card:#fff;--line:#dbe3ec;
+--warnbg:#fff8ec;--warn:#a86400;--okbg:#e9f4ef;--ok:#0d5c47;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7}
+.wrap{max-width:920px;margin:0 auto;padding:26px 16px 70px}
+header{background:linear-gradient(150deg,#0B2A4A,#12405f 60%,#0E7C86);color:#fff;border-radius:18px;padding:34px 30px;margin-bottom:22px}
+header h1{font-size:1.9rem;margin-bottom:6px}
+header p{opacity:.9;font-size:1rem}
+.pill{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+padding:5px 13px;border-radius:999px;font-size:.8rem;margin-bottom:14px;letter-spacing:.04em}
+h2{color:var(--navy);font-size:1.25rem;margin:26px 0 12px;padding-bottom:7px;border-bottom:2px solid var(--teal)}
+.q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin-bottom:14px;
+box-shadow:0 4px 14px rgba(11,42,74,.05)}
+.q .num{display:inline-block;background:var(--navy);color:#fff;width:26px;height:26px;border-radius:50%;
+text-align:center;line-height:26px;font-size:.85rem;font-weight:700;margin-inline-end:9px}
+.q h3{display:inline;font-size:1.05rem;color:var(--navy)}
+.a{margin-top:11px;padding-inline-start:14px;border-inline-start:3px solid var(--teal)}
+.ev{margin-top:9px;font-size:.83rem;color:var(--teal);background:#f2f8f9;padding:6px 11px;border-radius:8px;display:inline-block}
+.mono{font-family:Consolas,monospace;font-size:.9em;background:#eef1f5;padding:1px 6px;border-radius:4px}
+.hard{border-inline-start:4px solid #b3541e}
+.hard .num{background:#b3541e}
+.tip{background:var(--warnbg);border-inline-start:4px solid var(--warn);padding:13px 17px;border-radius:10px;margin:14px 0;font-size:.95rem}
+.key{background:var(--okbg);border-inline-start:4px solid var(--ok);padding:13px 17px;border-radius:10px;margin:14px 0}
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:12px;overflow:hidden;margin:12px 0;font-size:.92rem}
+th{background:var(--navy);color:#fff;text-align:right;padding:10px 13px}
+td{padding:9px 13px;border-bottom:1px solid var(--line)}
+tr:nth-child(even) td{background:#f7fafc}
+.num-cell{font-family:Consolas,monospace;font-weight:700;color:var(--teal);white-space:nowrap}
+ul{padding-inline-start:22px}li{margin-bottom:5px}
+@media print{body{background:#fff}.q{box-shadow:none;break-inside:avoid}header{background:var(--navy)}}
+@media (prefers-color-scheme:dark){:root{--bg:#0c141d;--card:#141f2b;--ink:#e8eef5;--line:#26374a;--grey:#9fb0c2;
+--warnbg:#241f10;--okbg:#0f2019}tr:nth-child(even) td{background:#0f1a25}.mono{background:#1d2a38}.ev{background:#12262a}}
+</style>
+<div class="wrap" dir="rtl">
+
+<header>
+  <div class="pill">ورقة تحضير المناقشة الشفوية</div>
+  <h1>Proxmox Security Lab</h1>
+  <p>أسئلة الدكتور المتوقّعة، وأجوبتها من واقع شغلك الفعلي، ومكان الدليل لكل جواب</p>
+</header>
+
+<div class="key">
+  <b>القاعدة الذهبية:</b> كل رقم في هذه الورقة حقيقي وموجود في مجلد <span class="mono">agent-lab/evidence/</span>.
+  لو نسيت رقماً، قل «الرقم موجود في ملف الأدلة» بدل أن تخمّن. التخمين الخاطئ أسوأ من عدم التذكّر.
+</div>
+
+<h2>الأرقام التي يجب أن تحفظها</h2>
+<table>
+<tr><th>البند</th><th>الرقم</th></tr>
+<tr><td>إصدار Proxmox</td><td class="num-cell">9.2.2</td></tr>
+<tr><td>موارد العقدة</td><td class="num-cell">4 vCPU · 6 GB RAM · 80 GB</td></tr>
+<tr><td>عنوان العقدة</td><td class="num-cell">192.168.29.132:8006</td></tr>
+<tr><td>مناطق الشبكة المعزولة</td><td class="num-cell">3 (vmbr10 / 20 / 30)</td></tr>
+<tr><td>إصدار Suricata وقواعده</td><td class="num-cell">7.0.10 · 5 قواعد</td></tr>
+<tr><td>تنبيهات Suricata الفعلية</td><td class="num-cell">6 تنبيهات (3 قواعد من 5)</td></tr>
+<tr><td>أحداث DNS المحلَّلة</td><td class="num-cell">36 حدث ← نفقان</td></tr>
+<tr><td>أحداث الـ SIEM المرتبطة</td><td class="num-cell">26 حدث من مصدرين</td></tr>
+<tr><td>حزم تنتظر التحديث</td><td class="num-cell">61</td></tr>
+<tr><td>مجموعة التشفير المتفاوض عليها</td><td class="num-cell">TLS_AES_256_GCM_SHA384</td></tr>
+<tr><td>ملفات canary</td><td class="num-cell">16 ملف</td></tr>
+<tr><td>حزم الـ SBOM</td><td class="num-cell">75 حزمة</td></tr>
+</table>
+
+<h2>أولاً: أسئلة عن المشروع ككل</h2>
+
+<div class="q">
+  <span class="num">1</span><h3>اشرح لي مشروعك في دقيقتين.</h3>
+  <div class="a">
+    بنيت مختبراً أمنياً على Proxmox VE، ثم طبّقت عليه عشر مهارات دفاعية من مكتبة مفتوحة المصدر فيها 817 مهارة
+    موزّعة على 29 مجالاً. الجديد في الموضوع أن المهارات لم تُقرأ وتُشرح فقط، بل نُفِّذت عبر وكيل ذكاء اصطناعي،
+    لأن المكتبة أصلاً مبنية لهذا الغرض: كل مهارة فيها ملف <span class="mono">agent.py</span> قابل للتشغيل.
+    <br><br>
+    رتّبت المهارات كطبقات دفاع متتالية: العزل الشبكي أولاً، ثم الجدار الناري، ثم المراقبة والكشف، ثم التصليب والخداع.
+    وأقوى نتيجة عندي ليست مهارة منفردة، بل سلسلة كشف كاملة: هجوم محاكى داخل المختبر، التقطته Suricata،
+    حلّله وكيل مستقل، فخرج بكشف صحيح.
+  </div>
+</div>
+
+<div class="q">
+  <span class="num">2</span><h3>لماذا اخترت هذه المهارات العشر بالذات؟</h3>
+  <div class="a">
+    اخترتها لتشكّل منظومة دفاعية مترابطة لا قائمة عشوائية. كل مهارة تغذّي التي بعدها:
+    التقسيم الشبكي يحدّد المناطق، والجدار الناري يفرض السياسة بينها، و Suricata يراقب المرور داخلها،
+    ومخرجاته تصبح مدخلاً لتحليل DNS وللـ SIEM. كما راعيت تنوّع المجالات: شبكات، تشفير، استجابة حوادث،
+    إدارة ثغرات، خداع، وسلسلة توريد. وكلها دفاعية بحكم طبيعة المشروع.
+  </div>
+</div>
+
+<div class="q">
+  <span class="num">3</span><h3>ما دور الذكاء الاصطناعي هنا بالضبط؟</h3>
+  <div class="a">
+    الوكيل يقرأ ترويسة YAML في ملف <span class="mono">SKILL.md</span> ليحدّد المهارة المناسبة للمهمة،
+    ثم يشغّل <span class="mono">scripts/agent.py</span> بالمعاملات الملائمة، ويقرأ المخرجات، ويبني عليها الخطوة التالية.
+    مجلد <span class="mono">.claude-plugin</span> هو ما يسجّل المكتبة كإضافة قابلة للاستخدام داخل بيئة الوكيل.
+    <br><br>
+    لكن القرار الهندسي بقي قراري: أي مهارة تُختار، وكيف تُصمَّم مناطق الشبكة، وما البديل حين لا تتوفر أداة،
+    وكيف تُقرأ النتيجة. الوكيل نفّذ، وأنا صمّمت وحكمت على المخرجات.
+  </div>
+</div>
+
+<h2>ثانياً: أسئلة تقنية على التنفيذ</h2>
+
+<div class="q">
+  <span class="num">4</span><h3>كيف شغّلت Proxmox وهو hypervisor داخل VMware؟</h3>
+  <div class="a">
+    عبر المحاكاة المتداخلة (nested virtualization). فعّلت الخيار <span class="mono">vhv.enable = TRUE</span>
+    في ملف الـ vmx، وهو ما يمرّر إمكانيات المعالج الافتراضية إلى النظام الضيف.
+    <br><br>
+    والشرط الحاسم أن Hyper-V كان معطّلاً على ويندوز (<span class="mono">hypervisorlaunchtype = Off</span>).
+    لو كان يعمل، لاحتجز ويندوز طبقة الافتراضية ولما استطاع VMware تمريرها. الدليل على نجاح ذلك أن
+    <span class="mono">/dev/kvm</span> ظهر داخل Proxmox، أي أن العقدة قادرة على تشغيل أجهزة افتراضية بداخلها.
+  </div>
+  <div class="ev">📎 evidence/ + ملف Proxmox-VE.vmx</div>
+</div>
+
+<div class="q">
+  <span class="num">5</span><h3>كيف تأكدت أن الـ VLAN تعمل فعلاً وليست مجرد إعداد مكتوب؟</h3>
+  <div class="a">
+    بثلاثة أدلة لا بواحد. أولاً قراءة القيمة <span class="mono">vlan_filtering</span> من
+    <span class="mono">/sys/class/net/vmbr0/bridge/</span> فوجدتها 1، وهذا يعني أن ترشيح الـ VLAN مفعّل على مستوى النواة.
+    ثانياً الأمر <span class="mono">bridge vlan show</span> أظهر جدول VLAN فعلياً على المنفذ.
+    ثالثاً الجسور الثلاثة ظهرت بعناوينها في <span class="mono">ip -br addr</span>.
+    والأهم أن الاتصال بالعقدة لم ينقطع أثناء التطبيق، وهذا بحد ذاته اختبار للإعداد.
+  </div>
+  <div class="ev">📎 evidence/08_vlan_segmentation_agent.txt</div>
+</div>
+
+<div class="q">
+  <span class="num">6</span><h3>اشرح قواعد Suricata التي كتبتها.</h3>
+  <div class="a">
+    كتبت خمس قواعد، ربطت كلاً منها بتقنية من MITRE ATT&amp;CK حتى تكون التغطية قابلة للقياس:
+    <ul>
+      <li>مسح ICMP بعتبة تكرار (T1018)</li>
+      <li>استعلام DNS يحمل كلمة exfil (T1048.003)</li>
+      <li>نفق DNS عبر طول النطاق الفرعي (T1071.004)</li>
+      <li>User-Agent مشبوه لقناة تحكّم (T1071.001)</li>
+      <li>دفقة SYN تدل على مسح منافذ (T1046)</li>
+    </ul>
+    استخدمت <span class="mono">threshold</span> في قاعدتي المسح لتقليل الإيجابيات الكاذبة، بحيث لا تُطلق القاعدة
+    إلا عند تجاوز عدد معيّن خلال نافذة زمنية محددة.
+  </div>
+  <div class="ev">📎 evidence/09_suricata_agent.txt</div>
+</div>
+
+<div class="q">
+  <span class="num">7</span><h3>ما أهمية سلسلة الكشف التي تتحدث عنها؟</h3>
+  <div class="a">
+    لأنها تُثبت أن المنظومة تعمل كوحدة لا كأدوات منفصلة. الهجوم ولّدته داخل المختبر،
+    والتقاطه تم بأداة مراقبة حقيقية على واجهة حقيقية، ثم أخرجت 36 حدث DNS من سجلات Suricata
+    ومرّرتها إلى وكيل تحليل مستقل تماماً عن أداة الالتقاط، فكشف النفقين اعتماداً على طول النطاق الفرعي
+    وحجم الاستعلامات. أي أن الكشف لم يأتِ من الأداة التي ولّدت البيانات، وهذا ما يجعله ذا قيمة.
+  </div>
+  <div class="ev">📎 evidence/11_dns_agent_on_real_suricata_data.txt</div>
+</div>
+
+<h2>ثالثاً: الأسئلة الصعبة، استعدّ لها جيداً</h2>
+
+<div class="q hard">
+  <span class="num">8</span><h3>لماذا لم تستخدم pfSense كما تقول المهارة؟</h3>
+  <div class="a">
+    لأن pfSense يحتاج جهازاً افتراضياً مستقلاً بواجهتي شبكة، والعقدة عندي بستة غيغابايت ذاكرة فقط،
+    فكان تشغيله سيستهلك موارد على حساب باقي المختبر.
+    <br><br>
+    لكن المهم أن <b>هدف المهارة تحقّق</b>: سياسة منع افتراضي، وأسماء مستعارة للمناطق، وسماح محدود
+    لشبكة الإدارة بالمنفذين 8006 و22 مع التسجيل، ومنع شبكة الأهداف من بلوغ الإدارة والخوادم.
+    نفّذت ذلك بجدار Proxmox المدمج، وتحققت منه بقراءة قواعد <span class="mono">iptables</span> الفعلية في النواة،
+    لا من واجهة رسومية تقول إن القاعدة مضافة.
+  </div>
+  <div class="ev">📎 evidence/12_firewall_agent.txt</div>
+</div>
+
+<div class="q hard">
+  <span class="num">9</span><h3>و Splunk؟ ألم تستخدمه أصلاً؟</h3>
+  <div class="a">
+    لا، لأنه يحتاج خادماً مرخّصاً. والمهارة في جوهرها ليست عن أداة بعينها بل عن منطق تحليلي:
+    تجميع من مصادر متعددة، ثم إحصاء، ثم إعادة بناء الخط الزمني، ثم ربط الأنماط بالتقنيات.
+    <br><br>
+    طبّقت هذا المنطق على 26 حدثاً حقيقياً من Suricata وسجل sshd. أعاد التحليل ترتيب الحادثة زمنياً،
+    وحدّد المضيف الأكثر نشاطاً، وأظهر تغطية شملت T1048.003 و T1018 و T1046. وخلصت إلى أن مضيفاً داخلياً
+    واحداً أنتج استطلاعاً ومحاولة تسريب خلال اثنتي عشرة ثانية، وهو إيقاع يدل على أداة آلية لا على إنسان.
+    لو توفّر Splunk لكانت هذه نفسها استعلامات SPL.
+  </div>
+  <div class="ev">📎 evidence/13_siem_correlation_agent.txt</div>
+</div>
+
+<div class="q hard">
+  <span class="num">10</span><h3>قاعدتان من قواعدك لم تعملا. أليس هذا فشلاً؟</h3>
+  <div class="a">
+    هو نتيجة، وقد وثّقتها بدل إخفائها. قاعدة الـ C2 لم تُطلق لأن مسار الاختبار لم يكن فيه خادم HTTP
+    يستقبل الطلب، فلم يتولّد مرور HTTP أصلاً ليُفحص. وقاعدة نفق DNS لم تطابق لأن نمط
+    <span class="mono">pcre</span> الذي كتبته لم ينطبق على شكل الاستعلام الفعلي.
+    <br><br>
+    والمفارقة أن النفق <b>كُشف فعلاً</b>، لكن عبر مسار آخر: وكيل تحليل DNS رصده من طول النطاق الفرعي.
+    وهذا درس عملي في الدفاع المتعمّق: حين تفشل طبقة كشف، تلتقطها طبقة أخرى.
+  </div>
+</div>
+
+<div class="q hard">
+  <span class="num">11</span><h3>هل أنت من عمل هذا فعلاً، أم الذكاء الاصطناعي؟</h3>
+  <div class="a">
+    التنفيذ تم عبر وكيل، وهذا هو المطلوب في المشروع أصلاً ولم أخفِه بل خصّصت له فصلاً كاملاً.
+    لكن الوكيل لا يقرّر: أنا من اختار المهارات العشر، وصمّم مناطق الشبكة وعناوينها،
+    وقرّر البديل حين تعذّر توفير أداة، وقرأ النتائج وحكم عليها.
+    <br><br>
+    والدليل العملي على ذلك أن المشروع فيه أخطاء صحّحتها بنفسي: إعداد الـ VLAN فشل أولاً بسبب صياغة
+    <span class="mono">sed</span> مشوّهة، والجدار الناري فشل لأنني استخدمت بادئة مخصّصة لـ IPSet بدل الأسماء المستعارة.
+    ولأن سياسة المنع الافتراضي قد تقطع الوصول عن المسؤول، شغّلت آلية تراجع تلقائي قبل التفعيل. هذا حكم هندسي.
+  </div>
+</div>
+
+<div class="q hard">
+  <span class="num">12</span><h3>لماذا لم تستخدم WSL و Docker؟ كانا أسهل.</h3>
+  <div class="a">
+    لسببين. الأول أن WSL2 يتطلب تشغيل Hyper-V، وهذا كان سيسلب VMware طبقة الافتراضية ويُلغي
+    <span class="mono">/dev/kvm</span> داخل Proxmox، أي أن تفعيله كان سيعطّل المختبر نفسه.
+    <br><br>
+    والثاني أن الحاوية تشارك نواة المضيف ولا تملك stack شبكة مستقلاً، فلا يمكن فيها إنشاء جسور حقيقية
+    ولا وصلة trunk موسومة ولا قواعد جدار على مستوى مضيف منفصل. ومهارات عزل الشبكة تحتاج شبكة حقيقية.
+    <br><br>
+    وهذا لا يعني أن Docker بلا موضع: موضعه الصحيح <b>داخل</b> المختبر لا بديلاً عنه، بالترتيب
+    <span class="mono">Proxmox ← Ubuntu VM ← Docker ← Containerlab</span>.
+  </div>
+</div>
+
+<div class="q hard">
+  <span class="num">13</span><h3>Tailscale لم تُفعّله. لماذا تعدّه منجزاً؟</h3>
+  <div class="a">
+    لا أعدّه منجزاً بالكامل، وقد ذكرت ذلك صراحة في التقرير. المثبَّت والمُتحقَّق منه:
+    الإصدار 1.98.10 من المستودع الرسمي الموقّع، وخدمة <span class="mono">tailscaled</span> تعمل،
+    ووحدة WireGuard محمّلة في النواة، وإعادة توجيه الحزم مفعّلة استعداداً لدور subnet router.
+    <br><br>
+    المتبقّي أمر واحد هو <span class="mono">tailscale up</span>، وهو يتطلب تسجيل دخول بحساب شخصي لدى مزوّد هوية،
+    وهذا خارج نطاق ما يصح أتمتته في مشروع أكاديمي.
+  </div>
+  <div class="ev">📎 evidence/14_tailscale_agent.txt</div>
+</div>
+
+<h2>رابعاً: أسئلة قد تأتي على حين غرة</h2>
+
+<div class="q">
+  <span class="num">14</span><h3>ما الفرق بين IDS و IPS؟ وأيّهما شغّلت؟</h3>
+  <div class="a">
+    الـ IDS يراقب ويُنبّه فقط، أما الـ IPS فيعترض الحزمة ويمنعها، ولذلك يجب أن يكون في مسار المرور نفسه (inline).
+    شغّلت Suricata في وضع IDS، وقد أعلن ذلك بنفسه في سجلاته:
+    <span class="mono">Setting engine mode to IDS mode by default</span>.
+    اخترت ذلك لأن الوضع الاعتراضي في مختبر تجريبي قد يقطع مروراً مشروعاً أثناء ضبط القواعد.
+  </div>
+</div>
+
+<div class="q">
+  <span class="num">15</span><h3>لماذا شهادة Proxmox مشكلة وأنت تقول إن TLS 1.3 يعمل؟</h3>
+  <div class="a">
+    المسألتان منفصلتان. البروتوكول سليم فعلاً: الإصداران القديمان معطّلان، والتفاوض تم على
+    <span class="mono">TLS_AES_256_GCM_SHA384</span> عبر TLS 1.3، وهذه مجموعة قوية بسرية تقدّمية تامة.
+    <br><br>
+    لكن الشهادة ذاتية التوقيع من سلطة داخلية، أي أنها تشفّر الاتصال دون أن تُثبت هوية الخادم.
+    والنتيجة عملياً أن المتصفح يحذّر، فيعتاد المستخدم على تجاوز التحذير، وهنا يصبح هجوم الوسيط ممكناً.
+    لذلك أوصيت بشهادة موثوقة.
+  </div>
+  <div class="ev">📎 evidence/07_tls_agent_vs_proxmox.txt</div>
+</div>
+
+<div class="q">
+  <span class="num">16</span><h3>وجدت 61 حزمة تنتظر التحديث. لماذا لم تحدّثها؟</h3>
+  <div class="a">
+    لأن هدف المهارة هو <b>الاكتشاف والترتيب</b>، والتحديث الشامل أثناء التوثيق كان سيغيّر حالة النظام
+    ويُفقد النتيجة قابلية إعادة الإنتاج. في بيئة حقيقية يخضع هذا لدورة إدارة تغيير: نافذة صيانة،
+    واختبار، وخطة تراجع.
+    <br><br>
+    ويستحق الذكر أن جزءاً من التحديثات كان يتطلب مستودع Proxmox المدفوع، وقد ظهر ذلك كخطأ 401
+    أثناء التثبيت، والحل المعتاد هو التحويل إلى مستودع no-subscription.
+  </div>
+</div>
+
+<div class="q">
+  <span class="num">17</span><h3>في تحليل الـ SBOM ظهرت ثغرات. هل كلها حقيقية؟</h3>
+  <div class="a">
+    لا، وهذه بالذات نقطة مهمة. المطابقة تتم بالاسم عبر معرّف CPE، فتظهر إيجابيات كاذبة.
+    ومن أمثلة ذلك في نتائجي أن الحزمة <span class="mono">click</span> طوبقت مع ثغرة تخص إضافة ووردبريس
+    تحمل اسماً مشابهاً، وهي لا علاقة لها بها.
+    <br><br>
+    ولهذا لا يُعتمد على المخرَج الخام، بل يُراجَع بالسياق: هل المكوّن مُستخدَم فعلاً؟ وهل المسار قابل للاستغلال؟
+  </div>
+  <div class="ev">📎 evidence/04_sbom_agent.txt</div>
+</div>
+
+<div class="tip">
+  <b>لو سُئلت سؤالاً لا تعرفه:</b> لا تخمّن. قل «هذا لم أختبره في المختبر، لكن المتوقع كذا، وأستطيع التحقق منه بالأمر الفلاني».
+  الاعتراف بحدود التجربة يُقرأ ثقةً لا جهلاً، خصوصاً بعد أن أثبتّ عملاً حقيقياً.
+</div>
+
+<h2>خامساً: تجهيز يوم المناقشة</h2>
+<div class="q">
+  <div class="a" style="border:none;padding:0">
+    <ul>
+      <li>شغّل العقدة قبل الموعد وتأكد أن <span class="mono">https://192.168.29.132:8006</span> يفتح.</li>
+      <li>افتح ثلاثة ملفات أدلة مسبقاً في تبويبات جاهزة: Suricata، وتحليل DNS، والجدار الناري.</li>
+      <li>احفظ ثلاثة أوامر للعرض الحيّ إن طُلب:
+        <span class="mono">cat /sys/class/net/vmbr0/bridge/vlan_filtering</span> ·
+        <span class="mono">cat /var/log/suricata/fast.log</span> ·
+        <span class="mono">iptables -L PVEFW-HOST-IN -n</span>
+      </li>
+      <li>جهّز رابط المستودع مفتوحاً: <span class="mono">github.com/OwaisAbuSalah/proxmox-security-lab</span></li>
+      <li>ابدأ عرضك بسلسلة الكشف. هي أقوى ما عندك، وتضع بقية الأسئلة في إطارها الصحيح.</li>
+    </ul>
+  </div>
+</div>
+
+</div>
