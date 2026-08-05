@@ -661,3 +661,52 @@ LAB_FACTS = [
     ("IDS", "Suricata 7.0.10, 5 custom rules, 6 real alerts captured"),
     ("ZTNA", "Tailscale 1.98.10 installed; activation pending user login"),
 ]
+
+
+# ---- Lab extension: a real target host inside the TARGETS zone ----
+AGENT_RUNS += [
+    {
+        "skill": "configuring-network-segmentation-with-vlans (tested)",
+        "cmd": "pct create 120 ... --net0 bridge=vmbr20,ip=10.10.20.50/24 ; isolation tests",
+        "evidence": "evidence/15_target_container_isolation.txt",
+        "result_ar": (
+            "حتى هذه المرحلة كانت المناطق الثلاث معرَّفة لكنها فارغة، أي أن سياسة العزل مُطبَّقة وغير مُختبَرة. "
+            "فأنشأنا مضيفاً هدفاً حقيقياً داخل منطقة الأهداف: حاوية Alpine على الجسر vmbr20 بالعنوان 10.10.20.50. "
+            "ثم اختبرنا العزل من داخلها. النتيجة أن بوابة منطقتها 10.10.20.1 كانت متاحة كما هو متوقع، بينما فشل "
+            "كل ما يلي: الوصول إلى شبكة الإدارة، وإلى واجهة Proxmox على المنفذ 8006، وإلى SSH، وإلى شبكة الخوادم. "
+            "والأهم أن عدّادات iptables أثبتت أن الجدار الناري هو سبب المنع لا انعدام المسار: ثماني حزم اصطدمت "
+            "بقاعدة منع الوصول إلى الإدارة، وحزمتان بقاعدة منع الوصول إلى الخوادم. أي أن الحزم وصلت فعلاً وأُسقطت هناك."
+        ),
+        "result_en": (
+            "Up to this point the three zones were defined but empty, meaning the isolation policy was configured yet "
+            "untested. So we created a real target host inside the targets zone: an Alpine container on the vmbr20 bridge "
+            "at 10.10.20.50. Testing isolation from inside it, its own gateway 10.10.20.1 was reachable as expected, while "
+            "every one of the following failed: reaching the management network, the Proxmox interface on port 8006, SSH, "
+            "and the servers network. Crucially, iptables counters proved the firewall was the cause rather than a missing "
+            "route: eight packets hit the management-block rule and two hit the servers-block rule, so the packets did "
+            "arrive and were dropped there."
+        ),
+    },
+    {
+        "skill": "detection chain from a separate host",
+        "cmd": "suricata on vmbr20 ; attack from container ; DNS agent on captured events",
+        "evidence": "evidence/16_detection_chain_from_separate_host.txt",
+        "result_ar": (
+            "أعدنا تنفيذ سلسلة الكشف بالكامل، لكن هذه المرة انطلق الهجوم من المضيف الهدف لا من العقدة نفسها، "
+            "وهو ما يجعل السيناريو أقرب لواقع الاختراق. وسّعنا Suricata ليراقب جسر منطقة الأهداف أيضاً، ثم ولّدنا "
+            "من داخل الحاوية مسحاً وطلبات DNS مشبوهة. سجّل Suricata خمسة تنبيهات كلها بمصدر 10.10.20.50: "
+            "تنبيه مسح ICMP وأربعة تنبيهات تسريب عبر DNS. وبعدها مرّرنا 24 حدث DNS ملتقطاً إلى وكيل التحليل، "
+            "فكشف النفق evil-tunnel.test بعشرين استعلاماً ومتوسط طول 60 حرفاً، ونسبه إلى المصدر الصحيح."
+        ),
+        "result_en": (
+            "We ran the whole detection chain again, but this time the attack originated from the target host rather than "
+            "the node itself, which makes the scenario much closer to a real intrusion. Suricata was extended to monitor "
+            "the targets-zone bridge as well, then a sweep and suspicious DNS queries were generated from inside the "
+            "container. Suricata logged five alerts, all with source 10.10.20.50: an ICMP sweep and four DNS exfiltration "
+            "alerts. We then passed the 24 captured DNS events to the analysis agent, which identified the evil-tunnel.test "
+            "tunnel across twenty queries averaging 60 characters, and attributed it to the correct source."
+        ),
+    },
+]
+
+

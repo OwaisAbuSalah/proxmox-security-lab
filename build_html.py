@@ -187,6 +187,43 @@ slide("""
     </div>
   </div>""")
 
+# ══════════════════════════════ 18b. ISOLATION ACTUALLY TESTED
+slide("""
+  <h3>The policy under test, not just configured</h3>
+  <p class="lead sm">The three zones were defined but empty, so the isolation policy was configured yet unproven. A real target host was placed inside the targets zone: an Alpine container on <span class="mono">vmbr20</span> at <span class="mono">10.10.20.50</span>.</p>
+  <div class="two" style="margin-top:14px">
+    <div>
+      <div class="zone-h">Reachability from the target host</div>
+      <div class="rule-row allow"><b>OK</b><span>Own gateway 10.10.20.1</span></div>
+      <div class="rule-row deny"><b>BLOCKED</b><span>Management network</span></div>
+      <div class="rule-row deny"><b>BLOCKED</b><span>Proxmox UI, port 8006</span></div>
+      <div class="rule-row deny"><b>BLOCKED</b><span>SSH, port 22</span></div>
+      <div class="rule-row deny"><b>BLOCKED</b><span>Servers zone 10.10.10.0/24</span></div>
+    </div>
+    <div>
+      <div class="zone-h">Proof it was the firewall</div>
+      <p class="lead sm">Blocking could simply mean &ldquo;no route&rdquo;. The iptables counters settle it: the packets arrived and were dropped at the zone rules.</p>
+      <table class="mini" style="margin-top:10px">
+        <tr><td class="mono">targets &rarr; mgmt</td><td class="n">8 pkts</td></tr>
+        <tr><td class="mono">targets &rarr; servers</td><td class="n">2 pkts</td></tr>
+      </table>
+      <div class="verify" style="margin-top:12px">lateral movement blocked &check;</div>
+    </div>
+  </div>""")
+
+# ══════════════════════════════ 18c. CHAIN FROM A SEPARATE HOST
+slide("""
+  <h3>Detection chain, re-run from a separate host</h3>
+  <p class="lead sm">The first run generated its attack from the node itself. With a real target host available, the chain was repeated the way an intrusion actually looks: the attack originates elsewhere, and the defender only sees the traffic.</p>
+  <div class="chain" style="max-height:180px;margin:12px 0 14px">
+    <div class="ch"><div class="ch-i">1</div><b>Attack from 10.10.20.50</b><span>a host separate from the node</span></div>
+    <div class="ch-a"></div>
+    <div class="ch"><div class="ch-i">2</div><b>Suricata on vmbr20</b><span>5 alerts, all from that source</span></div>
+    <div class="ch-a"></div>
+    <div class="ch ok"><div class="ch-i">3</div><b>Agent attributed it</b><span>evil-tunnel.test, 20 queries, avg 60 chars</span></div>
+  </div>
+  <div class="callout hero"><b>What this closes:</b> the earlier chain proved the analysis was independent. This one proves the <i>topology</i> is real too, since the traffic crossed a zone boundary and was seen by an IDS watching that zone.</div>""", "hero")
+
 # ══════════════════════════════ 19. SIEM
 slide("""
   <h3>Correlation and incident reconstruction</h3>

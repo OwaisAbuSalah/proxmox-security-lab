@@ -1,0 +1,16 @@
+##################################################################
+# DETECTION CHAIN v2: attack originates from a SEPARATE host
+# source host : target01 (10.10.20.50) in the TARGETS zone
+# captured by : Suricata on vmbr20
+# analysed by : analyzing-dns-logs-for-exfiltration agent
+# executed    : 2026-08-06T01:45:19
+##################################################################
+
+Loaded 24 real DNS query events
+
+--- DNS tunneling detection (T1071.004) ---
+  [ALERT] evil-tunnel.test: 20 queries | avg subdomain len=60.0 | src=['10.10.20.50']
+
+--- entropy of observed labels ---
+  'exfil-data' -> 3.1219
+  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...' -> -0.0

@@ -1,0 +1,96 @@
+################################################################
+# LAB EXTENSION: target host inside the TARGETS zone (vmbr20)
+# Purpose: actually TEST the VLAN isolation + firewall policy
+# EXECUTED: 2026-08-05T22:40:38Z
+################################################################
+===== [1] CREATE TARGET CONTAINER ON vmbr20 (targets zone) =====
+Superblock backups stored on blocks: 
+	32768, 98304, 163840, 229376, 294912
+extracting archive '/var/lib/vz/template/cache/alpine-3.24-default_20260714_amd64.tar.xz'
+Total bytes read: 11694080 (12MiB, 100MiB/s)
+Detected container architecture: amd64
+
+--- container status ---
+VMID       Status     Lock         Name                
+120        running                 target01            
+
+--- its network ---
+BusyBox v1.37.0 (2026-01-10 15:38:28 UTC) multi-call binary.
+
+Usage: ip [OPTIONS] address|route|link|tunnel|neigh|rule [ARGS]
+
+OPTIONS := -f[amily] inet|inet6|link | -o[neline]
+
+ip addr add|del IFADDR dev IFACE | show|flush [dev IFACE] [to PREFIX]
+ip route list|flush|add|del|change|append|replace|test ROUTE
+ip link set IFACE [up|down] [arp on|off] [multicast on|off]
+	[promisc on|off] [mtu NUM] [name NAME] [qlen NUM] [address MAC]
+	[master IFACE | nomaster] [netns PID]
+ip tunnel add|change|del|show [NAME]
+	[mode ipip|gre|sit] [remote ADDR] [local ADDR] [ttl TTL]
+ip neigh show|flush [to PREFIX] [dev DEV] [nud STATE]
+ip rule [list] | add|del SELECTOR ACTION
+
+===== [2] ZONE BRIDGE NOW POPULATED =====
+vmbr10: 
+vmbr20: veth120i0 
+vmbr30: 
+--- target IP (busybox syntax) ---
+    link/ether bc:24:11:10:eb:01 brd ff:ff:ff:ff:ff:ff
+    inet 10.10.20.50/24 scope global eth0
+
+===== [3] ISOLATION TESTS FROM INSIDE THE TARGET ZONE =====
+target -> its own gateway 10.10.20.1 (expect reachable)REACHABLE
+target -> MANAGEMENT 192.168.29.132 (expect BLOCKED)BLOCKED / unreachable
+target -> Proxmox UI 192.168.29.132:8006 (expect BLOCKED)BLOCKED / unreachable
+target -> SSH 192.168.29.132:22 (expect BLOCKED)    BLOCKED / unreachable
+target -> SERVERS zone 10.10.10.1 (expect BLOCKED)  BLOCKED / unreachable
+target -> external 192.168.29.2 (gateway)           BLOCKED / unreachable
+===== [4] PROOF THE FIREWALL IS THE CAUSE (packet counters) =====
+--- DROP rules with hit counters ---
+Chain PVEFW-HOST-IN (1 references)
+num   pkts bytes target     prot opt in     out     source               destination         
+10       8   528 NFLOG      all  --  *      *       10.10.20.0/24        192.168.29.0/24      limit: avg 10/sec burst 5 nflog-prefix ":0:4:PVEFW-HOST-IN: DROP: "
+11       8   528 DROP       all  --  *      *       10.10.20.0/24        192.168.29.0/24     
+12       2   168 NFLOG      all  --  *      *       10.10.20.0/24        10.10.10.0/24        limit: avg 10/sec burst 5 nflog-prefix ":0:4:PVEFW-HOST-IN: DROP: "
+13       2   168 DROP       all  --  *      *       10.10.20.0/24        10.10.10.0/24       
+
+--- routing exists? (so blocking is not just 'no route') ---
+RTNETLINK answers: Network is unreachable
+ip_forward = 1
+===== [5] EXTEND SURICATA TO MONITOR THE TARGETS ZONE =====
+added vmbr20 to af-packet
+af-packet:
+  - interface: vmbr20
+    cluster-id: 98
+suricata: active
+[78835 - Suricata-Main] 2026-08-02 20:36:24 Error: af-packet: eth0: failed to find interface type: No such device
+[78839 - W#01-eth0] 2026-08-02 20:36:24 Error: af-packet: eth0: failed to find interface: No such device
+[78839 - W#01-eth0] 2026-08-02 20:36:25 Error: af-packet: eth0: failed to init socket for interface
+===== [6] ATTACK LAUNCHED FROM THE TARGET HOST (10.10.20.50) =====
+[a] ICMP sweep from container -> gateway
+[b] DNS exfil-named query from container
+[c] DNS tunneling (long subdomain) from container
+[d] TCP port scan from container
+...flushing...
+===== [7] DETECTION RESULTS, note the SOURCE IP =====
+--- fast.log ---
+08/06/2026-01:45:19.485789  [**] [1:9000003:1] LAB ICMP ping sweep detected (T1018) [**] [Classification: (null)] [Priority: 3] {ICMP} 10.10.20.50:8 -> 10.10.20.1:0
+08/06/2026-01:45:19.939324  [**] [1:9000002:1] LAB Suspicious TXT query - possible exfil (T1048.003) [**] [Classification: (null)] [Priority: 3] {UDP} 10.10.20.50:34061 -> 10.10.20.1:53
+08/06/2026-01:45:19.939360  [**] [1:9000002:1] LAB Suspicious TXT query - possible exfil (T1048.003) [**] [Classification: (null)] [Priority: 3] {UDP} 10.10.20.50:34061 -> 10.10.20.1:53
+08/06/2026-01:45:22.442016  [**] [1:9000002:1] LAB Suspicious TXT query - possible exfil (T1048.003) [**] [Classification: (null)] [Priority: 3] {UDP} 10.10.20.50:34061 -> 10.10.20.1:53
+08/06/2026-01:45:22.442060  [**] [1:9000002:1] LAB Suspicious TXT query - possible exfil (T1048.003) [**] [Classification: (null)] [Priority: 3] {UDP} 10.10.20.50:34061 -> 10.10.20.1:53
+
+--- alerts by signature + source ---
+      4 10.10.20.50  ->  10.10.20.1   LAB Suspicious TXT query - possible exfil (T1048.003)
+      1 10.10.20.50  ->  10.10.20.1   LAB ICMP ping sweep detected (T1018)
+
+--- distinct alert sources ---
+10.10.20.50
+
+--- event types captured ---
+     26 flow
+     24 dns
+     14 stats
+      5 alert
+      1 ssh
