@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Build the English presentation deck: true 16:9 slides with a presentation mode."""
+"""Build the presentation: a walkthrough of the ten skills, each with its workflow."""
 import content as C
 import html
 
@@ -9,297 +9,197 @@ S = []
 def slide(body, cls=""):
     S.append(f'<section class="slide {cls}">{body}</section>')
 
+# Per-skill presentation data: short workflow labels, tools, and the lab line.
+SKILL_META = {
+1:  {"steps": ["Map the security zones", "Define a VLAN per zone", "Tag the uplink as a trunk",
+              "Filter traffic between zones", "Harden against VLAN hopping"],
+     "tools": ["Linux bridges", "802.1Q", "ifreload"],
+     "lab": "Three zones were created on the node: servers, targets and monitoring, each on its own bridge.",
+     "why": "If one machine is compromised, the attacker should not be able to walk into the rest of the network."},
+2:  {"steps": ["Name each zone with an alias", "Deny all inbound by default",
+              "Allow only what is needed", "Log every decision", "Verify in the kernel"],
+     "tools": ["pve-firewall", "iptables", "aliases"],
+     "lab": "Management may reach the node on two ports; the targets zone may reach nothing.",
+     "why": "Segmentation draws the walls. The firewall decides who is allowed through the doors."},
+3:  {"steps": ["Install the IDS engine", "Attach it to the interfaces to watch",
+              "Write detection rules", "Emit structured JSON logs", "Feed the logs onward"],
+     "tools": ["Suricata 7", "EVE JSON", "ATT&CK rules"],
+     "lab": "Five rules were written by hand, each tied to a specific attacker technique.",
+     "why": "Isolation limits damage, but somebody still has to notice that an attack is happening."},
+4:  {"steps": ["Connect an identity provider", "Install the client on each device",
+              "Write access rules per identity", "Route the lab subnet through it",
+              "Stop exposing services publicly"],
+     "tools": ["Tailscale", "WireGuard", "ACLs"],
+     "lab": "Installed and running on the node, ready to replace any public exposure of the admin interface.",
+     "why": "The admin interface should never sit on the open internet. Reach it through an encrypted identity-aware tunnel instead."},
+5:  {"steps": ["Enable TLS 1.3 only", "Pick strong cipher suites", "Manage the certificate",
+              "Disable the legacy versions", "Audit what the server actually negotiates"],
+     "tools": ["OpenSSL", "testssl.sh", "Python ssl"],
+     "lab": "The node's own admin interface was audited to see what it really offers a client.",
+     "why": "Encryption in transit is only as good as the version and cipher the server is willing to fall back to."},
+6:  {"steps": ["Collect logs from every source", "Normalise them into one format",
+              "Correlate events across sources", "Rebuild the incident timeline",
+              "Map the pattern to known techniques"],
+     "tools": ["SPL / correlation", "Suricata EVE", "syslog"],
+     "lab": "Alerts from the IDS were combined with authentication logs to reconstruct one story.",
+     "why": "A single alert says something happened. Correlated alerts say what happened, in what order, and by whom."},
+7:  {"steps": ["Collect DNS query logs", "Measure name randomness (entropy)",
+              "Flag unusually long subdomains", "Watch query volume and timing",
+              "Raise an alert and attribute the source"],
+     "tools": ["entropy analysis", "Suricata DNS", "Python"],
+     "lab": "Real captured DNS events were analysed and the hidden tunnel was identified from name length alone.",
+     "why": "Almost every network allows DNS out, so attackers hide stolen data inside domain names."},
+8:  {"steps": ["Inventory what you actually own", "Scan on a recurring schedule",
+              "Rank findings by real risk", "Track remediation to closure", "Re-scan to confirm the fix"],
+     "tools": ["nmap", "OpenVAS", "CVSS"],
+     "lab": "Lab assets were enumerated and the exposed services on the node were listed and ranked.",
+     "why": "You cannot patch what you have not found, and not every finding deserves the same urgency."},
+9:  {"steps": ["Place decoy files in sensitive folders", "Record a baseline hash for each",
+              "Watch the filesystem in real time", "Classify any interaction",
+              "Alert before encryption completes"],
+     "tools": ["Python watchdog", "SHA-256", "syslog"],
+     "lab": "Decoys were deployed and simulated encryption triggered an alert almost instantly.",
+     "why": "No legitimate user opens a file called Passwords.xlsx, so any touch is a signal, not noise."},
+10: {"steps": ["Generate an SBOM for the software", "Parse the component list",
+              "Match components against the CVE database", "Trace transitive dependencies",
+              "Review results in context"],
+     "tools": ["syft", "grype", "CycloneDX", "NVD"],
+     "lab": "A real dependency list was produced and checked against the live vulnerability database.",
+     "why": "Most of your code is somebody else's code. When a library breaks, you need to know immediately whether you shipped it."},
+}
+
 # ══════════════════════════════ 1. TITLE
 slide(f"""
   <div class="t-inner">
-    <div class="eyebrow">Cybersecurity Project</div>
-    <h1>{esc(C.PROJECT['title_en'])}</h1>
+    <div class="eyebrow">Network &amp; Information Security</div>
+    <h1>Ten Defensive Security Skills</h1>
     <div class="rule"></div>
-    <p class="t-sub">{esc(C.PROJECT['subtitle_en'])}</p>
-    <div class="t-foot">
-      <span>{esc(C.PROJECT['author'])}</span><i></i><span>{esc(C.PROJECT['date'])}</span>
-    </div>
+    <h2 class="sub2">Built and demonstrated on a Proxmox VE lab</h2>
+    <p class="t-sub">What each skill is, how its workflow runs, and where it fits in the defence</p>
+    <div class="t-foot"><span>{esc(C.PROJECT['author'])}</span><i></i><span>{esc(C.PROJECT['date'])}</span></div>
   </div>""", "title")
 
-# ══════════════════════════════ 2. THE BRIEF
+# ══════════════════════════════ 2. WHAT THIS IS
 slide("""
-  <h3>The project in four points</h3>
+  <h3>What this project is</h3>
   <div class="brief">
     <div class="brief-row">
       <div class="bnum">01</div>
-      <div><b>A real virtual lab</b><span>A Proxmox VE node running under nested virtualisation, fully isolated</span></div>
+      <div><b>A lab to practise defence in</b><span>An isolated Proxmox VE node where controls can be applied, attacked, and observed without touching a real network</span></div>
     </div>
     <div class="brief-row">
       <div class="bnum">02</div>
-      <div><b>Ten defensive skills executed, not described</b><span>Drawn from a library of 817 skills across 29 domains</span></div>
-    </div>
-    <div class="brief-row">
-      <div class="bnum">03</div>
-      <div><b>Executed through an AI agent</b><span>The library is built for this: every skill ships a runnable agent</span></div>
+      <div><b>Ten defensive skills, carried out</b><span>Taken from an open library of security skills, chosen so that each one supports the next</span></div>
     </div>
     <div class="brief-row hi">
-      <div class="bnum">04</div>
-      <div><b>Measured, not just applied</b><span>Every control mapped to MITRE ATT&amp;CK and NIST CSF 2.0</span></div>
+      <div class="bnum">03</div>
+      <div><b>Each skill has a workflow</b><span>Not a definition to memorise, but an ordered set of steps you follow to put the control in place</span></div>
     </div>
-  </div>""")
-
-# ══════════════════════════════ 3. LIBRARY STATS
-slide(f"""
-  <h3>The source library</h3>
-  <div class="stats">
-    <div class="stat"><b>817</b><span>skills</span></div>
-    <div class="stat"><b>29</b><span>domains</span></div>
-    <div class="stat"><b>6</b><span>frameworks</span></div>
-    <div class="stat acc"><b>10</b><span>applied here</span></div>
   </div>
-  <p class="lead">{esc(C.INTRO['about_repo_en'])}</p>
-  <div class="callout warn"><b>The scope is entirely defensive.</b> Everything was carried out inside an isolated lab we own and are authorised to test.</div>""")
+  <div class="callout">The rest of this presentation walks through those ten workflows, one slide at a time.</div>""")
 
-# ══════════════════════════════ 4. AI AGENT
-slide(f"""
-  <h3>How the agent executes a skill</h3>
+# ══════════════════════════════ 3. AI AGENT (kept simple)
+slide("""
+  <h3>How the skills were carried out</h3>
   <div class="two">
     <div>
-      <p class="lead sm">{esc(C.INTRO['agent_method_en'])}</p>
-      <div class="callout"><b>The agent executed; the engineering judgement stayed human:</b> which skills to pick, how to design the zones, what to substitute when a tool was unavailable, and how to read the result.</div>
+      <p class="lead">Each skill in the library is written to be executed, not only read. It ships two things: a description that explains the workflow, and a small program that performs it.</p>
+      <p class="lead" style="margin-top:12px">An AI agent reads the description to understand the steps, runs the program, then reads the output and decides what to do next.</p>
+      <div class="callout" style="margin-top:16px">Choosing the skills, designing the zones and judging the results stayed a human decision.</div>
     </div>
     <div class="filetree">
-      <div class="ft-h">skill/</div>
-      <div class="ft-row"><code>SKILL.md</code><span>YAML frontmatter for discovery + Markdown workflow</span></div>
-      <div class="ft-row hi"><code>scripts/agent.py</code><span>The runnable agent that performs the skill</span></div>
-      <div class="ft-row"><code>references/</code><span>Technical references</span></div>
-      <div class="ft-row"><code>.claude-plugin/</code><span>Registers the library as an agent extension</span></div>
+      <div class="ft-h">one skill folder</div>
+      <div class="ft-row"><code>SKILL.md</code><span>What the skill is and the steps it follows</span></div>
+      <div class="ft-row hi"><code>scripts/agent.py</code><span>A runnable program that performs those steps</span></div>
+      <div class="ft-row"><code>references/</code><span>Background material</span></div>
     </div>
   </div>""")
+
+# ══════════════════════════════ 4. PROJECT WORKFLOW
+slide("""
+  <h3>The project workflow</h3>
+  <p class="lead sm">The same loop was repeated for every one of the ten skills.</p>
+  <div class="pflow">
+    <div class="pf"><div class="pf-n">1</div><b>Choose the skill</b><span>Pick the control the lab needs next</span></div>
+    <div class="pf"><div class="pf-n">2</div><b>Read the workflow</b><span>Understand the ordered steps it prescribes</span></div>
+    <div class="pf"><div class="pf-n">3</div><b>Prepare the lab</b><span>Create the zone, host or service it acts on</span></div>
+    <div class="pf"><div class="pf-n">4</div><b>Run the agent</b><span>Execute the skill against the lab</span></div>
+    <div class="pf"><div class="pf-n">5</div><b>Verify</b><span>Confirm the control is live, not just configured</span></div>
+    <div class="pf"><div class="pf-n">6</div><b>Record it</b><span>Keep the output as evidence</span></div>
+  </div>
+  <div class="callout"><b>Step 5 is the one that matters.</b> A setting can be written and still not be in effect, so each control was checked where it actually runs.</div>""")
 
 # ══════════════════════════════ 5. DIVIDER
-slide("""<div class="d-inner"><span>01</span><h2>Lab Architecture</h2><p>Successive layers of defence on a single node</p></div>""", "divider")
+slide("""<div class="d-inner"><span>01</span><h2>The Ten Skills</h2><p>One workflow at a time</p></div>""", "divider")
 
-# ══════════════════════════════ 6. ARCHITECTURE
-LAYERS = [
-    ("Access",     "Tailscale ZTNA + TLS 1.3",        "4 · 5",     "#0E7C86"),
-    ("Edge",       "Firewall (default deny) + VLANs", "1 · 2",     "#15616d"),
-    ("Monitoring", "Suricata IDS → SIEM correlation", "3 · 6 · 7", "#1d4e6b"),
-    ("Hardening",  "Vulnerability scanning + SBOM",   "8 · 10",    "#123a56"),
-    ("Deception",  "Ransomware canary files",         "9",         "#0b2a4a"),
-]
-bars = "".join(
-    f'<div class="layer" style="--c:{c}">'
-    f'<div class="l-name">{esc(n)}</div>'
-    f'<div class="l-comp">{esc(comp)}</div>'
-    f'<div class="l-sk">{esc(sk)}</div></div>'
-    for n, comp, sk, c in LAYERS)
-slide(f"""
-  <h3>Five layers, ten skills</h3>
-  <div class="arch">{bars}</div>
-  <div class="arch-note">If one layer fails, the next one catches it. That is exactly what happened: two Suricata rules never fired, yet the tunnel was still detected through DNS analysis.</div>""")
+# ══════════════════════════════ 6-15. ONE SLIDE PER SKILL
+for s in C.SKILLS:
+    m = SKILL_META[s["n"]]
+    steps = "".join(
+        f'<div class="wf"><div class="wf-n">{i}</div><div class="wf-t">{esc(t)}</div></div>'
+        for i, t in enumerate(m["steps"], 1))
+    tools = "".join(f'<span class="chip">{esc(t)}</span>' for t in m["tools"])
+    slide(f"""
+  <div class="sk-head">
+    <span class="sk-big">{s['n']:02d}</span>
+    <div><h3 class="sk-h">{esc(s['name_en'])}</h3><div class="sk-dom">{esc(s['domain'])}</div></div>
+  </div>
+  <div class="sk-body">
+    <div class="wf-col">
+      <div class="col-lbl">Workflow</div>
+      {steps}
+    </div>
+    <div class="side-col">
+      <div class="col-lbl">Why it matters</div>
+      <p class="why">{esc(m['why'])}</p>
+      <div class="col-lbl">In the lab</div>
+      <p class="inlab">{esc(m['lab'])}</p>
+      <div class="col-lbl">Tools</div>
+      <div class="chips">{tools}</div>
+    </div>
+  </div>""", "skill")
 
-# ══════════════════════════════ 7. DIVIDER
-slide("""<div class="d-inner"><span>02</span><h2>The Ten Skills</h2><p>Chosen to form a connected system, not a list</p></div>""", "divider")
-
-# ══════════════════════════════ 8. SKILLS GRID
-cells = "".join(
-    f'<div class="sk-card"><div class="sk-n">{s["n"]:02d}</div>'
-    f'<div class="sk-t">{esc(s["name_en"])}</div>'
-    f'<div class="sk-d">{esc(s["domain"])}</div></div>'
-    for s in C.SKILLS)
-slide(f"""<h3>Overview</h3><div class="sk-grid">{cells}</div>""")
-
-# ══════════════════════════════ 9-13. SKILL PAIRS
-def skill_panel(s):
-    steps = "".join(f"<li>{esc(x)}</li>" for x in s["steps_en"][:4])
-    att = "".join(f'<span class="tag att">{esc(t)}</span>' for t in s["attack"][:4]) or '<span class="tag att">n/a</span>'
-    nist = "".join(f'<span class="tag nist">{esc(t)}</span>' for t in s["nist"][:3])
-    return f"""
-    <div class="sp">
-      <div class="sp-head"><span class="sp-n">{s['n']:02d}</span>
-        <div><b>{esc(s['name_en'])}</b><i>{esc(s['domain'])}</i></div></div>
-      <p class="sp-what">{esc(s['what_en'])}</p>
-      <ol class="sp-steps">{steps}</ol>
-      <div class="sp-tags">{att}{nist}</div>
-    </div>"""
-
-for i in range(0, 10, 2):
-    pair = C.SKILLS[i:i+2]
-    slide(f"""<h3>Skills {pair[0]['n']}&ndash;{pair[-1]['n']}</h3>
-      <div class="sp-two">{''.join(skill_panel(s) for s in pair)}</div>""")
-
-# ══════════════════════════════ 14. DIVIDER
-slide("""<div class="d-inner"><span>03</span><h2>Actual Results</h2><p>Every figure from a real run, with its output kept</p></div>""", "divider")
-
-# ══════════════════════════════ 15. VERIFIED FACTS
-rows = "".join(f'<tr><td>{esc(k)}</td><td class="mono">{esc(v)}</td></tr>' for k, v in C.LAB_FACTS)
-slide(f"""
-  <h3>The lab as it was actually built</h3>
-  <table class="facts"><tbody>{rows}</tbody></table>
-  <div class="callout">Every row was verified by an actual command on the node, not read off a graphical interface.</div>""")
-
-# ══════════════════════════════ 16. DETECTION CHAIN (hero)
+# ══════════════════════════════ 16. HOW THEY CONNECT
 slide("""
-  <h3>The complete detection chain</h3>
+  <h3>How the ten fit together</h3>
+  <p class="lead sm">They were not picked as a list. Each one hands something to the next.</p>
+  <div class="conn">
+    <div class="cn"><div class="cn-h">Keep them apart</div><div class="cn-s">01 &middot; 02</div>
+      <p>Zones divide the network, and the firewall polices the boundaries between them.</p></div>
+    <div class="cn-a"></div>
+    <div class="cn"><div class="cn-h">Notice the attack</div><div class="cn-s">03 &middot; 06 &middot; 07</div>
+      <p>An IDS watches the traffic, its logs feed correlation, and DNS analysis catches what hides in plain sight.</p></div>
+    <div class="cn-a"></div>
+    <div class="cn"><div class="cn-h">Reduce the openings</div><div class="cn-s">05 &middot; 08 &middot; 10</div>
+      <p>Encrypt the admin path, find exposed services, and know which libraries you depend on.</p></div>
+    <div class="cn-a"></div>
+    <div class="cn ok"><div class="cn-h">Catch what slips</div><div class="cn-s">04 &middot; 09</div>
+      <p>Identity-aware access closes the front door, and decoy files raise the alarm if someone is already inside.</p></div>
+  </div>""")
+
+# ══════════════════════════════ 17. THE CHAIN IN ACTION
+slide("""
+  <h3>The workflows running together</h3>
+  <p class="lead sm">To show the skills are not independent exercises, one scenario was run end to end through them.</p>
   <div class="chain">
-    <div class="ch"><div class="ch-i">1</div><b>Simulated attack</b><span>ICMP sweep · DNS queries · port scan</span></div>
+    <div class="ch"><div class="ch-i">1</div><b>A host in the targets zone</b><span>separated by skills 01 and 02</span></div>
     <div class="ch-a"></div>
-    <div class="ch"><div class="ch-i">2</div><b>Suricata capture</b><span>36 DNS events in the EVE logs</span></div>
+    <div class="ch"><div class="ch-i">2</div><b>It behaves suspiciously</b><span>scanning and odd DNS lookups</span></div>
     <div class="ch-a"></div>
-    <div class="ch"><div class="ch-i">3</div><b>Independent analysis</b><span>An agent that knew nothing of the attack</span></div>
+    <div class="ch"><div class="ch-i">3</div><b>The IDS records it</b><span>skill 03 watching that zone</span></div>
     <div class="ch-a"></div>
-    <div class="ch ok"><div class="ch-i">4</div><b>Confirmed detection</b><span>Two tunnels: 72 and 60 characters</span></div>
+    <div class="ch ok"><div class="ch-i">4</div><b>Analysis names it</b><span>skill 07 identifies the hidden tunnel</span></div>
   </div>
-  <div class="callout hero"><b>Why is this the strongest result?</b> Because the tool that detected is not the tool that captured. There is no closed loop proving itself: a real attack, a real capture, and an independent analysis that arrived at a correct detection.</div>""", "hero")
+  <div class="callout hero">The host could not reach the management network at all, because the walls from skills 01 and 02 held. What it did do was seen, and what it hid was found.</div>""", "hero")
 
-# ══════════════════════════════ 17. SURICATA
-slide("""
-  <h3>Detection on the network</h3>
-  <div class="two">
-    <div>
-      <div class="kpi"><b>6</b><span>real alerts logged</span></div>
-      <table class="mini">
-        <tr><td class="mono">T1048.003</td><td>Exfiltration over DNS</td><td class="n">4&times;</td></tr>
-        <tr><td class="mono">T1018</td><td>ICMP sweep</td><td class="n">1&times;</td></tr>
-        <tr><td class="mono">T1046</td><td>Port scan</td><td class="n">1&times;</td></tr>
-      </table>
-    </div>
-    <div>
-      <p class="lead sm">Suricata 7.0.10 with five rules written specifically for the lab, each tied to a MITRE ATT&amp;CK technique, then tested by generating attack traffic.</p>
-      <div class="callout warn"><b>Two rules never fired:</b> the C2 rule, because no HTTP server sat on the test path, and the DNS tunnelling rule, because the query did not match the pcre pattern used.</div>
-    </div>
-  </div>""")
-
-# ══════════════════════════════ 18. SEGMENTATION + FIREWALL
-slide("""
-  <h3>Isolation and policy enforcement</h3>
-  <div class="two">
-    <div>
-      <div class="zone-h">Three isolated zones</div>
-      <div class="zone"><code>vmbr10</code><span>Servers</span><i>10.10.10.0/24</i></div>
-      <div class="zone"><code>vmbr20</code><span>Target systems</span><i>10.10.20.0/24</i></div>
-      <div class="zone"><code>vmbr30</code><span>Monitoring</span><i>10.10.30.0/24</i></div>
-      <div class="verify">vlan_filtering = 1 &check;</div>
-    </div>
-    <div>
-      <div class="zone-h">Firewall policy</div>
-      <div class="rule-row deny"><b>DROP</b><span>All inbound by default</span></div>
-      <div class="rule-row allow"><b>ALLOW</b><span>Management &rarr; 8006 and 22, logged</span></div>
-      <div class="rule-row deny"><b>DROP</b><span>Targets &#8622; management and servers</span></div>
-      <div class="verify">verified in iptables &check;</div>
-      <p class="foot-note">An automatic rollback was armed before activation, since a default-deny policy can lock out the administrator.</p>
-    </div>
-  </div>""")
-
-# ══════════════════════════════ 18b. ISOLATION ACTUALLY TESTED
-slide("""
-  <h3>The policy under test, not just configured</h3>
-  <p class="lead sm">The three zones were defined but empty, so the isolation policy was configured yet unproven. A real target host was placed inside the targets zone: an Alpine container on <span class="mono">vmbr20</span> at <span class="mono">10.10.20.50</span>.</p>
-  <div class="two" style="margin-top:14px">
-    <div>
-      <div class="zone-h">Reachability from the target host</div>
-      <div class="rule-row allow"><b>OK</b><span>Own gateway 10.10.20.1</span></div>
-      <div class="rule-row deny"><b>BLOCKED</b><span>Management network</span></div>
-      <div class="rule-row deny"><b>BLOCKED</b><span>Proxmox UI, port 8006</span></div>
-      <div class="rule-row deny"><b>BLOCKED</b><span>SSH, port 22</span></div>
-      <div class="rule-row deny"><b>BLOCKED</b><span>Servers zone 10.10.10.0/24</span></div>
-    </div>
-    <div>
-      <div class="zone-h">Proof it was the firewall</div>
-      <p class="lead sm">Blocking could simply mean &ldquo;no route&rdquo;. The iptables counters settle it: the packets arrived and were dropped at the zone rules.</p>
-      <table class="mini" style="margin-top:10px">
-        <tr><td class="mono">targets &rarr; mgmt</td><td class="n">8 pkts</td></tr>
-        <tr><td class="mono">targets &rarr; servers</td><td class="n">2 pkts</td></tr>
-      </table>
-      <div class="verify" style="margin-top:12px">lateral movement blocked &check;</div>
-    </div>
-  </div>""")
-
-# ══════════════════════════════ 18c. CHAIN FROM A SEPARATE HOST
-slide("""
-  <h3>Detection chain, re-run from a separate host</h3>
-  <p class="lead sm">The first run generated its attack from the node itself. With a real target host available, the chain was repeated the way an intrusion actually looks: the attack originates elsewhere, and the defender only sees the traffic.</p>
-  <div class="chain" style="max-height:180px;margin:12px 0 14px">
-    <div class="ch"><div class="ch-i">1</div><b>Attack from 10.10.20.50</b><span>a host separate from the node</span></div>
-    <div class="ch-a"></div>
-    <div class="ch"><div class="ch-i">2</div><b>Suricata on vmbr20</b><span>5 alerts, all from that source</span></div>
-    <div class="ch-a"></div>
-    <div class="ch ok"><div class="ch-i">3</div><b>Agent attributed it</b><span>evil-tunnel.test, 20 queries, avg 60 chars</span></div>
-  </div>
-  <div class="callout hero"><b>What this closes:</b> the earlier chain proved the analysis was independent. This one proves the <i>topology</i> is real too, since the traffic crossed a zone boundary and was seen by an IDS watching that zone.</div>""", "hero")
-
-# ══════════════════════════════ 19. SIEM
-slide("""
-  <h3>Correlation and incident reconstruction</h3>
-  <div class="two">
-    <div>
-      <div class="kpi"><b>26</b><span>events from two sources</span></div>
-      <p class="lead sm">Collected from Suricata and the sshd journal, then put through statistics, timeline reconstruction and technique mapping.</p>
-    </div>
-    <div class="verdict">
-      <div class="v-h">ANALYST VERDICT</div>
-      <p>A single internal host produced reconnaissance and an exfiltration attempt within <b>twelve seconds</b>.</p>
-      <p class="v-c">That tempo points to automated tooling rather than a human operator.</p>
-    </div>
-  </div>
-  <div class="callout"><b>Justified substitution:</b> Splunk Enterprise needs a licensed server, so the same correlation logic was applied to the lab's own real logs.</div>""")
-
-# ══════════════════════════════ 20. REMAINING RESULTS
-slide("""
-  <h3>Remaining results</h3>
-  <div class="res-grid">
-    <div class="res"><div class="r-k">TLS 1.3</div>
-      <p>The management interface negotiates <span class="mono">TLS_AES_256_GCM_SHA384</span>, with the legacy versions disabled. The certificate is self-signed, which is where the recommendation for a trusted certificate came from.</p></div>
-    <div class="res"><div class="r-k">Vulnerability scanning</div>
-      <p>Four live hosts, an enumeration of exposed services, and <b>61 packages</b> awaiting updates, ranked in a table by severity.</p></div>
-    <div class="res"><div class="r-k">Canary files</div>
-      <p><b>16 decoy files</b> with SHA-256 baselines. When encryption was simulated, two alerts fired within milliseconds.</p></div>
-    <div class="res"><div class="r-k">SBOM</div>
-      <p><b>75 packages</b> checked against the live NVD database. Some results are false positives from name matching, which has to be reviewed in context.</p></div>
-  </div>""")
-
-# ══════════════════════════════ 21. COVERAGE
-slide("""
-  <h3>Measured coverage</h3>
-  <p class="lead">This is what makes the title promise measurement: defensive coverage becomes a reviewable figure rather than an impression.</p>
-  <div class="cov">
-    <div class="cov-col"><div class="cov-h">MITRE ATT&CK</div>
-      <div class="cov-tags">
-        <span class="tag att">T1046</span><span class="tag att">T1018</span><span class="tag att">T1048.003</span>
-        <span class="tag att">T1071.001</span><span class="tag att">T1071.004</span><span class="tag att">T1486</span>
-        <span class="tag att">T1557</span><span class="tag att">T1190</span><span class="tag att">T1078</span>
-        <span class="tag att">T1133</span><span class="tag att">T1040</span><span class="tag att">T1021</span>
-      </div>
-      <div class="cov-f">Of these, <b>3 techniques</b> were actually observed in the logs</div>
-    </div>
-    <div class="cov-col"><div class="cov-h">NIST CSF 2.0</div>
-      <div class="cov-tags">
-        <span class="tag nist">PR.IR-01</span><span class="tag nist">DE.CM-01</span><span class="tag nist">DE.AE-02</span>
-        <span class="tag nist">PR.DS-01</span><span class="tag nist">PR.AA-01</span><span class="tag nist">RS.MA-01</span>
-        <span class="tag nist">RS.AN-03</span><span class="tag nist">RC.RP-01</span><span class="tag nist">GV.SC-01</span>
-      </div>
-      <div class="cov-f">Covering: Protect · Detect · Respond · Recover · Govern</div>
-    </div>
-  </div>""")
-
-# ══════════════════════════════ 22. WHAT DIDN'T WORK
-slide("""
-  <h3>What did not work, and how it was handled</h3>
-  <div class="fails">
-    <div class="fail"><div class="f-t">VLAN setup failed on the first attempt</div>
-      <p>A <span class="mono">sed</span> command wrote the directive malformed and the system rejected it. It was rewritten and reapplied until <span class="mono">vlan_filtering = 1</span>.</p></div>
-    <div class="fail"><div class="f-t">The firewall failed on the first attempt</div>
-      <p>The <span class="mono">+dc/</span> prefix was used, which belongs to IPSets rather than aliases. Corrected, with a rollback armed against lockout.</p></div>
-    <div class="fail ok"><div class="f-t">Two rules never fired, yet the tunnel was still found</div>
-      <p>Through a different path: subdomain-length analysis. This is precisely what defence in depth means in practice.</p></div>
-    <div class="fail"><div class="f-t">Two substitutions and one unfinished step</div>
-      <p>Proxmox's firewall instead of pfSense, and a correlation engine instead of licensed Splunk. And <span class="mono">tailscale up</span> requires a personal login, so it was left to the project owner.</p></div>
-  </div>""")
-
-# ══════════════════════════════ 23. CLOSING
+# ══════════════════════════════ 18. CLOSING
 slide("""
   <div class="t-inner">
-    <div class="eyebrow">Conclusion</div>
-    <h1 class="close-h">From isolation, to detection, to hardening</h1>
+    <div class="eyebrow">In closing</div>
+    <h1 class="close-h">Ten workflows, one defence</h1>
     <div class="rule"></div>
-    <p class="t-sub">Ten skills executed on a real node, measured against recognised frameworks,<br>and documented with their raw evidence, including what did not work.</p>
-    <div class="t-foot"><span>github.com/OwaisAbuSalah/proxmox-security-lab</span></div>
+    <p class="t-sub">Separate the network, watch it, harden it, and leave something behind<br>to catch whatever still gets through.</p>
+    <div class="t-foot"><span>Thank you</span></div>
   </div>""", "title closing")
 
 
@@ -308,221 +208,144 @@ CSS = r"""
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
  --navy:#0B2A4A; --teal:#0E7C86; --ink:#16202b; --mut:#5f6b7a; --line:#dde5ee;
- --card:#fff; --bg:#e8edf3;
- --att:#8c2233; --attbg:#fdeef0; --nist:#0d5c47; --nistbg:#e7f4ef;
- --warnbg:#fff8ec; --warnb:#d99b1c; --okbg:#e9f5f0; --okb:#0d7a5f;
+ --card:#fff; --bg:#e8edf3; --okb:#0d7a5f; --okbg:#e9f5f0;
 }
 html,body{height:100%}
 body{font-family:"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);
  -webkit-font-smoothing:antialiased;overflow-x:hidden}
-.mono,code{font-family:Consolas,"Courier New",monospace}
+code,.mono{font-family:Consolas,"Courier New",monospace}
 
-/* ── deck / slide frame ───────────────────────── */
-.deck{padding:26px 14px 90px}
+.deck{padding:26px 14px 90px;padding-top:64px}
 .slide{position:relative;width:min(1160px,96vw);aspect-ratio:16/9;margin:0 auto 26px;
  background:var(--card);border:1px solid var(--line);border-radius:16px;
- padding:52px 60px;overflow:hidden;box-shadow:0 14px 40px rgba(11,42,74,.10);
+ padding:48px 56px;overflow:hidden;box-shadow:0 14px 40px rgba(11,42,74,.10);
  display:flex;flex-direction:column;scroll-margin-top:14px}
-.slide::after{content:attr(data-n);position:absolute;bottom:20px;right:32px;
+.slide::after{content:attr(data-n);position:absolute;bottom:18px;right:30px;
  font:600 12px/1 Consolas,monospace;color:#b6c2d0}
 .slide::before{content:"";position:absolute;top:0;left:0;width:100%;height:4px;
  background:linear-gradient(90deg,var(--navy),var(--teal))}
 
-h3{font-size:clamp(20px,2.35vw,31px);color:var(--navy);font-weight:700;margin-bottom:22px;
- padding-bottom:13px;border-bottom:2px solid var(--line);position:relative;flex:none}
-h3::after{content:"";position:absolute;bottom:-2px;left:0;width:82px;height:2px;background:var(--teal)}
-.lead{font-size:clamp(14px,1.3vw,18px);line-height:1.75;color:var(--ink)}
-.lead.sm{font-size:clamp(13px,1.16vw,16px);line-height:1.7}
-.foot-note{margin-top:12px;font-size:clamp(11px,1vw,13.5px);line-height:1.6;color:var(--mut)}
+h3{font-size:clamp(20px,2.3vw,30px);color:var(--navy);font-weight:700;margin-bottom:18px;
+ padding-bottom:12px;border-bottom:2px solid var(--line);position:relative;flex:none}
+h3::after{content:"";position:absolute;bottom:-2px;left:0;width:78px;height:2px;background:var(--teal)}
+.lead{font-size:clamp(14px,1.3vw,18px);line-height:1.72;color:var(--ink)}
+.lead.sm{font-size:clamp(12.5px,1.14vw,16px);line-height:1.62;color:var(--mut);margin-bottom:4px}
 
-/* ── title + closing ──────────────────────────── */
-.title{background:
-   radial-gradient(1100px 520px at 82% -8%,rgba(18,160,173,.30),transparent 62%),
-   linear-gradient(155deg,#08223d 0%,#0d3350 52%,#0E7C86 155%);
- border:none;color:#fff;justify-content:center}
-.title::before{display:none}
-.title::after{color:rgba(255,255,255,.30)}
+/* title */
+.title{background:radial-gradient(1100px 520px at 82% -8%,rgba(18,160,173,.30),transparent 62%),
+ linear-gradient(155deg,#08223d 0%,#0d3350 52%,#0E7C86 155%);border:none;color:#fff;justify-content:center}
+.title::before{display:none}.title::after{color:rgba(255,255,255,.30)}
 .t-inner{max-width:88%}
 .eyebrow{display:inline-block;font-size:clamp(10px,.9vw,12px);letter-spacing:.30em;text-transform:uppercase;
- color:#8fd7de;border:1px solid rgba(143,215,222,.42);padding:6px 17px;border-radius:999px;margin-bottom:26px}
-.title h1{font-size:clamp(24px,3.1vw,45px);line-height:1.28;font-weight:700;color:#fff;letter-spacing:-.01em}
-.close-h{font-size:clamp(28px,3.9vw,54px)!important}
-.rule{width:104px;height:3px;background:linear-gradient(90deg,#12a0ad,transparent);margin:24px 0 20px;border-radius:2px}
-.t-sub{font-size:clamp(13px,1.34vw,19px);color:#cfe1ef;line-height:1.75}
-.t-foot{margin-top:38px;display:flex;align-items:center;gap:15px;font-size:clamp(11px,1.05vw,14px);color:#9fbdd2}
+ color:#8fd7de;border:1px solid rgba(143,215,222,.42);padding:6px 17px;border-radius:999px;margin-bottom:24px}
+.title h1{font-size:clamp(30px,4.2vw,58px);line-height:1.2;font-weight:700;color:#fff;letter-spacing:-.015em}
+.close-h{font-size:clamp(30px,4.2vw,58px)!important}
+.rule{width:104px;height:3px;background:linear-gradient(90deg,#12a0ad,transparent);margin:22px 0 18px;border-radius:2px}
+.sub2{font-size:clamp(15px,1.6vw,23px);font-weight:500;color:#a9c9dc}
+.t-sub{margin-top:14px;font-size:clamp(13px,1.3vw,18px);color:#cfe1ef;line-height:1.7}
+.t-foot{margin-top:34px;display:flex;align-items:center;gap:15px;font-size:clamp(11px,1.05vw,14px);color:#9fbdd2}
 .t-foot i{width:5px;height:5px;border-radius:50%;background:#12a0ad;display:inline-block}
 
-/* ── divider ──────────────────────────────────── */
+/* divider */
 .divider{background:linear-gradient(150deg,#0B2A4A,#123a56 60%,#0E7C86);border:none;color:#fff;justify-content:center}
-.divider::before{display:none}
-.divider::after{color:rgba(255,255,255,.28)}
+.divider::before{display:none}.divider::after{color:rgba(255,255,255,.28)}
 .d-inner span{font-size:clamp(52px,7.4vw,104px);font-weight:800;color:rgba(255,255,255,.13);line-height:.86;display:block}
-.d-inner h2{font-size:clamp(26px,3.5vw,48px);margin-top:-18px;letter-spacing:-.01em}
-.d-inner p{margin-top:14px;font-size:clamp(13px,1.34vw,19px);color:#a9d8de}
+.d-inner h2{font-size:clamp(28px,3.7vw,50px);margin-top:-18px}
+.d-inner p{margin-top:12px;font-size:clamp(13px,1.34vw,19px);color:#a9d8de}
 
-/* ── brief ────────────────────────────────────── */
-.brief{display:flex;flex-direction:column;gap:13px;flex:1;justify-content:center}
+/* brief rows */
+.brief{display:flex;flex-direction:column;gap:14px;flex:1;justify-content:center}
 .brief-row{display:flex;gap:20px;align-items:center;background:#f7fafc;border:1px solid var(--line);
- border-radius:13px;padding:17px 22px}
+ border-radius:13px;padding:18px 22px}
 .brief-row.hi{background:linear-gradient(100deg,#0B2A4A,#0E7C86);border:none;color:#fff}
-.bnum{flex:none;font:800 clamp(17px,1.75vw,25px)/1 Consolas,monospace;color:var(--teal);width:52px;text-align:center}
+.bnum{flex:none;font:800 clamp(17px,1.75vw,25px)/1 Consolas,monospace;color:var(--teal);width:50px;text-align:center}
 .brief-row.hi .bnum{color:#8fd7de}
-.brief-row b{display:block;font-size:clamp(14px,1.4vw,20px);color:var(--navy);margin-bottom:4px}
+.brief-row b{display:block;font-size:clamp(14px,1.42vw,20px);color:var(--navy);margin-bottom:5px}
 .brief-row.hi b{color:#fff}
-.brief-row span{font-size:clamp(12px,1.1vw,15.5px);color:var(--mut);line-height:1.5}
+.brief-row span{font-size:clamp(12px,1.1vw,15px);color:var(--mut);line-height:1.55}
 .brief-row.hi span{color:#cfe6ee}
 
-/* ── stats ────────────────────────────────────── */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.stat{background:#f5f9fc;border:1px solid var(--line);border-radius:14px;padding:20px 12px;text-align:center}
-.stat b{display:block;font:800 clamp(28px,3.6vw,50px)/1 Consolas,monospace;color:var(--navy)}
-.stat span{display:block;margin-top:7px;font-size:clamp(11px,1.05vw,14px);color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
-.stat.acc{background:linear-gradient(150deg,#0B2A4A,#0E7C86);border:none}
-.stat.acc b,.stat.acc span{color:#fff}
-
-/* ── callouts ─────────────────────────────────── */
 .callout{margin-top:auto;background:#f4f9fb;border-left:4px solid var(--teal);
- padding:14px 19px;border-radius:11px;font-size:clamp(12px,1.1vw,15.5px);line-height:1.65}
+ padding:14px 19px;border-radius:11px;font-size:clamp(12px,1.1vw,15.5px);line-height:1.62}
 .callout b{color:var(--navy)}
-.callout.warn{background:var(--warnbg);border-left-color:var(--warnb)}
-.callout.hero{background:linear-gradient(100deg,#0B2A4A,#0E7C86);border:none;color:#fff;padding:19px 24px}
+.callout.hero{background:linear-gradient(100deg,#0B2A4A,#0E7C86);border:none;color:#fff;padding:18px 24px}
 .callout.hero b{color:#8fd7de}
 
-/* ── two-col ──────────────────────────────────── */
-.two{display:grid;grid-template-columns:1fr 1fr;gap:32px;flex:1;align-content:start}
+.two{display:grid;grid-template-columns:1.15fr .85fr;gap:34px;flex:1;align-content:start}
 .two>div{display:flex;flex-direction:column}
-
-/* ── file tree ────────────────────────────────── */
 .filetree{background:#0f1c28;border-radius:14px;padding:20px 22px;align-self:start}
 .ft-h{font:700 clamp(12px,1.1vw,15px)/1 Consolas,monospace;color:#63d9e4;margin-bottom:14px}
-.ft-row{display:flex;flex-direction:column;gap:3px;padding:10px 0;border-top:1px solid #1e3243}
+.ft-row{display:flex;flex-direction:column;gap:3px;padding:11px 0;border-top:1px solid #1e3243}
 .ft-row code{font-size:clamp(11px,1.05vw,14px);color:#d8e6f2}
 .ft-row span{font-size:clamp(10.5px,.96vw,13px);color:#8fa6b8;line-height:1.5}
 .ft-row.hi code{color:#63d9e4;font-weight:700}
 
-/* ── architecture ─────────────────────────────── */
-.arch{display:flex;flex-direction:column;gap:9px;flex:1;justify-content:center}
-.layer{display:grid;grid-template-columns:132px 1fr 82px;align-items:center;gap:18px;
- background:var(--c);color:#fff;border-radius:11px;padding:15px 22px}
-.l-name{font-weight:700;font-size:clamp(13px,1.28vw,18px);letter-spacing:.01em}
-.l-comp{font-size:clamp(11.5px,1.08vw,15px);opacity:.94;font-family:Consolas,monospace}
-.l-sk{text-align:center;font:700 clamp(11px,1.05vw,14px)/1 Consolas,monospace;
- background:rgba(255,255,255,.17);padding:5px 9px;border-radius:7px}
-.arch-note{margin-top:16px;font-size:clamp(11.5px,1.06vw,15px);color:var(--mut);line-height:1.6;
+/* project workflow */
+.pflow{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;flex:1;align-content:center;max-height:290px}
+.pf{background:#f6fafc;border:1.5px solid var(--line);border-radius:13px;padding:18px 12px;
+ display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;position:relative}
+.pf-n{width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;
+ display:flex;align-items:center;justify-content:center;font:800 15px/1 Consolas,monospace}
+.pf b{font-size:clamp(11.5px,1.08vw,15px);color:var(--navy);line-height:1.3}
+.pf span{font-size:clamp(9.5px,.9vw,12px);color:var(--mut);line-height:1.45}
+.pf:not(:last-child)::after{content:"";position:absolute;right:-7px;top:34px;width:9px;height:2px;background:var(--teal)}
+
+/* skill slides */
+.skill{padding:42px 52px}
+.sk-head{display:flex;align-items:center;gap:20px;padding-bottom:16px;margin-bottom:20px;
+ border-bottom:2px solid var(--line);position:relative;flex:none}
+.sk-head::after{content:"";position:absolute;bottom:-2px;left:0;width:78px;height:2px;background:var(--teal)}
+.sk-big{font:800 clamp(34px,4.2vw,58px)/1 Consolas,monospace;color:var(--teal);opacity:.85}
+.sk-h{font-size:clamp(19px,2.15vw,29px);color:var(--navy);border:none;margin:0;padding:0}
+.sk-h::after{display:none}
+.sk-dom{font-size:clamp(10.5px,1vw,13px);color:var(--mut);text-transform:uppercase;letter-spacing:.1em;margin-top:5px}
+.sk-body{display:grid;grid-template-columns:1.25fr 1fr;gap:40px;flex:1;align-content:stretch}
+.col-lbl{font-size:clamp(10.5px,1vw,13px);font-weight:800;letter-spacing:.13em;text-transform:uppercase;
+ color:var(--teal);margin-bottom:14px}
+.side-col{display:flex;flex-direction:column}
+.side-col .col-lbl:not(:first-child){margin-top:22px}
+
+.wf-col{position:relative;display:flex;flex-direction:column}
+.wf{display:flex;gap:17px;align-items:flex-start;position:relative;flex:1;padding-bottom:6px}
+.wf:not(:last-child)::before{content:"";position:absolute;left:17px;top:38px;bottom:0;width:2px;background:var(--line)}
+.wf-n{flex:none;width:35px;height:35px;border-radius:50%;background:var(--navy);color:#fff;z-index:1;
+ display:flex;align-items:center;justify-content:center;font:800 14.5px/1 Consolas,monospace}
+.wf-t{font-size:clamp(14px,1.42vw,20px);line-height:1.35;color:var(--ink);padding-top:7px}
+
+.why{font-size:clamp(12.5px,1.2vw,16.5px);line-height:1.6;color:var(--ink)}
+.inlab{font-size:clamp(12.5px,1.2vw,16.5px);line-height:1.6;color:var(--mut);
  border-left:3px solid var(--teal);padding-left:14px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto;padding-top:8px}
+.chip{font:600 clamp(11px,1.04vw,14px)/1 Consolas,monospace;background:#eef4f8;color:var(--navy);
+ padding:8px 13px;border-radius:8px;border:1px solid var(--line)}
 
-/* ── skills grid ──────────────────────────────── */
-.sk-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:13px;flex:1;align-content:center}
-.sk-card{background:#f7fafc;border:1px solid var(--line);border-radius:12px;padding:15px 13px;
- display:flex;flex-direction:column;gap:7px;transition:.15s}
-.sk-card:hover{border-color:var(--teal);transform:translateY(-2px)}
-.sk-n{font:800 clamp(15px,1.5vw,21px)/1 Consolas,monospace;color:var(--teal)}
-.sk-t{font-size:clamp(11px,1.02vw,13.5px);font-weight:600;color:var(--navy);line-height:1.35;flex:1}
-.sk-d{font-size:clamp(9.5px,.86vw,11px);color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+/* connections */
+.conn{display:grid;grid-template-columns:1fr 26px 1fr 26px 1fr 26px 1fr;align-items:stretch;flex:1;max-height:300px}
+.cn{background:#f6fafc;border:1.5px solid var(--line);border-radius:14px;padding:18px 15px;
+ display:flex;flex-direction:column;gap:7px}
+.cn-h{font-size:clamp(12.5px,1.18vw,16.5px);font-weight:700;color:var(--navy);line-height:1.3}
+.cn-s{font:700 clamp(10px,.94vw,12.5px)/1 Consolas,monospace;color:var(--teal)}
+.cn p{font-size:clamp(10.5px,.98vw,13px);line-height:1.5;color:var(--mut)}
+.cn.ok{background:linear-gradient(155deg,#0d7a5f,#0E7C86);border-color:transparent}
+.cn.ok .cn-h,.cn.ok p{color:#fff}.cn.ok .cn-s{color:#a9e8ee}
+.cn-a{align-self:center;width:100%;height:2px;background:var(--teal);position:relative}
+.cn-a::after{content:"";position:absolute;right:-2px;top:-4px;border:5px solid transparent;border-left-color:var(--teal)}
 
-/* ── skill pair panels ────────────────────────── */
-.sp-two{display:grid;grid-template-columns:1fr 1fr;gap:26px;flex:1}
-.sp{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:20px 22px;
- display:flex;flex-direction:column}
-.sp-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:12px}
-.sp-n{flex:none;width:38px;height:38px;border-radius:10px;background:var(--navy);color:#fff;
- display:flex;align-items:center;justify-content:center;font:800 14px/1 Consolas,monospace}
-.sp-head b{display:block;font-size:clamp(13px,1.24vw,17px);color:var(--navy);line-height:1.3}
-.sp-head i{display:block;font-size:clamp(9.5px,.9vw,11.5px);color:var(--teal);font-style:normal;
- margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
-.sp-what{font-size:clamp(11px,1vw,13.5px);line-height:1.62;color:var(--mut);margin-bottom:11px}
-.sp-steps{padding-left:19px;margin-bottom:12px;flex:1}
-.sp-steps li{font-size:clamp(10.5px,.96vw,13px);line-height:1.5;margin-bottom:5px;color:var(--ink)}
-.sp-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto}
-.tag{font:700 clamp(9.5px,.88vw,11.5px)/1 Consolas,monospace;padding:4px 8px;border-radius:6px}
-.tag.att{background:var(--attbg);color:var(--att)}
-.tag.nist{background:var(--nistbg);color:var(--nist)}
-
-/* ── facts table ──────────────────────────────── */
-.facts{width:100%;border-collapse:collapse;flex:1;margin-bottom:6px}
-.facts td{padding:5px 14px;border-bottom:1px solid var(--line);font-size:clamp(10px,.94vw,12.5px);line-height:1.35}
-.facts td:first-child{font-weight:700;color:var(--navy);width:29%}
-.facts td:last-child{color:var(--mut)}
-.facts tr:nth-child(even) td{background:#f7fafc}
-
-/* ── detection chain ──────────────────────────── */
-.chain{display:grid;grid-template-columns:1fr 30px 1fr 30px 1fr 30px 1fr;align-items:stretch;
- margin:6px 0 22px;flex:1;max-height:270px}
-.ch{background:#f6fafc;border:1.5px solid var(--line);border-radius:14px;padding:20px 16px;
+/* chain */
+.chain{display:grid;grid-template-columns:1fr 28px 1fr 28px 1fr 28px 1fr;align-items:stretch;
+ margin:10px 0 18px;flex:1;max-height:250px}
+.ch{background:#f6fafc;border:1.5px solid var(--line);border-radius:14px;padding:20px 15px;
  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:9px}
-.ch-i{width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;
- display:flex;align-items:center;justify-content:center;font:800 16px/1 Consolas,monospace}
-.ch b{font-size:clamp(12px,1.16vw,16px);color:var(--navy)}
+.ch-i{width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;
+ display:flex;align-items:center;justify-content:center;font:800 15px/1 Consolas,monospace}
+.ch b{font-size:clamp(12px,1.14vw,16px);color:var(--navy);line-height:1.3}
 .ch span{font-size:clamp(10px,.94vw,12.5px);color:var(--mut);line-height:1.45}
 .ch.ok{background:linear-gradient(155deg,#0d7a5f,#0E7C86);border-color:transparent}
-.ch.ok b,.ch.ok span{color:#fff}
-.ch.ok .ch-i{background:rgba(255,255,255,.22)}
-/* LTR flow: arrowhead points right */
+.ch.ok b,.ch.ok span{color:#fff}.ch.ok .ch-i{background:rgba(255,255,255,.22)}
 .ch-a{align-self:center;width:100%;height:2px;background:var(--teal);position:relative}
-.ch-a::after{content:"";position:absolute;right:-2px;top:-4px;width:0;height:0;
- border:5px solid transparent;border-left-color:var(--teal)}
+.ch-a::after{content:"";position:absolute;right:-2px;top:-4px;border:5px solid transparent;border-left-color:var(--teal)}
 
-/* ── kpi / mini table ─────────────────────────── */
-.kpi{background:linear-gradient(150deg,#0B2A4A,#0E7C86);color:#fff;border-radius:14px;
- padding:22px;text-align:center;margin-bottom:16px}
-.kpi b{display:block;font:800 clamp(34px,4.2vw,60px)/1 Consolas,monospace}
-.kpi span{display:block;margin-top:8px;font-size:clamp(11.5px,1.06vw,15px);color:#cfe6ee;
- text-transform:uppercase;letter-spacing:.07em}
-.mini{width:100%;border-collapse:collapse}
-.mini td{padding:10px 13px;border-bottom:1px solid var(--line);font-size:clamp(11px,1.03vw,14px)}
-.mini td:first-child{font-weight:700;color:var(--att)}
-.mini td.n{text-align:right;font-weight:800;color:var(--teal);font-family:Consolas,monospace}
-
-/* ── zones / rules ────────────────────────────── */
-.zone-h{font-size:clamp(12px,1.12vw,15.5px);font-weight:700;color:var(--teal);margin-bottom:11px;
- text-transform:uppercase;letter-spacing:.07em}
-.zone{display:grid;grid-template-columns:82px 1fr auto;align-items:center;gap:11px;
- background:#f7fafc;border:1px solid var(--line);border-radius:10px;padding:11px 15px;margin-bottom:8px}
-.zone code{font-weight:700;color:var(--navy);font-size:clamp(11px,1.02vw,14px)}
-.zone span{font-size:clamp(11px,1.02vw,14px)}
-.zone i{font-style:normal;font-family:Consolas,monospace;font-size:clamp(10px,.9vw,12px);color:var(--mut)}
-.rule-row{display:grid;grid-template-columns:78px 1fr;align-items:center;gap:13px;
- border-radius:10px;padding:11px 15px;margin-bottom:8px;font-size:clamp(11px,1.02vw,14px)}
-.rule-row b{font-family:Consolas,monospace;font-size:clamp(10px,.94vw,12.5px);text-align:center;
- padding:4px 7px;border-radius:6px;color:#fff}
-.rule-row.deny{background:var(--attbg)} .rule-row.deny b{background:var(--att)}
-.rule-row.allow{background:var(--nistbg)} .rule-row.allow b{background:var(--nist)}
-.verify{margin-top:10px;font:700 clamp(11px,1.02vw,14px)/1.4 Consolas,monospace;color:var(--okb);
- background:var(--okbg);padding:9px 14px;border-radius:9px;text-align:center}
-
-/* ── verdict ──────────────────────────────────── */
-.verdict{background:#0f1c28;color:#d8e6f2;border-radius:14px;padding:24px;align-self:start}
-.v-h{font-size:clamp(10.5px,.98vw,13px);letter-spacing:.18em;color:#63d9e4;margin-bottom:14px}
-.verdict p{font-size:clamp(13px,1.22vw,17px);line-height:1.65;margin-bottom:11px}
-.verdict b{color:#63d9e4}
-.v-c{font-size:clamp(11.5px,1.04vw,14px)!important;color:#8fa6b8;border-top:1px solid #1e3243;padding-top:12px}
-
-/* ── results grid ─────────────────────────────── */
-.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;flex:1;align-content:center}
-.res{background:#f7fafc;border:1px solid var(--line);border-radius:13px;padding:18px 21px;
- border-left:4px solid var(--teal)}
-.r-k{font-size:clamp(13px,1.22vw,16.5px);font-weight:700;color:var(--navy);margin-bottom:8px}
-.res p{font-size:clamp(11px,1vw,13.5px);line-height:1.65;color:var(--mut)}
-.res b{color:var(--navy)}
-
-/* ── coverage ─────────────────────────────────── */
-.cov{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;align-content:center}
-.cov-col{background:#f7fafc;border:1px solid var(--line);border-radius:14px;padding:22px}
-.cov-h{font-size:clamp(13px,1.22vw,17px);font-weight:700;color:var(--navy);margin-bottom:15px;
- padding-bottom:10px;border-bottom:2px solid var(--line)}
-.cov-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:15px}
-.cov-f{font-size:clamp(10.5px,.96vw,13px);color:var(--mut);line-height:1.55;
- border-top:1px solid var(--line);padding-top:12px}
-.cov-f b{color:var(--teal)}
-
-/* ── failures ─────────────────────────────────── */
-.fails{display:grid;grid-template-columns:1fr 1fr;gap:15px;flex:1;align-content:center}
-.fail{background:var(--warnbg);border-left:4px solid var(--warnb);border-radius:12px;padding:17px 20px}
-.fail.ok{background:var(--okbg);border-left-color:var(--okb)}
-.f-t{font-size:clamp(12.5px,1.16vw,15.5px);font-weight:700;color:var(--navy);margin-bottom:8px}
-.fail p{font-size:clamp(11px,1vw,13.5px);line-height:1.65;color:var(--mut)}
-
-/* ── chrome ───────────────────────────────────── */
+/* chrome */
 .bar{position:fixed;top:0;left:0;right:0;z-index:60;background:rgba(232,237,243,.93);
  backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
  display:flex;align-items:center;justify-content:space-between;gap:14px;padding:9px 20px}
@@ -534,36 +357,30 @@ h3::after{content:"";position:absolute;bottom:-2px;left:0;width:82px;height:2px;
 .counter{font:700 12px/1 Consolas,monospace;color:var(--mut);min-width:52px;text-align:center}
 .prog{position:fixed;top:0;left:0;height:3px;z-index:61;
  background:linear-gradient(90deg,var(--navy),var(--teal));width:0;transition:width .22s}
-.deck{padding-top:64px}
 
-/* ── presentation mode ────────────────────────── */
 body.present{overflow:hidden;background:#050c14}
 body.present .bar{display:none}
 body.present .deck{padding:0;height:100vh;display:flex;align-items:center;justify-content:center}
-body.present .slide{display:none;margin:0;width:min(1600px,98vw);
- max-height:96vh;border-radius:10px;box-shadow:0 30px 90px rgba(0,0,0,.6)}
+body.present .slide{display:none;margin:0;width:min(1600px,98vw);max-height:96vh;
+ border-radius:10px;box-shadow:0 30px 90px rgba(0,0,0,.6)}
 body.present .slide.on{display:flex}
-body.present .prog{background:linear-gradient(90deg,#12a0ad,#63d9e4)}
-.exit-hint{display:none;position:fixed;bottom:14px;right:18px;z-index:62;
- color:#5f7183;font:11px/1 Consolas,monospace;letter-spacing:.05em}
+.exit-hint{display:none;position:fixed;bottom:14px;right:18px;z-index:62;color:#5f7183;
+ font:11px/1 Consolas,monospace;letter-spacing:.05em}
 body.present .exit-hint{display:block}
 
 @media print{
  .bar,.prog,.exit-hint{display:none}
- body{background:#fff}
- .deck{padding:0}
- .slide{box-shadow:none;border:none;border-radius:0;margin:0;page-break-after:always;
-  width:100%;aspect-ratio:16/9}
+ body{background:#fff}.deck{padding:0}
+ .slide{box-shadow:none;border:none;border-radius:0;margin:0;page-break-after:always;width:100%;aspect-ratio:16/9}
  @page{size:A4 landscape;margin:0}
 }
 @media(max-width:760px){
  .slide{aspect-ratio:auto;min-height:auto;padding:26px 22px}
- .two,.sp-two,.res-grid,.cov,.fails{grid-template-columns:1fr;gap:16px}
- .stats{grid-template-columns:repeat(2,1fr)}
- .sk-grid{grid-template-columns:repeat(2,1fr)}
- .chain{grid-template-columns:1fr;max-height:none;gap:9px}
- .ch-a{width:2px;height:20px;justify-self:center}
- .layer{grid-template-columns:1fr;gap:5px;text-align:center}
+ .two,.sk-body{grid-template-columns:1fr;gap:20px}
+ .pflow{grid-template-columns:repeat(2,1fr);max-height:none}
+ .pf:not(:last-child)::after{display:none}
+ .conn,.chain{grid-template-columns:1fr;max-height:none;gap:9px}
+ .cn-a,.ch-a{width:2px;height:18px;justify-self:center}
 }
 """
 
@@ -572,7 +389,6 @@ const slides=[...document.querySelectorAll('.slide')];
 slides.forEach((s,i)=>{s.id='s'+i;s.dataset.n=String(i+1).padStart(2,'0')+' / '+slides.length});
 const prog=document.querySelector('.prog'), ctr=document.querySelector('.counter');
 let cur=0, present=false;
-
 function setCur(i,scroll){
   cur=Math.max(0,Math.min(slides.length-1,i));
   ctr.textContent=(cur+1)+' / '+slides.length;
@@ -581,37 +397,29 @@ function setCur(i,scroll){
   else if(scroll){slides[cur].scrollIntoView({behavior:'smooth',block:'start'});}
 }
 function go(d){setCur(cur+d,true)}
-
 function togglePresent(){
   present=!present;
   document.body.classList.toggle('present',present);
-  if(present){ if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{}); }
-  else if(document.fullscreenElement){ document.exitFullscreen().catch(()=>{}); }
+  if(present){if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});}
+  else if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}
   setCur(cur,!present);
 }
 document.addEventListener('fullscreenchange',()=>{
-  if(!document.fullscreenElement && present){present=false;document.body.classList.remove('present');setCur(cur,true);}
+  if(!document.fullscreenElement&&present){present=false;document.body.classList.remove('present');setCur(cur,true);}
 });
-
 addEventListener('keydown',e=>{
   if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();go(1)}
   else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();go(-1)}
   else if(e.key==='Home'){e.preventDefault();setCur(0,true)}
   else if(e.key==='End'){e.preventDefault();setCur(slides.length-1,true)}
-  else if(e.key==='f'||e.key==='F'||e.key==='p'||e.key==='P'){e.preventDefault();togglePresent()}
+  else if('fFpP'.includes(e.key)){e.preventDefault();togglePresent()}
   else if(e.key==='Escape'&&present){togglePresent()}
 });
 document.querySelector('#prev').onclick=()=>go(-1);
 document.querySelector('#next').onclick=()=>go(1);
 document.querySelector('#pres').onclick=togglePresent;
-
-addEventListener('scroll',()=>{
-  if(present)return;
-  const y=scrollY+120; let n=0;
-  slides.forEach((s,i)=>{if(s.offsetTop<=y)n=i});
-  if(n!==cur)setCur(n,false);
-},{passive:true});
-
+addEventListener('scroll',()=>{if(present)return;const y=scrollY+120;let n=0;
+ slides.forEach((s,i)=>{if(s.offsetTop<=y)n=i});if(n!==cur)setCur(n,false)},{passive:true});
 setCur(0,false);
 """
 
@@ -620,13 +428,13 @@ DOC = f"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{esc(C.PROJECT['title_en'])}</title>
+<title>Ten Defensive Security Skills</title>
 <style>{CSS}</style>
 </head>
 <body>
 <div class="prog"></div>
 <div class="bar">
-  <span class="ttl">Proxmox Security Lab</span>
+  <span class="ttl">Ten Defensive Security Skills</span>
   <div class="ctr">
     <button id="prev">&lsaquo; Prev</button>
     <span class="counter">1 / {len(S)}</span>
