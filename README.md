@@ -13,6 +13,15 @@ frameworks. A bilingual report and slide deck are generated from the results.
 
 ---
 
+## Video walkthrough
+
+A recorded walkthrough of the project and the ten skills:
+[`media/project-walkthrough.mp4`](media/project-walkthrough.mp4) (16 minutes)
+
+شرح مصوّر للمشروع والمهارات العشر، مدته 16 دقيقة.
+
+---
+
 ## What was actually built
 
 Proxmox VE 9.2.2 was installed as a virtual machine on VMware Workstation 25 with
